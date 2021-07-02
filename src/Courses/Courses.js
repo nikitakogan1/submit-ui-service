@@ -7,26 +7,31 @@ class Courses extends Component {
     constructor(props) {
       super(props);
       this.state = {elements: [
-        {year:null,number:null,name:null}
+        {year:null,number:null,name:null,my_position:null}
       ]
     };
-    this.userRoles = []
+    this.stateFromLogin = []
+    this.username = ""
+    this.userCoursesAsStudent = []
+    this.userCoursesAsStuff= []
     this.componentDidMount=this.componentDidMount.bind(this);
 
     }
     
     componentDidMount() {
-      this.userRoles = JSON.parse(this.props.location.state)
-      console.log("recieved the props",this.userRoles.roles)
-      this.userRoles.roles.forEach((role) => {
-        if (role === "admin") {
+      this.stateFromLogin = JSON.parse(this.props.location.state);
+      this.username = this.stateFromLogin.username
+      console.log("recieved the props",this.stateFromLogin.roles);
+      this.stateFromLogin.roles.forEach((role) => {
+        if (role === "admin" || role === "secretary") {
           // show all courses in the system  + buttons to add and delete
         } else if (role === "student"){
           //show only the students courses
-        } else if (role === "secretary"){
-          // show all the courses + buttons to add and delete
+          this.userCoursesAsStudent = this.stateFromLogin.staff_courses;
+          this.userCoursesAsStuff = this.stateFromLogin.student_courses;
         }
       })
+
       fetch('http://localhost:3000/api/courses/', {method:'GET', 
       headers: {'Authorization': 'Basic ' + btoa('username:password')}})
       .then((response) => {
@@ -62,15 +67,23 @@ class Courses extends Component {
                   {course.name}
                 </Table.Cell>
                 <Table.Cell>
-                  {}
+                  {course.position}
                 </Table.Cell>
               </Table.Row>
             );
           })}
         </Table.Body>
       </Table>
+      
       );
       }
   
    }
   export default withRouter(Courses);
+
+
+  //TODO: 
+
+// 1. Add the student/stuff section in the table.
+// 2. create course detail components.
+//
