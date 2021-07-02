@@ -5,8 +5,10 @@ import Login from "./Login/login";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import Courses from "./Courses/Courses"
 import Cookies from "universal-cookie"
+import { useHistory } from "react-router-dom";
 
 function App (){
+  const history = useHistory()
   const addCourseOnSubmit = (event) => {
     event.preventDefault(event);
     console.log(event.target.name.value);
@@ -26,14 +28,11 @@ function App (){
     <div className="App">
     <BrowserRouter>
       <Switch>
-        <Route path="/login">
-          <Login />
+        <Route exact path="/">
+          <Login history={history}/>
         </Route>
         <PrivateRoute path="/courses" component={Courses}></PrivateRoute>
       </Switch>
-        <PrivateRoute exact path="/">
-          Welcome page
-        </PrivateRoute>
       </BrowserRouter>
   </div>
   );
@@ -68,7 +67,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
         isLoggedIn ? (
           <Component {...props} />
         ) : (
-          <Redirect to={{ pathname: '/login' }} />
+          <Redirect to={{ pathname: '/' }} />
         )
       }
     />
