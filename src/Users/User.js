@@ -2,7 +2,12 @@ import React from "react";
 import { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { LabelDetailProps, Table } from 'semantic-ui-react';
+import UserContainer from "./UserModal";
 //import "./Users.css"
+
+
+
+
 class User extends Component {
     userNameFromReq = ""
     username = ""
@@ -18,6 +23,25 @@ class User extends Component {
       const parts = value.split(`; ${name}=`);
       if (parts.length === 2) return parts.pop().split(';').shift();
     }
+
+     updateDetails = (event) => {
+        event.preventDefault(event);
+        console.log(event.target.user_name.value);
+        console.log(event.target.first_name.value);
+        console.log(event.target.last_name.value);
+        console.log(event.target.email.value);
+        var body = {"user_name":event.target.user_name.value,"last_name":event.target.last_name.value, "email": event.target.email.value, "first_name":event.target.first_name.value,"password":event.target.password.value,
+        "roles":this.state.roles,"courses_as_student":this.state.courses_as_student,"courses_as_staff":this.state.courses_as_staff}
+        console.log( JSON.stringify(body))
+        fetch('http://localhost:3000/api/users/' + event.target.user_name.value + '/', {method:'POST', 
+         body: JSON.stringify(body), headers: {'Authorization': 'Basic ' + btoa('username:password')}})
+         .then((response) => response.json())
+         .then (data => {
+           console.log(data);
+           alert(data)
+         });
+    }
+
 
     componentDidMount() {
         this.userNameFromReq = this.props.match.params.id
@@ -49,7 +73,9 @@ class User extends Component {
                     <Table.Row>Courses as student: {(JSON.stringify(this.state.courses_as_student.elements))}</Table.Row>
                     <Table.Row>Courses as staff: {(JSON.stringify(this.state.courses_as_staff.elements))}</Table.Row>
             </Table.Body>
+            <UserContainer onSubmit={this.updateDetails}></UserContainer>
           </Table>
+
         )
     }
 }

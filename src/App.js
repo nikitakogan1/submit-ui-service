@@ -30,8 +30,8 @@ function App (){
         <Route exact path="/">
           <Login history={history}/>
         </Route>
-        <PrivateRoute path="/courses" component={Courses}></PrivateRoute>
-        <PrivateRoute path="/users/:id" component={User}></PrivateRoute>
+        <CoursesPrivateRoute path="/courses" component={Courses}></CoursesPrivateRoute>
+        <UserPrivateRoute path="/users/:id" component={User}></UserPrivateRoute>
 
       </Switch>
       </BrowserRouter>
@@ -39,8 +39,18 @@ function App (){
   );
 }
 
+const userAuthFunc = () => {
+  var cookie = getCookie("submit-server-cookie")
+  var stateCookie = getCookie("last-submit-server-state")
+  if (cookie == null || stateCookie == null) {
+   setCookie('submit_last_visited_path', window.location.pathname, 0.0034);
+   return false
+  }
+  return true
+}
 
-const authFunc = () => {
+
+const coursesAuthFunc = () => {
     var cookie = getCookie("submit-server-cookie")
     var stateCookie = getCookie("last-submit-server-state")
     if (cookie == null || stateCookie == null) {
@@ -66,10 +76,29 @@ function setCookie(name,value,days) {
   document.cookie = name + "=" + (value || "")  + expires + "; path=/";
 }
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
+const CoursesPrivateRoute = ({ component: Component, ...rest }) => {
 
   // Add your own authentication on the below line.
-  const isLoggedIn = authFunc()
+  const isLoggedIn = coursesAuthFunc()
+  console.log(isLoggedIn)
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        isLoggedIn ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to={{ pathname: '/' }} />
+        )
+      }
+    />
+  )
+}
+
+const UserPrivateRoute = ({ component: Component, ...rest }) => {
+
+  // Add your own authentication on the below line.
+  const isLoggedIn = userAuthFunc()
   console.log(isLoggedIn)
   return (
     <Route
