@@ -5,6 +5,7 @@ import "./login.css";
 import { withRouter } from 'react-router-dom';
 
 class Login extends Component {
+    okToServe = false;  
     profile = {
         "user_name": "",
         "roles": [],
@@ -64,6 +65,7 @@ class Login extends Component {
     headers: {'Authorization': 'Basic ' + btoa(this.state.username + ":" + this.state.password)}})
     .then((response) => {
         if (response.ok) {
+            this.okToServe = true
             var jsonResp = response.json()
         } else {
             alert("invalid credentials")
@@ -75,17 +77,19 @@ class Login extends Component {
       this.setCookie("last-submit-server-state", JSON.stringify(data), 0.0034)
       this.profile = data
     });
-    if (last_visited_cookie != null) {
-         this.props.history.push({
-             pathname: decodeURIComponent(last_visited_cookie.toString()),
-             state: JSON.stringify(this.profile),
-         });
-    } else {
-         this.props.history.push({
-             pathname: decodeURIComponent("/courses"),
-             state: JSON.stringify(this.profile),
-         });
-     }
+    if (this.okToServe) {
+        if (last_visited_cookie != null) {
+            this.props.history.push({
+                pathname: decodeURIComponent(last_visited_cookie.toString()),
+                state: JSON.stringify(this.profile),
+            });
+       } else {
+            this.props.history.push({
+                pathname: decodeURIComponent("/courses"),
+                state: JSON.stringify(this.profile),
+            });
+        }
+    }
   }
 
 
