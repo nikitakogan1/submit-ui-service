@@ -33,7 +33,7 @@ class User extends Component {
         var body = {"user_name":event.target.user_name.value,"last_name":event.target.last_name.value, "email": event.target.email.value, "first_name":event.target.first_name.value,"password":event.target.password.value,
         "roles":this.state.roles,"courses_as_student":this.state.courses_as_student,"courses_as_staff":this.state.courses_as_staff}
         console.log( JSON.stringify(body))
-        fetch('http://localhost:3000/api/users/' + event.target.user_name.value + '/', {method:'POST', 
+        fetch('http://localhost:3000/api/users/' + event.target.user_name.value , {method:'PUT', 
          body: JSON.stringify(body), headers: {'Authorization': 'Basic ' + btoa('username:password')}})
          .then((response) => response.json())
          .then (data => {
