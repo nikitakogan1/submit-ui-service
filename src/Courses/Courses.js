@@ -25,6 +25,11 @@ class Courses extends Component {
     }
 
 
+    getPositionForCourses(){
+
+    }
+
+
     componentDidMount() {
       if (this.props.location.state) {
         this.stateFromLogin = JSON.parse(this.props.location.state);

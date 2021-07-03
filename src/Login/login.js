@@ -46,10 +46,8 @@ class Login extends Component {
         var state_cookie = this.getCookie("last-submit-server-state")
         var auth_cookie = this.getCookie("submit-server-cookie")
         var last_visited_cookie = this.getCookie("submit_last_visited_path")
-        console.log(state_cookie)
-        console.log(auth_cookie)
         if (last_visited_cookie === undefined){
-            this.setCookie("submit_last_visited_path", "/courses", 1)
+            this.setCookie("submit_last_visited_path", "/courses", 0.0034)
         }
         if (auth_cookie !== undefined) {
             this.props.history.push({
@@ -74,7 +72,7 @@ class Login extends Component {
         return jsonResp
     })
     .then (data => {
-      this.setCookie("last-submit-server-state", JSON.stringify(data), 1)
+      this.setCookie("last-submit-server-state", JSON.stringify(data), 0.0034)
       this.profile = data
     });
     if (last_visited_cookie != null) {
