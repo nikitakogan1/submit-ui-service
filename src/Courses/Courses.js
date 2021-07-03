@@ -28,7 +28,16 @@ class Courses extends Component {
     getPositionForCourses(){
 
     }
-
+    
+    setCookie(name,value,days) {
+      var expires = "";
+      if (days) {
+          var date = new Date();
+          date.setTime(date.getTime() + (days*24*60*60*1000));
+          expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+  }
 
     componentDidMount() {
       if (this.props.location.state) {
@@ -57,6 +66,7 @@ class Courses extends Component {
       .then (data => {
         this.setState(data);
       });
+      this.setCookie("submit_last_visited_path", window.location.pathname, 0.0034)
     }
 
     render(){

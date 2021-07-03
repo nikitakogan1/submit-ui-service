@@ -3,8 +3,8 @@ import { Redirect,BrowserRouter, Route, Switch } from 'react-router-dom';
 import Login from "./Login/login";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import Courses from "./Courses/Courses"
-import Cookies from "universal-cookie"
 import { useHistory } from "react-router-dom";
+import User from "./Users/User";
 
 function App (){
   const history = useHistory()
@@ -31,6 +31,8 @@ function App (){
           <Login history={history}/>
         </Route>
         <PrivateRoute path="/courses" component={Courses}></PrivateRoute>
+        <PrivateRoute path="/users/:id" component={User}></PrivateRoute>
+
       </Switch>
       </BrowserRouter>
   </div>
@@ -38,11 +40,11 @@ function App (){
 }
 
 
-const cookies = new Cookies();
 const authFunc = () => {
     var cookie = getCookie("submit-server-cookie")
-    if (cookie == null) {
-     cookies.set('submit_last_visited_path', '/courses', { path: '/' });
+    var stateCookie = getCookie("last-submit-server-state")
+    if (cookie == null || stateCookie == null) {
+     setCookie('submit_last_visited_path', window.location.pathname, 0.0034);
      return false
     }
     return true
@@ -53,6 +55,16 @@ function getCookie(name) {
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
   }
+
+function setCookie(name,value,days) {
+  var expires = "";
+  if (days) {
+      var date = new Date();
+      date.setTime(date.getTime() + (days*24*60*60*1000));
+      expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
 
