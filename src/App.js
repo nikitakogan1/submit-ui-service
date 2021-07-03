@@ -5,6 +5,7 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import Courses from "./Courses/Courses"
 import Cookies from "universal-cookie"
 import { useHistory } from "react-router-dom";
+import User from "./User/User";
 
 function App (){
   const history = useHistory()
@@ -30,7 +31,8 @@ function App (){
         <Route exact path="/">
           <Login history={history}/>
         </Route>
-        <PrivateRoute path="/courses" component={Courses}></PrivateRoute>
+        {/* <PrivateRoute path="/courses" component={Courses}></PrivateRoute> */}
+        <PrivateRoute path="/users/:id" component={User}></PrivateRoute>
       </Switch>
       </BrowserRouter>
   </div>
@@ -40,10 +42,11 @@ function App (){
 
 const cookies = new Cookies();
 const authFunc = () => {
-    var cookie = getCookie("submit-server-cookie")
-    if (cookie == null) {
-     cookies.set('submit_last_visited_path', '/courses', { path: '/' });
-     return false
+    var auth_cookie = getCookie("submit-server-cookie")
+    var state_cookie = getCookie("last-submit-server-state")
+    if (auth_cookie === null || auth_cookie !== "" || state_cookie === null || state_cookie !== "") {
+      cookies.set('submit_last_visited_path', window.location.pathname, { path: '/' });
+      return false
     }
     return true
   }
@@ -56,7 +59,6 @@ function getCookie(name) {
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
 
-  // Add your own authentication on the below line.
   const isLoggedIn = authFunc()
   console.log(isLoggedIn)
   return (

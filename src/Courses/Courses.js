@@ -14,7 +14,7 @@ class Courses extends Component {
     this.stateFromLogin = []
     this.username = ""
     this.userCoursesAsStudent = []
-    this.userCoursesAsStuff= []
+    this.userCoursesAsStaff= []
     this.componentDidMount=this.componentDidMount.bind(this);
     }
     
@@ -31,9 +31,11 @@ class Courses extends Component {
 
 
     componentDidMount() {
+      console.log(this.getCookie("last-submit-server-state"))
+      console.log(this.getCookie("submit-server-cookie"))
       if (this.props.location.state) {
         this.stateFromLogin = JSON.parse(this.props.location.state);
-      } else {
+      } else if (this.getCookie("last-submit-server-state") !== null) {
         this.stateFromLogin = JSON.parse(this.getCookie("last-submit-server-state"))
       }
       this.username = this.stateFromLogin.username
@@ -44,7 +46,7 @@ class Courses extends Component {
         } else if (role === "student"){
           //show only the students courses
           this.userCoursesAsStudent = this.stateFromLogin.staff_courses;
-          this.userCoursesAsStuff = this.stateFromLogin.student_courses;
+          this.userCoursesAsStaff = this.stateFromLogin.student_courses;
         }
       })
 
