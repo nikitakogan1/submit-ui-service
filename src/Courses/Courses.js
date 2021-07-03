@@ -2,6 +2,7 @@ import React from "react";
 import { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { Table } from 'semantic-ui-react';
+import "./Courses.css"
 
 class Courses extends Component {
     constructor(props) {
@@ -15,13 +16,23 @@ class Courses extends Component {
     this.userCoursesAsStudent = []
     this.userCoursesAsStuff= []
     this.componentDidMount=this.componentDidMount.bind(this);
-
     }
     
+    getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+
     componentDidMount() {
-      this.stateFromLogin = JSON.parse(this.props.location.state);
+      if (this.props.location.state) {
+        this.stateFromLogin = JSON.parse(this.props.location.state);
+      } else {
+        this.stateFromLogin = JSON.parse(this.getCookie("last-submit-server-state"))
+      }
       this.username = this.stateFromLogin.username
-      console.log("recieved the props",this.stateFromLogin.roles);
+      console.log("recieved the state",this.stateFromLogin.roles);
       this.stateFromLogin.roles.forEach((role) => {
         if (role === "admin" || role === "secretary") {
           // show all courses in the system  + buttons to add and delete
@@ -32,13 +43,13 @@ class Courses extends Component {
         }
       })
 
+
       fetch('http://localhost:3000/api/courses/', {method:'GET', 
       headers: {'Authorization': 'Basic ' + btoa('username:password')}})
       .then((response) => {
         return response.json()
       })
       .then (data => {
-        console.log(data);
         this.setState(data);
       });
     }
@@ -67,7 +78,7 @@ class Courses extends Component {
                   {course.name}
                 </Table.Cell>
                 <Table.Cell>
-                  {course.position}
+                  {course.my_position}
                 </Table.Cell>
               </Table.Row>
             );

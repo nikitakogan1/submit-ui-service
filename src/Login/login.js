@@ -19,6 +19,7 @@ class Login extends Component {
       password: ""
     };
     this.handleSubmit=this.handleSubmit.bind(this);
+    this.componentDidMount=this.componentDidMount.bind(this);
   }
 
   validateForm() {
@@ -31,8 +32,35 @@ class Login extends Component {
     if (parts.length === 2) return parts.pop().split(';').shift();
   }
 
+   setCookie(name,value,days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+
+    componentDidMount(){
+        var state_cookie = this.getCookie("last-submit-server-state")
+        var auth_cookie = this.getCookie("submit-server-cookie")
+        var last_visited_cookie = this.getCookie("submit_last_visited_path")
+        console.log(state_cookie)
+        console.log(auth_cookie)
+        if (last_visited_cookie === undefined){
+            this.setCookie("submit_last_visited_path", "/courses", 1)
+        }
+        if (auth_cookie !== undefined) {
+            this.props.history.push({
+                pathname: decodeURIComponent(this.getCookie("submit_last_visited_path")),
+                state: state_cookie
+            });
+        }
+    }
   
   async handleSubmit(event) {
+    var last_visited_cookie = this.getCookie("submit_last_visited_path")
     event.preventDefault();
     await fetch('http://localhost:3000/api/', {method:'GET', 
     headers: {'Authorization': 'Basic ' + btoa(this.state.username + ":" + this.state.password)}})
@@ -46,15 +74,15 @@ class Login extends Component {
         return jsonResp
     })
     .then (data => {
+      this.setCookie("last-submit-server-state", JSON.stringify(data), 1)
       this.profile = data
     });
-    var cookie = this.getCookie("submit_last_visited_path")
-    if (cookie != null) {
+    if (last_visited_cookie != null) {
          this.props.history.push({
-             pathname: decodeURIComponent(cookie.toString()),
+             pathname: decodeURIComponent(last_visited_cookie.toString()),
              state: JSON.stringify(this.profile),
          });
-     } else {
+    } else {
          this.props.history.push({
              pathname: decodeURIComponent("/courses"),
              state: JSON.stringify(this.profile),

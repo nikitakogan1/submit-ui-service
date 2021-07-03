@@ -1,5 +1,4 @@
 import React from "react";
-import Container from "./Container";
 import { Redirect,BrowserRouter, Route, Switch } from 'react-router-dom';
 import Login from "./Login/login";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
@@ -9,21 +8,21 @@ import { useHistory } from "react-router-dom";
 
 function App (){
   const history = useHistory()
-  const addCourseOnSubmit = (event) => {
-    event.preventDefault(event);
-    console.log(event.target.name.value);
-    console.log(event.target.year.value);
-    console.log(event.target.number.value);
-    var body = {year:parseInt(event.target.year.value), number:parseInt(event.target.number.value), name:event.target.name.value}
-    console.log( JSON.stringify(body))
-    fetch('http://localhost:3000/api/courses/', {method:'POST', 
-     body: JSON.stringify(body), headers: {'Authorization': 'Basic ' + btoa('admin:admin')}})
-     .then((response) => response.json())
-     .then (data => {
-       console.log(data);
-     });
+  // const addCourseOnSubmit = (event) => {
+  //   event.preventDefault(event);
+  //   console.log(event.target.name.value);
+  //   console.log(event.target.year.value);
+  //   console.log(event.target.number.value);
+  //   var body = {year:parseInt(event.target.year.value), number:parseInt(event.target.number.value), name:event.target.name.value}
+  //   console.log( JSON.stringify(body))
+  //   fetch('http://localhost:3000/api/courses/', {method:'POST', 
+  //    body: JSON.stringify(body), headers: {'Authorization': 'Basic ' + btoa('admin:admin')}})
+  //    .then((response) => response.json())
+  //    .then (data => {
+  //      console.log(data);
+  //    });
      
-  };
+  // };
   return (
     <div className="App">
     <BrowserRouter>
