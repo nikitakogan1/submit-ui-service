@@ -31,6 +31,7 @@ export class UserContainer extends Component {
   };
 
   render() {
+      console.log("the state from initial component is", this.props.state)
     return (
       <React.Fragment>
         <TriggerButton
@@ -39,7 +40,8 @@ export class UserContainer extends Component {
           triggerText={this.props.triggerText}
         />
         {this.state.isShown ? (
-          <Modal
+          <Modal 
+            user={this.props.user}
             onSubmit={this.props.onSubmit}
             modalRef={(n) => (this.modal = n)}
             buttonRef={(n) => (this.closeButton = n)}
@@ -54,28 +56,29 @@ export class UserContainer extends Component {
 }
 
 
-export const Form = ({ onSubmit }) => {
+export const Form = ({ onSubmit }, user) => {
+  console.log("the user in the form is ",user)
   return (
     <form onSubmit={onSubmit}>
       <div className="form-group">
         <label htmlFor="user_name">Username</label>
-        <input className="form-control" id="user_name" />
+        <input className="form-control" id="user_name" value={user.user_name} />
       </div>  
       <div className="form-group">
         <label htmlFor="first_name">First Name</label>
-        <input className="form-control" id="first_name" />
+        <input className="form-control" id="first_name" value={user.first_name} />
       </div>
       <div className="form-group">
         <label htmlFor="lasT_name">Last Number</label>
-        <input className="form-control" id="last_name" />
+        <input className="form-control" id="last_name" value={user.last_name} />
       </div>
       <div className="form-group">
         <label htmlFor="email">Email</label>
-        <input className="form-control" id="email" />
+        <input className="form-control" id="email" value={user.email}/>
       </div>
       <div className="form-group">
         <label htmlFor="password">Password</label>
-        <input className="password" id="password" />
+        <input className="password" id="password" value={user.password}/>
       </div>
       <div className="form-group">
         <button className="form-control btn btn-primary" type="submit">
@@ -104,7 +107,8 @@ export const Modal = ({
   modalRef,
   buttonRef,
   closeModal,
-  onSubmit
+  onSubmit,
+  user
 }) => {
   return ReactDOM.createPortal(
     <FocusTrap>
@@ -133,7 +137,7 @@ export const Modal = ({
             </svg>
           </button>
           <div className="modal-body">
-            <Form onSubmit={onSubmit} />
+            <Form onSubmit={onSubmit} user={user} />
           </div>
         </div>
       </aside>
