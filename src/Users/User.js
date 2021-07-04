@@ -1,12 +1,9 @@
 import React from "react";
 import { Component } from "react";
 import { withRouter } from "react-router-dom";
-import { LabelDetailProps, Table } from 'semantic-ui-react';
+import { Table } from 'semantic-ui-react';
 import UserContainer from "./UserModal";
 //import "./Users.css"
-
-
-
 
 class User extends Component {
     userNameFromReq = ""
@@ -38,7 +35,6 @@ class User extends Component {
          .then((response) => response.json())
          .then (data => {
            console.log(data);
-           alert(data)
          });
     }
 

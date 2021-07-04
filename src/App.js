@@ -42,8 +42,8 @@ function App (){
 const userAuthFunc = () => {
   var cookie = getCookie("submit-server-cookie")
   var stateCookie = getCookie("last-submit-server-state")
-  if (cookie == null || stateCookie == null) {
-   setCookie('submit_last_visited_path', window.location.pathname, 0.0034);
+  if (cookie === undefined || stateCookie === undefined) {
+    setCookie('submit_last_visited_path', window.location.pathname, 0.0034);
    return false
   }
   return true
@@ -53,7 +53,9 @@ const userAuthFunc = () => {
 const coursesAuthFunc = () => {
     var cookie = getCookie("submit-server-cookie")
     var stateCookie = getCookie("last-submit-server-state")
-    if (cookie == null || stateCookie == null) {
+    console.log(cookie)
+    console.log(stateCookie)
+    if (cookie === undefined || stateCookie === undefined) {
      setCookie('submit_last_visited_path', window.location.pathname, 0.0034);
      return false
     }
