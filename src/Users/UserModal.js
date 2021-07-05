@@ -2,6 +2,7 @@ import React from 'react';
 import  {Component}   from 'react';
 import FocusTrap from 'focus-trap-react';
 import ReactDOM from 'react-dom';
+import "./userModal.css"
 
 export class UserContainer extends Component {
   state = { isShown: false };

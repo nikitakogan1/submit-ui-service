@@ -33,7 +33,6 @@ class User extends Component {
          .then (data => {
            console.log(data);
          });
-         //this.props.history.push("/users/" + this.state.user_name)
     }
 
 
@@ -55,6 +54,10 @@ class User extends Component {
         });
     }
 
+    parseResp(str){
+      return str.replaceAll("{","").replaceAll("}","").replaceAll(",", " ").replaceAll(":"," ").replaceAll("\"","")
+    }
+
     render() {
         console.log("the state before sending is", this.state)
         return (
@@ -65,11 +68,11 @@ class User extends Component {
                     <Table.Row>First Name: {this.state.first_name}</Table.Row>
                     <Table.Row>Last Name: {this.state.last_name}</Table.Row>
                     <Table.Row>Email: {this.state.email}</Table.Row>
-                    <Table.Row>Roles: {(JSON.stringify(this.state.roles.elements))}</Table.Row>
-                    <Table.Row>Courses as student: {(JSON.stringify(this.state.courses_as_student.elements))}</Table.Row>
-                    <Table.Row>Courses as staff: {(JSON.stringify(this.state.courses_as_staff.elements))}</Table.Row>
+                    <Table.Row>Roles: {this.parseResp(JSON.stringify(this.state.roles.elements))}</Table.Row>
+                    <Table.Row>Courses as student: {(this.parseResp(JSON.stringify(this.state.courses_as_student.elements)))}</Table.Row>
+                    <Table.Row>Courses as staff: {(this.parseResp(JSON.stringify(this.state.courses_as_staff.elements)))}</Table.Row>
             </Table.Body>
-          <UserContainer onSubmit={this.updateDetails} user={this.state}></UserContainer>
+           <UserContainer onSubmit={this.updateDetails} user={this.state}></UserContainer>
           </Table>
         )
     }
@@ -77,9 +80,3 @@ class User extends Component {
 
   export default withRouter(User);
 
-
-  //TODO: 
-
-// 1. Add the student/stuff section in the table.
-// 2. create course detail components.
-//

@@ -48,7 +48,7 @@ class Login extends Component {
         var auth_cookie = this.getCookie("submit-server-cookie")
         var last_visited_cookie = this.getCookie("submit_last_visited_path")
         if (last_visited_cookie == null){
-            this.setCookie("submit_last_visited_path", "/users" + "/" + this.user_name, 0.0034)
+            this.setCookie("submit_last_visited_path", "/users" + "/" + this.profile.user_name, 0.0034)
         }
         if (auth_cookie !== undefined && state_cookie !== undefined) {
             console.log("using the cookie")
