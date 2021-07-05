@@ -6,6 +6,7 @@ import UserContainer from "./UserModal";
 //import "./Users.css"
 
 class User extends Component {
+    userURL = ""
     userNameFromReq = ""
     username = ""
     constructor(props) {
@@ -32,6 +33,7 @@ class User extends Component {
          .then (data => {
            console.log(data);
          });
+         //this.props.history.push("/users/" + this.state.user_name)
     }
 
 
@@ -41,7 +43,8 @@ class User extends Component {
         console.log("the state cookie is" ,state_cookie)
         this.username = JSON.parse(state_cookie).user_name;
         console.log("the username is", this.username);
-        fetch("http://localhost:3000/api/users/" + this.username, {method:'GET', 
+        this.userURL = "http://localhost:3000/api/users/" + this.username
+        fetch(this.userURL, {method:'GET', 
         headers: {'Authorization': 'Basic ' + btoa('username:password')}})
         .then((response) => {
             return response.json()
@@ -66,9 +69,8 @@ class User extends Component {
                     <Table.Row>Courses as student: {(JSON.stringify(this.state.courses_as_student.elements))}</Table.Row>
                     <Table.Row>Courses as staff: {(JSON.stringify(this.state.courses_as_staff.elements))}</Table.Row>
             </Table.Body>
-            <UserContainer onSubmit={this.updateDetails} user={this.state}></UserContainer>
+          <UserContainer onSubmit={this.updateDetails} user={this.state}></UserContainer>
           </Table>
-
         )
     }
 }

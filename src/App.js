@@ -31,7 +31,7 @@ function App (){
           <Login history={history}/>
         </Route>
         <CoursesPrivateRoute path="/courses" component={Courses}></CoursesPrivateRoute>
-        <UserPrivateRoute path="/users/:id" component={User}></UserPrivateRoute>
+        <UserPrivateRoute path="/users/:id" component={User} history={history}></UserPrivateRoute>
 
       </Switch>
       </BrowserRouter>

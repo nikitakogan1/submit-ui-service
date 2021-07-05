@@ -30,6 +30,20 @@ export class UserContainer extends Component {
     document.querySelector('html').classList.toggle('scroll-lock');
   };
 
+  updateDetails = (event) => {
+    event.preventDefault(event);
+    var body = {"user_name":event.target.user_name.value,"last_name":event.target.last_name.value, "email": event.target.email.value, "first_name":event.target.first_name.value,"password":event.target.password.value,
+    "roles":this.props.user.roles,"courses_as_student":this.props.user.courses_as_student,"courses_as_staff":this.props.user.courses_as_staff}
+    console.log( JSON.stringify(body))
+    fetch('http://localhost:3000/api/users/' + event.target.user_name.value , {method:'PUT', 
+     body: JSON.stringify(body), headers: {'Authorization': 'Basic ' + btoa('username:password')}})
+     .then((response) => response.json())
+     .then (data => {
+       console.log(data);
+     });
+     this.closeModal()
+}
+
   render() {
       console.log("the state from initial component is", this.props.user)
     return (
@@ -42,7 +56,7 @@ export class UserContainer extends Component {
         {this.state.isShown ? (
           <Modal 
             user={this.props.user}
-            onSubmit={this.props.onSubmit}
+            onSubmit={this.updateDetails}
             modalRef={(n) => (this.modal = n)}
             buttonRef={(n) => (this.closeButton = n)}
             closeModal={this.closeModal}
@@ -82,7 +96,7 @@ export const Form = (props) => {
         <input className="password" id="password" defaultValue={user.password}/>
       </div>
       <div className="form-group">
-        <button className="form-control btn btn-primary" type="submit">
+        <button onClick={props.closeModal} className="form-control btn btn-primary" type="submit">
           Submit
         </button>
       </div>
