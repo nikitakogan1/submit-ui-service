@@ -2,10 +2,10 @@ import React from "react";
 import { Redirect,BrowserRouter, Route, Switch } from 'react-router-dom';
 import Login from "./Login/login";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import Courses from "./Courses/Courses"
+//import Courses from "./Courses/Courses"
 import { useHistory } from "react-router-dom";
 import User from "./Users/User";
-
+import {UserPrivateRoute} from "./Users/User"
 function App (){
   const history = useHistory()
   // const addCourseOnSubmit = (event) => {
@@ -30,7 +30,7 @@ function App (){
         <Route exact path="/">
           <Login history={history}/>
         </Route>
-        <CoursesPrivateRoute path="/courses" component={Courses}></CoursesPrivateRoute>
+        {/* <CoursesPrivateRoute path="/courses" component={Courses}></CoursesPrivateRoute> */}
         <UserPrivateRoute path="/users/:id" component={User} history={history}></UserPrivateRoute>
 
       </Switch>
@@ -39,15 +39,7 @@ function App (){
   );
 }
 
-const userAuthFunc = () => {
-  var cookie = getCookie("submit-server-cookie")
-  var stateCookie = getCookie("submit-last-server-state")
-  if (cookie === undefined || stateCookie === undefined) {
-    setCookie('submit-last-visited-path', window.location.pathname, 0.0034);
-   return false
-  }
-  return true
-}
+
 
 
 const coursesAuthFunc = () => {
@@ -97,23 +89,6 @@ const CoursesPrivateRoute = ({ component: Component, ...rest }) => {
   )
 }
 
-const UserPrivateRoute = ({ component: Component, ...rest }) => {
 
-  // Add your own authentication on the below line.
-  const isLoggedIn = userAuthFunc()
-  console.log(isLoggedIn)
-  return (
-    <Route
-      {...rest}
-      render={props =>
-        isLoggedIn ? (
-          <Component {...props} />
-        ) : (
-          <Redirect to={{ pathname: '/' }} />
-        )
-      }
-    />
-  )
-}
 
 export default App;

@@ -1,9 +1,11 @@
 import React from "react";
 import { Component } from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter,Route, Redirect } from "react-router-dom";
 import { Table } from 'semantic-ui-react';
-import UserContainer from "./UserModal";
-//import "./Users.css"
+import UserModal from "./UserModal";
+import "./User.css"
+import ListGroup from "react-bootstrap/ListGroup";
+
 
 class User extends Component {
     userURL = ""
@@ -16,12 +18,6 @@ class User extends Component {
     this.componentDidMount=this.componentDidMount.bind(this);
     }
     
-    getCookie(name) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
-    }
-
      updateDetails = (event) => {
         event.preventDefault(event);
         var body = {"user_name":event.target.user_name.value,"last_name":event.target.last_name.value, "email": event.target.email.value, "first_name":event.target.first_name.value,"password":event.target.password.value,
@@ -38,7 +34,7 @@ class User extends Component {
 
     componentDidMount() {
         this.userNameFromReq = this.props.match.params.id
-        var state_cookie = this.getCookie("submit-last-server-state");
+        var state_cookie = getCookie("submit-last-server-state");
         console.log("the state cookie is" ,state_cookie)
         this.username = JSON.parse(state_cookie).user_name;
         console.log("the username is", this.username);
@@ -72,21 +68,66 @@ class User extends Component {
     render() {
         console.log("the state before sending is", this.state)
         return (
-            <Table>
-            <Table.Body>
-                    <Table.Row key={this.state.user_name}></Table.Row>
-                    <Table.Cell>User name: {this.state.user_name}</Table.Cell>
-                    <Table.Row>First Name: {this.state.first_name}</Table.Row>
-                    <Table.Row>Last Name: {this.state.last_name}</Table.Row>
-                    <Table.Row>Email: {this.state.email}</Table.Row>
-                    <Table.Row>Roles: {this.parseResp(JSON.stringify(this.state.roles.elements))}</Table.Row>
-                    <Table.Row>Courses as student: {(this.parseResp(JSON.stringify(this.state.courses_as_student.elements)))}</Table.Row>
-                    <Table.Row>Courses as staff: {(this.parseResp(JSON.stringify(this.state.courses_as_staff.elements)))}</Table.Row>
-            </Table.Body>
-           <UserContainer onSubmit={this.updateDetails} user={this.state}></UserContainer>
-          </Table>
+
+
+<ListGroup variant="flush">
+  <ListGroup.Item>UserName: {this.state.user_name}</ListGroup.Item>
+  <ListGroup.Item>First Name: {this.state.first_name}</ListGroup.Item>
+  <ListGroup.Item>Last Name: {this.state.last_name}</ListGroup.Item>
+  <ListGroup.Item>Email: {this.state.email}</ListGroup.Item>
+  <ListGroup.Item>Role: {this.parseResp(JSON.stringify(this.state.roles.elements))}</ListGroup.Item>
+  <ListGroup.Item>Courses as student: {this.parseResp(JSON.stringify(this.state.courses_as_student.elements))}</ListGroup.Item>
+  <ListGroup.Item>Courses as staff: {this.parseResp(JSON.stringify(this.state.courses_as_staff.elements))}</ListGroup.Item>
+  <UserModal onSubmit={this.updateDetails} user={this.state}></UserModal>
+</ListGroup>
+
         )
     }
+}
+
+export const UserPrivateRoute = ({ component: Component, ...rest }) => {
+
+  // Add your own authentication on the below line.
+  const isLoggedIn = userAuthFunc()
+  console.log(isLoggedIn)
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        isLoggedIn ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to={{ pathname: '/' }} />
+        )
+      }
+    />
+  )
+}
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+function setCookie(name,value,days) {
+  var expires = "";
+  if (days) {
+      var date = new Date();
+      date.setTime(date.getTime() + (days*24*60*60*1000));
+      expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+
+const userAuthFunc = () => {
+  var cookie = getCookie("submit-server-cookie")
+  var stateCookie = getCookie("submit-last-server-state")
+  if (cookie === undefined || stateCookie === undefined) {
+    setCookie('submit-last-visited-path', window.location.pathname, 0.0034);
+   return false
+  }
+  return true
 }
 
   export default withRouter(User);

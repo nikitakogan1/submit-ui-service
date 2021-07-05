@@ -3,8 +3,9 @@ import  {Component}   from 'react';
 import FocusTrap from 'focus-trap-react';
 import ReactDOM from 'react-dom';
 import "./userModal.css"
+import Button from "react-bootstrap/Button";
 
-export class UserContainer extends Component {
+export class UserModal extends Component {
   state = { isShown: false };
   showModal = () => {
     this.setState({ isShown: true }, () => {
@@ -81,6 +82,10 @@ export const Form = (props) => {
         <input className="form-control" id="user_name" defaultValue={user.user_name} />
       </div>  
       <div className="form-group">
+        <label htmlFor="password"> Password</label>
+        <input className="form-control" id="password" defaultValue=""/>
+      </div>
+      <div className="form-group">
         <label htmlFor="first_name">First Name</label>
         <input className="form-control" id="first_name" defaultValue={user.first_name} />
       </div>
@@ -93,10 +98,6 @@ export const Form = (props) => {
         <input className="form-control" id="email" defaultValue={user.email}/>
       </div>
       <div className="form-group">
-        <label htmlFor="password">Password</label>
-        <input className="password" id="password" defaultValue={user.password}/>
-      </div>
-      <div className="form-group">
         <button onClick={props.closeModal} className="form-control btn btn-primary" type="submit">
           Submit
         </button>
@@ -105,15 +106,19 @@ export const Form = (props) => {
   );
 };
 
-export const TriggerButton = ({ triggerText, buttonRef, showModal }) => {
+export const TriggerButton = ({ buttonRef, showModal }) => {
   return (
-    <button
-      className="btn btn-lg btn-danger center modal-button"
+    <Button
+      className="buttonW"
+      size="lg"
+      color="black"
+      text= "edit profile"
+      style={{height: '30px', width : '100px'}}
       ref={buttonRef}
       onClick={showModal}
     >
-      {triggerText}
-    </button>
+      Edit Profile
+    </Button>
   );
 };
 
@@ -166,4 +171,4 @@ export const Modal = ({
 
 
 
-export default UserContainer;
+export default UserModal;

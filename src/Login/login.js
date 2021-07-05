@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Form from "react-bootstrap/Form";
+import Image from "react-bootstrap/Image"
 import Button from "react-bootstrap/Button";
 import "./login.css";
 import { withRouter } from 'react-router-dom';
@@ -47,9 +48,10 @@ class Login extends Component {
         var state_cookie = this.getCookie("submit-last-server-state")
         var auth_cookie = this.getCookie("submit-server-cookie")
         var last_visited_cookie = this.getCookie("submit-last-visited-path")
+        console.log(state_cookie)
         if (auth_cookie !== undefined && state_cookie !== undefined) {
           if (last_visited_cookie == null){
-            this.setCookie("submit-last-visited-path", "/users" + "/" + state_cookie.user_name.toString(), 0.0034)
+            this.setCookie("submit-last-visited-path", "/users" + "/" + JSON.parse(state_cookie).user_name, 0.0034)
           }
             console.log("using the cookie")
             this.props.history.push({
@@ -96,6 +98,7 @@ class Login extends Component {
 
   render () {
     return <div className="Login">
+      Welcome! please log in to submit system
     <Form onSubmit={this.handleSubmit}>
       <Form.Group size="lg" controlId="username">
         <Form.Label>Username</Form.Label>

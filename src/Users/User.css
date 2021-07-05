@@ -1,0 +1,10 @@
+@media all and (min-width: 480px) {
+    .UserModal {
+      padding: 60px 0;
+    }
+  
+    .Button {
+      margin: 0 auto;
+      max-width: 320px;
+    }
+  }
