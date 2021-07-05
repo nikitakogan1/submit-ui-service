@@ -43,7 +43,7 @@ class Courses extends Component {
       if (this.props.location.state) {
         this.stateFromLogin = JSON.parse(this.props.location.state);
       } else {
-        this.stateFromLogin = JSON.parse(this.getCookie("last-submit-server-state"))
+        this.stateFromLogin = JSON.parse(this.getCookie("submit-last-server-state"))
       }
       this.username = this.stateFromLogin.username
       console.log("recieved the state",this.stateFromLogin.roles);
@@ -66,7 +66,7 @@ class Courses extends Component {
       .then (data => {
         this.setState(data);
       });
-      this.setCookie("submit_last_visited_path", window.location.pathname, 0.0034)
+      //this.setCookie("submit-last-visited-path", window.location.pathname, 0.0034)
     }
 
     render(){

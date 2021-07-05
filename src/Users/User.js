@@ -38,7 +38,7 @@ class User extends Component {
 
     componentDidMount() {
         this.userNameFromReq = this.props.match.params.id
-        var state_cookie = this.getCookie("last-submit-server-state");
+        var state_cookie = this.getCookie("submit-last-server-state");
         console.log("the state cookie is" ,state_cookie)
         this.username = JSON.parse(state_cookie).user_name;
         console.log("the username is", this.username);
@@ -55,6 +55,14 @@ class User extends Component {
     }
 
     parseResp(str){ 
+      console.log(str)
+      if (str.includes("admin")){
+        return "Admin"
+      } else if (str.includes("secretary")) {
+        return "Secretary"
+      } else if (str.includes("std_user")){
+        return "User"
+      }
       var toRet = str.replaceAll("{","").replaceAll("}","").replaceAll(",", " ").replaceAll(":"," ").replaceAll("\"","")
       if (toRet === ""){
         return "None"

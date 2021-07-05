@@ -44,23 +44,23 @@ class Login extends Component {
 }
 
     componentDidMount(){
-        var state_cookie = this.getCookie("last-submit-server-state")
+        var state_cookie = this.getCookie("submit-last-server-state")
         var auth_cookie = this.getCookie("submit-server-cookie")
-        var last_visited_cookie = this.getCookie("submit_last_visited_path")
+        var last_visited_cookie = this.getCookie("submit-last-visited-path")
         if (auth_cookie !== undefined && state_cookie !== undefined) {
           if (last_visited_cookie == null){
-            this.setCookie("submit_last_visited_path", "/users" + "/" + state_cookie.user_name.toString(), 0.0034)
+            this.setCookie("submit-last-visited-path", "/users" + "/" + state_cookie.user_name.toString(), 0.0034)
           }
             console.log("using the cookie")
             this.props.history.push({
-                pathname: decodeURIComponent(this.getCookie("submit_last_visited_path")),
+                pathname: decodeURIComponent(this.getCookie("submit-last-visited-path")),
                 state: state_cookie
             });
         }
     }
   
   async handleSubmit(event) {
-    var last_visited_cookie = this.getCookie("submit_last_visited_path")
+    var last_visited_cookie = this.getCookie("submit-last-visited-path")
     event.preventDefault();
     await fetch('http://localhost:3000/api/', {method:'GET', 
     headers: {'Authorization': 'Basic ' + btoa(this.state.username + ":" + this.state.password)}})
@@ -75,7 +75,7 @@ class Login extends Component {
         return jsonResp
     })
     .then (data => {
-      this.setCookie("last-submit-server-state", JSON.stringify(data), 0.0034)
+      this.setCookie("submit-last-server-state", JSON.stringify(data), 0.0034)
       this.profile = data
     });
     if (this.okToServe) {
