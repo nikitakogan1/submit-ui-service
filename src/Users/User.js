@@ -54,8 +54,11 @@ class User extends Component {
         });
     }
 
-    parseResp(str){
-      return str.replaceAll("{","").replaceAll("}","").replaceAll(",", " ").replaceAll(":"," ").replaceAll("\"","")
+    parseResp(str){ 
+      var toRet = str.replaceAll("{","").replaceAll("}","").replaceAll(",", " ").replaceAll(":"," ").replaceAll("\"","")
+      if (toRet === ""){
+        return "None"
+      }
     }
 
     render() {
