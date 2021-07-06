@@ -7,4 +7,24 @@
       margin: 0 auto;
       max-width: 320px;
     }
-  }
+    /* div {
+        display: flex;
+        justify-content: space-between;
+        padding-right: 70%
+      } */
+    .garage-title {
+        clear: both;
+        display: inline-block;
+        overflow: hidden;
+        white-space: nowrap;
+        padding-right: 90%;
+        text-align: match-parent;
+      }
+      form {
+        clear: both;
+        display: inline-block;
+        overflow: hidden;
+        padding-right: 100%;
+      }
+    }
+  

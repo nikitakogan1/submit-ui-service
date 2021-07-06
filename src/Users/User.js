@@ -11,21 +11,29 @@ class User extends Component {
     userURL = ""
     userNameFromReq = ""
     username = ""
+    alert = false
     constructor(props) {
       super(props);
       this.state = 
-        {user_name:"",first_name:"",last_name:"", email:"", roles:{"elements":{}},courses_as_student:{"elements":{}},courses_as_staff:{"elements":{}}};
+        {alertFailure:false, alertSuccess: false,user_name:"",first_name:"",last_name:"", email:"", roles:{"elements":{}},courses_as_student:{"elements":{}},courses_as_staff:{"elements":{}}};
     this.componentDidMount=this.componentDidMount.bind(this);
     }
     
-     updateDetails = (event) => {
+      updateDetails = (event) => {
         event.preventDefault(event);
-        var body = {"user_name":event.target.user_name.value,"last_name":event.target.last_name.value, "email": event.target.email.value, "first_name":event.target.first_name.value,"password":event.target.password.value,
+        var body = {"user_name":this.state.user_name,"last_name":event.target.last_name.value, "email": event.target.email.value, "first_name":event.target.first_name.value,"password":event.target.password.value,
         "roles":this.state.roles,"courses_as_student":this.state.courses_as_student,"courses_as_staff":this.state.courses_as_staff}
         console.log( JSON.stringify(body))
-        fetch('http://localhost:3000/api/users/' + event.target.user_name.value , {method:'PUT', 
+         fetch('http://localhost:3000/api/users/' + this.state.user_name , {method:'PUT', 
          body: JSON.stringify(body), headers: {'Authorization': 'Basic ' + btoa('username:password')}})
-         .then((response) => response.json())
+         .then((response) => {
+          if (response.ok) {
+            this.setState({alertSuccess: true})
+          } else {
+            this.setState({alertFailure: true})
+          }
+          return response.json()
+         })
          .then (data => {
            console.log(data);
          });
@@ -70,19 +78,74 @@ class User extends Component {
         return (
 
 
-<ListGroup variant="flush">
-  <ListGroup.Item>UserName: {this.state.user_name}</ListGroup.Item>
-  <ListGroup.Item>First Name: {this.state.first_name}</ListGroup.Item>
-  <ListGroup.Item>Last Name: {this.state.last_name}</ListGroup.Item>
-  <ListGroup.Item>Email: {this.state.email}</ListGroup.Item>
-  <ListGroup.Item>Role: {this.parseResp(JSON.stringify(this.state.roles.elements))}</ListGroup.Item>
-  <ListGroup.Item>Courses as student: {this.parseResp(JSON.stringify(this.state.courses_as_student.elements))}</ListGroup.Item>
-  <ListGroup.Item>Courses as staff: {this.parseResp(JSON.stringify(this.state.courses_as_staff.elements))}</ListGroup.Item>
-  <UserModal onSubmit={this.updateDetails} user={this.state}></UserModal>
-</ListGroup>
-
+<form onSubmit={this.updateDetails}>
+      <div className="garage-title">
+        <label htmlFor="user_name">User name:</label> 
+        <text>
+        {this.parseResp(JSON.stringify(this.state.user_name))}
+        </text>
+      </div>  
+      <div className="garage-title">
+        <label htmlFor="password"> Password: </label>
+        <input className="garage-title" id="password" defaultValue=""/>
+      </div>
+      <div className="garage-title">
+        <label htmlFor="first_name">First Name:</label>
+        <input className="garage-title" id="first_name" defaultValue={this.state.first_name} />
+      </div>
+      <div className="garage-title">
+        <label htmlFor="last_name">Last Number: </label>
+        <input className="garage-title" id="last_name" defaultValue={this.state.last_name} />
+      </div>
+      <div className="garage-title">
+        <label htmlFor="email">Email: </label>
+        <input className="garage-title" id="email" defaultValue={this.state.email}/>
+      </div>
+      <div className="garage-title">
+        <label htmlFor="roles">Roles: </label>
+        <text>
+        {this.parseResp(JSON.stringify(this.state.roles.elements))}
+        </text>
+      </div>
+      <div className="garage-title">
+        <label htmlFor="courses_as_student">Courses as student: </label>
+        <text>
+        {this.parseResp(JSON.stringify(this.state.courses_as_student.elements))}
+        </text>
+      </div>
+      <div className="garage-title">
+        <label htmlFor="courses_as_staff">Courses as staff: </label>
+        <text>
+        {this.parseResp(JSON.stringify(this.state.courses_as_staff.elements))}
+        </text>
+      </div>
+      <div className="form-group">
+        <button className="form-control btn btn-primary" type="submit">
+          Save
+        </button>
+        {this.state.alertSuccess && <AlertSuccess></AlertSuccess>}
+        {this.state.alertFailure && <AlertFailed></AlertFailed>}
+      </div>
+    </form>
         )
     }
+}
+
+
+const AlertSuccess = () => {
+    return (
+      <div class="alert alert-success" role="alert">
+      User data updated successfully!
+      </div>
+    )
+}
+
+  const AlertFailed = () => {
+    return (
+     <div class="alert alert-danger" role="alert">
+       Failed to update user data! try again!
+     </div>
+    )
 }
 
 export const UserPrivateRoute = ({ component: Component, ...rest }) => {
