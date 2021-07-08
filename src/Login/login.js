@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import Form from "react-bootstrap/Form";
-import Image from "react-bootstrap/Image"
 import Button from "react-bootstrap/Button";
 import "./login.css";
 import { withRouter } from 'react-router-dom';
@@ -62,7 +61,6 @@ class Login extends Component {
     }
   
   async handleSubmit(event) {
-    var username = event.target.user_name.value;
     var last_visited_cookie = this.getCookie("submit-last-visited-path")
     event.preventDefault();
     await fetch('http://localhost:3000/api/', {method:'GET', 
@@ -89,7 +87,7 @@ class Login extends Component {
             });
        } else {
             this.props.history.push({
-                pathname: decodeURIComponent("/users/" + username),
+                pathname: decodeURIComponent("/users/" + this.state.username),
                 state: JSON.stringify(this.profile),
             });
         }
@@ -99,7 +97,6 @@ class Login extends Component {
 
   render () {
     return <div className="Login">
-      Welcome! please log in to submit system
     <Form onSubmit={this.handleSubmit}>
       <Form.Group size="lg" controlId="username">
         <Form.Label>Username</Form.Label>
