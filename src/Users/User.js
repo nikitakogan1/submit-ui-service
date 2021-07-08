@@ -1,12 +1,13 @@
 import React from "react";
 import { Component } from "react";
 import { withRouter,Route, Redirect } from "react-router-dom";
-import { Table } from 'semantic-ui-react';
-import UserModal from "./UserModal";
 import "./User.css"
-import ListGroup from "react-bootstrap/ListGroup";
+import FormControl from "react-bootstrap/FormControl";
+import InputGroup from "react-bootstrap/InputGroup";
+import Col from "react-bootstrap/Col"
 
-
+import Form from "react-bootstrap/Form"
+import Button from "react-bootstrap/Button"
 class User extends Component {
     userURL = ""
     userNameFromReq = ""
@@ -21,10 +22,10 @@ class User extends Component {
     
       updateDetails = (event) => {
         event.preventDefault(event);
-        var body = {"user_name":this.state.user_name,"last_name":event.target.last_name.value, "email": event.target.email.value, "first_name":event.target.first_name.value,"password":event.target.password.value,
+        var body = {"user_name":this.state.user_name,"last_name":event.target.last_name.value, "email": event.target.email.value, "first_name":event.target.first_name.value,"password":this.state.password,
         "roles":this.state.roles,"courses_as_student":this.state.courses_as_student,"courses_as_staff":this.state.courses_as_staff}
         console.log( JSON.stringify(body))
-         fetch('http://localhost:3000/api/users/' + this.state.user_name , {method:'PUT', 
+         fetch('http://localhost:3000/api/users/' + this.userNameFromReq , {method:'PUT', 
          body: JSON.stringify(body), headers: {'Authorization': 'Basic ' + btoa('username:password')}})
          .then((response) => {
           if (response.ok) {
@@ -46,7 +47,7 @@ class User extends Component {
         console.log("the state cookie is" ,state_cookie)
         this.username = JSON.parse(state_cookie).user_name;
         console.log("the username is", this.username);
-        this.userURL = "http://localhost:3000/api/users/" + this.username
+        this.userURL = "http://localhost:3000/api/users/" + this.userNameFromReq
         fetch(this.userURL, {method:'GET', 
         headers: {'Authorization': 'Basic ' + btoa('username:password')}})
         .then((response) => {
@@ -74,61 +75,62 @@ class User extends Component {
     }
 
     render() {
-        console.log("the state before sending is", this.state)
+        console.log("the state before sending is", this.state.courses_as_student)
         return (
+<Form onSubmit={this.updateDetails}>
+  <Form.Row>
+    <Form.Group as={Col} controlId="formGridUserName">
+      <Form.Label>User name:</Form.Label>
+      <Form.Control type="user name" placeholder="Enter username" disabled value={this.state.user_name} />
+    </Form.Group>
+  </Form.Row>
 
+  <Form.Group controlId="first_name">
+    <Form.Label>First name: </Form.Label>
+    <Form.Control defaultValue={this.state.first_name} />
+  </Form.Group>
 
-<form onSubmit={this.updateDetails}>
-      <div className="garage-title">
-        <label htmlFor="user_name">User name:</label> 
-        <text>
-        {this.parseResp(JSON.stringify(this.state.user_name))}
-        </text>
-      </div>  
-      <div className="garage-title">
-        <label htmlFor="password"> Password: </label>
-        <input className="garage-title" id="password" defaultValue=""/>
-      </div>
-      <div className="garage-title">
-        <label htmlFor="first_name">First Name:</label>
-        <input className="garage-title" id="first_name" defaultValue={this.state.first_name} />
-      </div>
-      <div className="garage-title">
-        <label htmlFor="last_name">Last Number: </label>
-        <input className="garage-title" id="last_name" defaultValue={this.state.last_name} />
-      </div>
-      <div className="garage-title">
-        <label htmlFor="email">Email: </label>
-        <input className="garage-title" id="email" defaultValue={this.state.email}/>
-      </div>
-      <div className="garage-title">
-        <label htmlFor="roles">Roles: </label>
-        <text>
-        {this.parseResp(JSON.stringify(this.state.roles.elements))}
-        </text>
-      </div>
-      <div className="garage-title">
-        <label htmlFor="courses_as_student">Courses as student: </label>
-        <text>
-        {this.parseResp(JSON.stringify(this.state.courses_as_student.elements))}
-        </text>
-      </div>
-      <div className="garage-title">
-        <label htmlFor="courses_as_staff">Courses as staff: </label>
-        <text>
-        {this.parseResp(JSON.stringify(this.state.courses_as_staff.elements))}
-        </text>
-      </div>
-      <div className="form-group">
-        <button className="form-control btn btn-primary" type="submit">
-          Save
-        </button>
-        {this.state.alertSuccess && <AlertSuccess></AlertSuccess>}
+  <Form.Group controlId="last_name">
+    <Form.Label>Last name: </Form.Label>
+    <Form.Control defaultValue={this.state.last_name} />
+  </Form.Group>
+
+  <Form.Row>
+    <Form.Group controlId="email">
+      <Form.Label>Email: </Form.Label>
+      <Form.Control defaultValue={this.state.email} />
+    </Form.Group>
+
+    <Form.Group controlId="roles">
+      <Form.Label>Roles: </Form.Label>
+      <Form.Control disabled value={this.parseResp(JSON.stringify(this.state.roles.elements)) } />
+    </Form.Group>
+
+  </Form.Row>
+
+  <Button variant="primary" type="submit">
+    Submit
+  </Button>
+  {this.state.alertSuccess && <AlertSuccess></AlertSuccess>}
         {this.state.alertFailure && <AlertFailed></AlertFailed>}
-      </div>
-    </form>
-        )
-    }
+</Form>
+
+)}
+}
+
+
+const UserCourses = (props) => {
+  console.log(JSON.stringify(props))
+  return (
+      <div class="list-group">
+        My courses
+        {/* {props.courses_as_student.map(course => {
+            return (
+              <button type="button" class="list-group-item list-group-item-action"> {course.key}</button>
+            );
+          })} */}
+  </div>
+  )
 }
 
 

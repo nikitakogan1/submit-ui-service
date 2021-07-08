@@ -1,4 +1,4 @@
-@media all and (min-width: 480px) {
+/* @media all and (min-width: 480px) {
     .UserModal {
       padding: 60px 0;
     }
@@ -7,11 +7,6 @@
       margin: 0 auto;
       max-width: 320px;
     }
-    /* div {
-        display: flex;
-        justify-content: space-between;
-        padding-right: 70%
-      } */
     .garage-title {
         clear: both;
         display: inline-block;
@@ -27,4 +22,4 @@
         padding-right: 100%;
       }
     }
-  
+   */
