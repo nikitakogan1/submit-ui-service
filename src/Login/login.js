@@ -62,6 +62,7 @@ class Login extends Component {
     }
   
   async handleSubmit(event) {
+    var username = event.target.user_name.value;
     var last_visited_cookie = this.getCookie("submit-last-visited-path")
     event.preventDefault();
     await fetch('http://localhost:3000/api/', {method:'GET', 
@@ -88,7 +89,7 @@ class Login extends Component {
             });
        } else {
             this.props.history.push({
-                pathname: decodeURIComponent("/courses"),
+                pathname: decodeURIComponent("/users/" + username),
                 state: JSON.stringify(this.profile),
             });
         }
