@@ -1,25 +1,18 @@
-/* @media all and (min-width: 480px) {
-    .UserModal {
-      padding: 60px 0;
-    }
-  
-    .Button {
-      margin: 0 auto;
-      max-width: 320px;
-    }
-    .garage-title {
-        clear: both;
-        display: inline-block;
-        overflow: hidden;
-        white-space: nowrap;
-        padding-right: 90%;
-        text-align: match-parent;
-      }
+@media all and (min-width: 480px) {
       form {
         clear: both;
         display: inline-block;
         overflow: hidden;
-        padding-right: 100%;
+        padding-right: 30%;
+        position: absolute;
+
       }
+      .list-group {
+        position: relative;
+        left: 80%;
+        width:50%;
+        bottom: auto;
+      }
+
     }
-   */
+  

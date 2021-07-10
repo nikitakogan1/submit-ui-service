@@ -17,7 +17,9 @@ class Login extends Component {
     super(props);
     this.state = {
       username: "",
-      password: ""
+      password: "",
+      alertFailure:false,
+      alertSuccess: false
     };
     this.handleSubmit=this.handleSubmit.bind(this);
     this.componentDidMount=this.componentDidMount.bind(this);
@@ -68,10 +70,11 @@ class Login extends Component {
     .then((response) => {
         if (response.ok) {
             this.okToServe = true
+            this.setState({alertSuccess: true})
             var jsonResp = response.json()
         } else {
-            alert("invalid credentials")
-            return
+          this.setState({alertFailure: true})
+          return
         }
         return jsonResp
     })
@@ -118,9 +121,28 @@ class Login extends Component {
       <Button block size="lg" type="submit" disabled={!this.validateForm()}>
         Login
       </Button>
+      {this.state.alertSuccess && <AlertSuccess></AlertSuccess>}
+      {this.state.alertFailure && <AlertFailed></AlertFailed>}
     </Form>
   </div>
   }
+}
+
+
+const AlertSuccess = () => {
+  return (
+    <div class="alert alert-success" role="alert">
+    Logged in
+    </div>
+  )
+}
+
+const AlertFailed = () => {
+  return (
+   <div class="alert alert-danger" role="alert">
+     Invalid credentials
+   </div>
+  )
 }
 
 export default withRouter(Login)

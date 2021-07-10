@@ -2,17 +2,16 @@ import React from "react";
 import { Component } from "react";
 import { withRouter,Route, Redirect } from "react-router-dom";
 import "./User.css"
-import FormControl from "react-bootstrap/FormControl";
-import InputGroup from "react-bootstrap/InputGroup";
 import Col from "react-bootstrap/Col"
 
 import Form from "react-bootstrap/Form"
 import Button from "react-bootstrap/Button"
+
+
 class User extends Component {
     userURL = ""
     userNameFromReq = ""
     username = ""
-    alert = false
     constructor(props) {
       super(props);
       this.state = 
@@ -41,14 +40,14 @@ class User extends Component {
     }
 
 
-    componentDidMount() {
+    async componentDidMount() {
         this.userNameFromReq = this.props.match.params.id
         var state_cookie = getCookie("submit-last-server-state");
         console.log("the state cookie is" ,state_cookie)
         this.username = JSON.parse(state_cookie).user_name;
         console.log("the username is", this.username);
         this.userURL = "http://localhost:3000/api/users/" + this.userNameFromReq
-        fetch(this.userURL, {method:'GET', 
+        await fetch(this.userURL, {method:'GET', 
         headers: {'Authorization': 'Basic ' + btoa('username:password')}})
         .then((response) => {
             return response.json()
@@ -74,12 +73,18 @@ class User extends Component {
       }
     }
 
+    courseOnClick = (course) => {
+      console.log(course)
+      this.props.history.push("/courses/" + course.replaceAll(":","/"))
+    }
+
     render() {
-        console.log("the state before sending is", this.state.courses_as_student)
+        console.log("the state before sending is", this.state.courses_as_student.elements)
         return (
+          <React.Fragment>
 <Form onSubmit={this.updateDetails}>
   <Form.Row>
-    <Form.Group as={Col} controlId="formGridUserName">
+    <Form.Group as={Col} controlId="user_name">
       <Form.Label>User name:</Form.Label>
       <Form.Control type="user name" placeholder="Enter username" disabled value={this.state.user_name} />
     </Form.Group>
@@ -112,24 +117,42 @@ class User extends Component {
     Submit
   </Button>
   {this.state.alertSuccess && <AlertSuccess></AlertSuccess>}
-        {this.state.alertFailure && <AlertFailed></AlertFailed>}
+  {this.state.alertFailure && <AlertFailed></AlertFailed>}
 </Form>
-
+<UserCourses courseOnClick={this.courseOnClick} studentCourses={this.state.courses_as_student.elements} staffCourses={this.state.courses_as_staff.elements}></UserCourses>
+</React.Fragment>
 )}
 }
-
-
+ 
 const UserCourses = (props) => {
-  console.log(JSON.stringify(props))
+  var studentCoursesList = Object.keys(props.studentCourses)
+  console.log(JSON.stringify(studentCoursesList))
+  var staffCoursesList = Object.keys(props.staffCourses)
+  console.log(JSON.stringify(staffCoursesList))
   return (
-      <div class="list-group">
-        My courses
-        {/* {props.courses_as_student.map(course => {
+    <React.Fragment>
+        <div class="list-group">
+          Courses list:
+    {studentCoursesList.map(course => {
             return (
-              <button type="button" class="list-group-item list-group-item-action"> {course.key}</button>
+              <button type="button" onClick={() => props.courseOnClick(course)} class="list-group-item list-group-item-primary">
+              {course} - Student
+            </button>
             );
-          })} */}
+    })}
+        </div>
+
+        <div class="list-group">
+    {staffCoursesList.map(course => {
+            return (
+              <button  type="button" class="list-group-item list-group-item-primary">
+              {course} - Staff
+            </button>
+            );
+    })}
   </div>
+    </React.Fragment>
+
   )
 }
 
