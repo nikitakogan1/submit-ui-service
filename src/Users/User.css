@@ -5,6 +5,7 @@
         overflow: hidden;
         padding-right: 30%;
         position: absolute;
+        max-width: 60%;
 
       }
       .list-group {
@@ -12,7 +13,17 @@
         left: 80%;
         width:50%;
         bottom: auto;
+        max-width: 60%;
       }
-
+     #addUser {
+      left: 80%;
+      position: absolute;
+      max-width: 60%;
+    }
+    #AdminUserRoles{
+      position: relative;
+      clear: both;
+      top: 97%;
+    }
     }
   

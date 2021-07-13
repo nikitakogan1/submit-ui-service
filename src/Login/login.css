@@ -11,3 +11,14 @@
     height: 25px;
     text-align: center;
   } */
+
+  .Login{
+    position: absolute;
+    clear: both;
+    display: inline-block;
+    left:31%;
+    top:12%;
+    clear: both;
+    display: inline-block;
+    padding-right: 30%;
+  }
