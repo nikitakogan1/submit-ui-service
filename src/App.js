@@ -1,5 +1,5 @@
 import React,{useState} from "react";
-import { Redirect,BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Redirect,BrowserRouter,Router, Route, Switch,withRouter } from 'react-router-dom';
 import Login from "./Login/login";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 //import Courses from "./Courses/Courses"
@@ -27,15 +27,15 @@ function App (){
   // };
   return (
     <React.Fragment>
-      {showNavBar && <NavBar></NavBar>}
-          <div className="App">
+    <div className="App">
     <BrowserRouter>
+    {showNavBar && <NavBar history={history}></NavBar>}
       <Switch>
         <Route exact path="/">
           <Login setNavBar={setShowNavBar} history={history}/>
         </Route>
         {/* <CoursesPrivateRoute path="/courses" component={Courses}></CoursesPrivateRoute> */}
-        <UserPrivateRoute path="/users/:id" component={User} history={history}></UserPrivateRoute>
+        <UserPrivateRoute path="/users/:id" component={User} navbar={setShowNavBar} history={history}></UserPrivateRoute>
       </Switch>
       </BrowserRouter>
   </div>
@@ -52,18 +52,6 @@ const AuthWithCookie = () => {
    }
    return true
 }
-
-const coursesAuthFunc = () => {
-    var cookie = getCookie("submit-server-cookie")
-    var stateCookie = getCookie("submit-last-server-state")
-    console.log(cookie)
-    console.log(stateCookie)
-    if (cookie === undefined || stateCookie === undefined) {
-     setCookie('submit-last-visited-path', window.location.pathname, 0.0034);
-     return false
-    }
-    return true
-  }
   
 function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -81,25 +69,25 @@ function setCookie(name,value,days) {
   document.cookie = name + "=" + (value || "")  + expires + "; path=/";
 }
 
-const CoursesPrivateRoute = ({ component: Component, ...rest }) => {
+// const CoursesPrivateRoute = ({ component: Component, ...rest }) => {
 
-  // Add your own authentication on the below line.
-  const isLoggedIn = coursesAuthFunc()
-  console.log(isLoggedIn)
-  return (
-    <Route
-      {...rest}
-      render={props =>
-        isLoggedIn ? (
-          <Component {...props} />
-        ) : (
-          <Redirect to={{ pathname: '/' }} />
-        )
-      }
-    />
-  )
-}
+//   // Add your own authentication on the below line.
+//   const isLoggedIn = coursesAuthFunc()
+//   console.log(isLoggedIn)
+//   return (
+//     <Route
+//       {...rest}
+//       render={props =>
+//         isLoggedIn ? (
+//           <Component {...props} />
+//         ) : (
+//           <Redirect to={{ pathname: '/' }} />
+//         )
+//       }
+//     />
+//   )
+// }
 
 
 
-export default App;
+export default withRouter(App);

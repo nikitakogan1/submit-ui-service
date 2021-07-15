@@ -69,6 +69,7 @@ class Login extends Component {
     headers: {'Authorization': 'Basic ' + btoa(this.state.username + ":" + this.state.password)}})
     .then((response) => {
         if (response.ok) {
+          this.props.setNavBar(true)
             this.okToServe = true
             var jsonResp = response.json()
         } else if (response.status === 401) {
@@ -84,7 +85,6 @@ class Login extends Component {
       this.profile = data
     });
     if (this.okToServe) {
-      this.props.setNavBar(true)
         if (last_visited_cookie != null) {
             this.props.history.push({
                 pathname: decodeURIComponent(last_visited_cookie.toString()),

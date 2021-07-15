@@ -73,6 +73,8 @@ class User extends Component {
             console.log("final state is",this.state);
         });
         this.checkAdmin()
+        console.log("proooooooops:",this.props)
+        this.props.navbar(true)
     }
 
     parseResp(str){ 
@@ -337,13 +339,13 @@ export const UserPrivateRoute = ({ component: Component, ...rest }) => {
 
   // Add your own authentication on the below line.
   const isLoggedIn = userAuthFunc()
-  console.log(isLoggedIn)
+  
   return (
     <Route
       {...rest}
       render={props =>
         isLoggedIn ? (
-          <Component {...props} />
+          <Component {...props} {...rest} />
         ) : (
           <Redirect to={{ pathname: '/' }} />
         )
