@@ -25,5 +25,10 @@
       clear: both;
       top: 97%;
     }
+    #submitAddCourse{
+      position: absolute;
+      clear: both;
+      top: 125%;
+    }
     }
   

@@ -21,4 +21,10 @@
     clear: both;
     display: inline-block;
     padding-right: 30%;
+
+  }
+
+  #login_bot{
+    position: relative;
+    clear: both;
   }

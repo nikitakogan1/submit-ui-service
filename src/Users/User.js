@@ -3,14 +3,12 @@ import { Component } from "react";
 import { withRouter,Route, Redirect } from "react-router-dom";
 import "./User.css"
 import Col from "react-bootstrap/Col"
-import Multiselect from 'react-bootstrap-multiselect'
 import Form from "react-bootstrap/Form"
 import Button from "react-bootstrap/Button"
 import  { useState } from 'react';
 import Modal from "react-bootstrap/Modal"
 import FormGroup from "react-bootstrap/FormGroup"
-import MyForm, { TriggerButton } from "./UserModal"
-import { render } from "@testing-library/react";
+import DropdownMultiselect from "react-multiselect-dropdown-bootstrap";
 class User extends Component {
     userURL = ""
     userNameFromReq = ""
@@ -54,6 +52,7 @@ class User extends Component {
          .then (data => {
            console.log(data);
          });
+         this.props.history.go(0)
     }
 
 
@@ -115,7 +114,6 @@ class User extends Component {
     }
 
     render() {
-      var role = this.parseResp(JSON.stringify(this.state.roles.elements))
         console.log("the state before sending is", this.parseResp(JSON.stringify(this.state.roles.elements)))
         return (
           <React.Fragment>
@@ -144,9 +142,7 @@ class User extends Component {
     </Form.Group>
 
 Roles:
-{this.checkAdminCookie() ? (this.parseResp(JSON.stringify(this.state.roles.elements)) !== "None" && <AdminUserRoles role={role}></AdminUserRoles>) : <UserRoles></UserRoles>}
- {/* {this.checkAdminCookie() ? <AdminUserRoles role={role}></AdminUserRoles>
- : <UserRoles></UserRoles>} */}
+{this.checkAdminCookie() ? (this.parseResp(JSON.stringify(this.state.roles.elements)) !== "None" && <AdminUserRoles role={ this.parseResp(JSON.stringify(this.state.roles.elements))}></AdminUserRoles>) : <UserRoles></UserRoles>}
   </Form.Row>
   <Button variant="primary" type="submit">
     Submit
@@ -155,7 +151,7 @@ Roles:
   {this.state.alertFailure && <AlertFailed></AlertFailed>}
 </Form>
 <UserCourses courseOnClick={this.courseOnClick} studentCourses={this.state.courses_as_student.elements} staffCourses={this.state.courses_as_staff.elements}></UserCourses>
-{this.checkAdminCookie() && <AddUserModal></AddUserModal>}
+{this.checkAdminCookie() && <AddUserModal history={this.props.history} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={'http://localhost:3000/api/users/' + this.state.user_name}></AddUserModal>}
 </React.Fragment>
 
 )}
@@ -382,16 +378,7 @@ const userAuthFunc = () => {
   return true
 }
 
-
- const MultiSelect = (props) => {
-  const data = [{ value:'One', selected:true }, { value: 'Two' }, { value:'Three' }]
-  return ( 
-    <Multiselect onChange={props.handleChange} data={data} multiple />
-  )
-
-}
-
-function AddUserModal() {
+function AddUserModal(props) {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -409,28 +396,143 @@ function AddUserModal() {
           <Modal.Title>Choose course</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          
-          
-          
-          
-        {/* <MyForm></MyForm> */}
-
-
-
-
-
+<GetCoursesList history={props.history} courses_as_student={props.courses_as_student} close={handleClose} userURL={props.userURL} user_name={props.user_name}></GetCoursesList>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
-          </Button>
         </Modal.Footer>
       </Modal>
     </>
   );
+}
+
+class GetCoursesList extends Component {
+  constructor(props){
+    super(props)
+    this.state = {checked: null,selected:[],coursesList:[],elements:[]}
+    this.componentDidMount=this.componentDidMount.bind(this);
+    this.handleOnChange=this.handleOnChange.bind(this);
+    this.parseAnswer=this.parseAnswer.bind(this);
+    this.updateCoursesAsStudent=this.updateCoursesAsStudent.bind(this);
+  }
+
+  async componentDidMount(){
+    var coursesURL = "http://localhost:3000/api/courses/"
+    await fetch(coursesURL, {method:'GET', 
+    headers: {'Authorization': 'Basic ' + btoa('username:password')}})
+    .then((response) => {
+        return response.json()
+    })
+    .then (data => {
+        this.setState({elements : data}, () => {
+          var courses = parseCourses(this.state.elements.elements)
+          this.setState({coursesList:courses}, () => {
+            this.parseAnswer()
+          })
+
+          console.log("coursesList",this.state.coursesList);
+          console.log("elements",this.state.elements);
+        })
+    });
+
+  }
+
+   handleOnChange(coursesSelected){
+     this.setState({selected: coursesSelected}, () => {
+      console.log("updated selected state:" ,this.state.selected)
+    });
+  }
+
+  updateCoursesAsStudent = () => {
+    var body = {user_name: this.props.user_name, courses_as_student:{elements:{}}}
+    var coursesToStore = []
+    this.state.selected.forEach((course) => {
+      var [number,year] = course.split("/")
+      number = number.trim()
+      year = year.trim()
+      coursesToStore.push((number+":"+year).trim())
+    })
+    coursesToStore.forEach((course) => {
+      body.courses_as_student.elements[course] = {}
+    })
+    
+    console.log("body",body)
+    fetch(this.props.userURL, {method:'PUT', 
+     body: (JSON.stringify(body)),headers: {'Authorization': 'Basic ' + btoa('username:password')}})
+    .then((response) => {
+        console.log("respppppppppppppppppppppppppp:",response)
+        return response.json()
+    })
+    this.props.close()
+    this.props.history.go(0)
+  }
+
+  parseAnswer(){
+    var coursesToRet = []
+    var checkedCoursesToRet = []
+    var coursesFromProps= Object.keys(this.props.courses_as_student.elements);
+    console.log("parsed answer",coursesFromProps);
+    this.state.coursesList.forEach( (course) => {
+      coursesFromProps.forEach( (course2) => {
+        var [number,year] = course.split("/")
+        var [number2,year2] = course2.split(":")
+        if (number.trim() === number2.trim() && year.trim() === year2.trim()){
+          checkedCoursesToRet.push(course)
+        } else {
+          coursesToRet.push(course)
+        }
+      })
+    })
+    this.setState({checked: checkedCoursesToRet}, () => {
+      console.log("checked courses",this.remove_duplicates(checkedCoursesToRet))
+    })
+    
+    return coursesToRet
+  }
+
+  remove_duplicates(arr) {
+    var obj = {};
+    var ret_arr = [];
+    for (var i = 0; i < arr.length; i++) {
+        obj[arr[i]] = true;
+    }
+    for (var key in obj) {
+        ret_arr.push(key);
+    }
+    return ret_arr;
+}
+
+  render() {
+    return (
+<React.Fragment>
+{this.state.coursesList !== null && this.state.coursesList.length !== 0 && this.state.checked !== null && <DropdownMultiselect
+      options={this.state.coursesList}
+      name="courses"
+      handleOnChange= {this.handleOnChange}
+      selected={this.state.checked}
+    />}
+      <Button variant="primary" id="submitAddCourse" onClick={this.updateCoursesAsStudent}>
+      Save Changes
+    </Button>
+</React.Fragment>
+    )
+  }
+
+}
+
+const parseCourses = (coursesList) => {
+  var courses=[]
+  if (coursesList === undefined){
+    return []
+  }
+  for (let i = 0; i < coursesList.length; i++) {
+   courses[i] = coursesList[i].number + " / " + coursesList[i].year + " / " + coursesList[i].name
+   console.log(courses[i])
+ }
+ console.log(courses)
+ return courses
 }
 
   export default withRouter(User);

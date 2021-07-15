@@ -19,7 +19,7 @@ class Login extends Component {
       username: "",
       password: "",
       alertFailure:false,
-      alertSuccess: false
+      alertFailureBackEnd: false
     };
     this.handleSubmit=this.handleSubmit.bind(this);
     this.componentDidMount=this.componentDidMount.bind(this);
@@ -70,11 +70,12 @@ class Login extends Component {
     .then((response) => {
         if (response.ok) {
             this.okToServe = true
-            this.setState({alertSuccess: true})
             var jsonResp = response.json()
-        } else {
+        } else if (response.status === 401) {
           this.setState({alertFailure: true})
           return
+        } else {
+          this.setState({alertFailureBackEnd: true})
         }
         return jsonResp
     })
@@ -83,6 +84,7 @@ class Login extends Component {
       this.profile = data
     });
     if (this.okToServe) {
+      this.props.setNavBar(true)
         if (last_visited_cookie != null) {
             this.props.history.push({
                 pathname: decodeURIComponent(last_visited_cookie.toString()),
@@ -119,29 +121,29 @@ class Login extends Component {
           onChange={(e) => this.setState({ password: e.target.value })}
         />
       </Form.Group>
-      <Button block size="lg" type="submit" disabled={!this.validateForm()}>
+      <Button id="login_bot" block size="lg" type="submit" disabled={!this.validateForm()}>
         Login
       </Button>
-      {this.state.alertSuccess && <AlertSuccess></AlertSuccess>}
-      {this.state.alertFailure && <AlertFailed></AlertFailed>}
+      {this.state.alertFailure && <AlertCredsFailure></AlertCredsFailure>}
+      {this.state.alertFailureBackEnd && <AlertFailureBackEnd></AlertFailureBackEnd>}
     </Form>
   </div>
   }
 }
 
 
-const AlertSuccess = () => {
+const AlertFailureBackEnd = () => {
   return (
-    <div class="alert alert-success" role="alert">
-    Logged in
+    <div class="alert alert-danger" role="alert">
+    Failure in the backend. please contact the site owner.
     </div>
   )
 }
 
-const AlertFailed = () => {
+const  AlertCredsFailure = () => {
   return (
    <div class="alert alert-danger" role="alert">
-     Invalid credentials
+     Invalid username/password, please try again.
    </div>
   )
 }

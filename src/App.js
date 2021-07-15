@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import { Redirect,BrowserRouter, Route, Switch } from 'react-router-dom';
 import Login from "./Login/login";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
@@ -6,7 +6,9 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { useHistory } from "react-router-dom";
 import User from "./Users/User";
 import {UserPrivateRoute} from "./Users/User"
+import NavBar from "./Navbar/Navbar"
 function App (){
+  const [showNavBar,setShowNavBar] = useState(false)
   const history = useHistory()
   // const addCourseOnSubmit = (event) => {
   //   event.preventDefault(event);
@@ -24,23 +26,32 @@ function App (){
      
   // };
   return (
-    <div className="App">
+    <React.Fragment>
+      {showNavBar && <NavBar></NavBar>}
+          <div className="App">
     <BrowserRouter>
       <Switch>
         <Route exact path="/">
-          <Login history={history}/>
+          <Login setNavBar={setShowNavBar} history={history}/>
         </Route>
         {/* <CoursesPrivateRoute path="/courses" component={Courses}></CoursesPrivateRoute> */}
         <UserPrivateRoute path="/users/:id" component={User} history={history}></UserPrivateRoute>
-
       </Switch>
       </BrowserRouter>
   </div>
+    </React.Fragment>
+
   );
 }
 
-
-
+const AuthWithCookie = () => {
+  var cookie = getCookie("submit-server-cookie")
+  var stateCookie = getCookie("submit-last-server-state")
+  if (cookie === undefined || stateCookie === undefined) {
+    return false
+   }
+   return true
+}
 
 const coursesAuthFunc = () => {
     var cookie = getCookie("submit-server-cookie")
