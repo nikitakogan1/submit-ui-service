@@ -49,14 +49,15 @@ class Login extends Component {
         var state_cookie = this.getCookie("submit-last-server-state")
         var auth_cookie = this.getCookie("submit-server-cookie")
         var last_visited_cookie = this.getCookie("submit-last-visited-path")
-        console.log(state_cookie)
-        if (auth_cookie !== undefined && state_cookie !== undefined) {
-          if (last_visited_cookie == null){
-            this.setCookie("submit-last-visited-path", "/users" + "/" + JSON.parse(state_cookie).user_name, 0.0034)
+        if (auth_cookie !== undefined && state_cookie !== undefined && state_cookie !== "") {
+          console.log("aa",state_cookie)
+          console.log("state cookie",JSON.parse(state_cookie).user_name)
+          if (last_visited_cookie === null){
+            this.setCookie("submit-last-visited-path", "/users/" + JSON.parse(state_cookie).user_name.toString(), 0.0034)
           }
-            console.log("using the cookie")
+            console.log("pushing to", this.getCookie("submit-last-visited-path"))
             this.props.history.push({
-                pathname: decodeURIComponent(this.getCookie("submit-last-visited-path")),
+                pathname: "/users/" + JSON.parse(state_cookie).user_name.toString(),
                 state: state_cookie
             });
         }

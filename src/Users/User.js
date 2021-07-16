@@ -101,13 +101,11 @@ class User extends Component {
 
     checkAdminCookie(){
       var state_cookie = getCookie("submit-last-server-state");
-      var roles = JSON.parse(state_cookie).roles;
-      if (this.parseResp(JSON.stringify(roles)) === "Admin")
-      {
-        return true
-      } else {
-        return false
-      }      
+      if (state_cookie !== undefined){
+        console.log(state_cookie);
+        var roles = JSON.parse(state_cookie).roles;
+      }
+      return this.parseResp(JSON.stringify(roles)) === "Admin"
     }
 
     courseOnClick = (course) => {
