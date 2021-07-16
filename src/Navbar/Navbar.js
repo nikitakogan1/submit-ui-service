@@ -38,7 +38,8 @@ function NavBar(props) {
             itemId: '/users/',
           },
     ]  
-    if (getCookie("submit-last-server-state") !== undefined){
+    if (getCookie("submit-last-server-state") !== undefined && getCookie("submit-last-server-state") !== ""){
+        console.log("aaaa",getCookie("submit-last-server-state"))
         var username = JSON.parse(getCookie("submit-last-server-state")).user_name
         var role = JSON.parse(getCookie("submit-last-server-state")).roles[0]
         if (role === "admin"){
