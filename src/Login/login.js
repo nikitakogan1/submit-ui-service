@@ -70,7 +70,7 @@ class Login extends Component {
     headers: {'Authorization': 'Basic ' + btoa(this.state.username + ":" + this.state.password)}})
     .then((response) => {
         if (response.ok) {
-          this.props.setNavBar(true)
+            //this.props.setNavBar(true)
             this.okToServe = true
             var jsonResp = response.json()
         } else if (response.status === 401) {

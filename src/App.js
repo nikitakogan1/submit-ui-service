@@ -35,9 +35,9 @@ function App (){
         <Route exact path="/">
           <Login setNavBar={setShowNavBar} history={history}/>
         </Route>
-        <AdminPrivateRoute path="/courses" component={Courses}></AdminPrivateRoute>
+        <AdminPrivateRoute path="/courses" component={Courses} navbar={setShowNavBar} history={history}></AdminPrivateRoute>
         <UserPrivateRoute path="/users/:id" component={User} navbar={setShowNavBar} history={history}></UserPrivateRoute>
-        {/* <AdminPrivateRoute path="/users/" component={UsersList}></AdminPrivateRoute> */}
+        <AdminPrivateRoute path="/users/" component={UsersList} navbar={setShowNavBar} history={history}></AdminPrivateRoute>
       </Switch>
       </BrowserRouter>
   </div>
@@ -81,7 +81,7 @@ const AdminPrivateRoute = ({ component: Component, ...rest }) => {
       {...rest}
       render={props =>
         isLoggedIn ? (
-          <Component {...props} />
+          <Component {...props} {...rest} />
         ) : (
           <Redirect to={{ pathname: '/' }} />
         )

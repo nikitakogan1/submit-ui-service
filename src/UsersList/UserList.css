@@ -1,0 +1,23 @@
+#addUserForm{
+    max-width: 55%;
+    position: inherit;
+    left: 42%;
+
+}
+#addUserModal{
+    position: absolute;
+    max-width: 60%;
+    width: 50%;
+    left: 25%;
+    clear: both;
+    display: inline-block;
+}
+#deleteUserBut{
+    position: inherit;
+    max-width: 30%;
+}
+#addUser{
+    position: absolute;
+    max-width: 30%;
+    left: 67%;
+}

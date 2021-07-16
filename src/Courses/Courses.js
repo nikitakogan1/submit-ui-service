@@ -35,6 +35,7 @@ class Courses extends Component {
   }
 
     componentDidMount() {
+      this.props.navbar(true);
       if (this.props.location.state) {
         this.stateFromLogin = JSON.parse(this.props.location.state);
       } else {

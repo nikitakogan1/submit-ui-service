@@ -1,12 +1,20 @@
-import React from 'react';
+import React, {useState} from 'react';
+import { Component } from 'react';
 import {Navigation} from 'react-minimal-side-navigation';
 import 'react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css';
 import { withRouter } from "react-router-dom";
 import "./Navbar.css"
 
-function NavBar(props) {
-    var isAdmin = false;
-    var adminNav = [
+class NavBar extends Component{
+    username = ""
+    constructor(props){
+        super(props)
+        this.state = {
+            isAdmin: false, isAuthed: false
+        }
+        this.componentDidMount=this.componentDidMount.bind(this);
+    }
+    adminNav = [
         {
           title: 'All courses',
           itemId: '/courses',
@@ -24,7 +32,7 @@ function NavBar(props) {
           itemId: '/users/',
         },
       ]
-    var studentNav = [
+    studentNav = [
         {
             title: 'All courses',
             itemId: '/courses',
@@ -38,33 +46,43 @@ function NavBar(props) {
             itemId: '/users/',
           },
     ]  
-    if (getCookie("submit-last-server-state") !== undefined && getCookie("submit-last-server-state") !== ""){
-        console.log("aaaa",getCookie("submit-last-server-state"))
-        var username = JSON.parse(getCookie("submit-last-server-state")).user_name
-        var role = JSON.parse(getCookie("submit-last-server-state")).roles[0]
-        if (role === "admin"){
-            isAdmin = true;
-        }
-    }
-    const selected = (selected) => {
-        if (selected.itemId === "/users/") {
-            console.log("pushing to", selected.itemId + username)
-            props.history.push(selected.itemId + username)
-        } else {
-            props.history.push(selected.itemId)
-        }
-    }
-    var auth = userAuthFunc()
-    return (
-        <div className="Navbar">
-        {<Navigation
-           onSelect={selected}
-            items={ isAdmin ? adminNav : studentNav}
-          />}
-        </div>
 
-    );
-}
+
+    componentDidMount(){
+        if (getCookie("submit-last-server-state") !== undefined && getCookie("submit-last-server-state") !== ""){
+            console.log("aaaa",getCookie("submit-last-server-state"))
+            this.username = JSON.parse(getCookie("submit-last-server-state")).user_name
+            var role = JSON.parse(getCookie("submit-last-server-state")).roles[0]
+            if (role === "admin"){
+                this.setState({isAdmin: true})
+            }
+            this.setState({isAuthed: true}, () => {
+                console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",this.state.isAuthed, this.state.isAdmin)
+            })
+        }
+    }
+    selected = (selected) => {
+        if (selected.itemId === "/users/") {
+            console.log("pushing to", selected.itemId + this.username)
+            this.props.history.push(selected.itemId + this.username)
+        } else {
+            this.props.history.push(selected.itemId)
+        }
+    }
+    //var auth = userAuthFunc()
+
+    render(){
+        return (
+          <div className="Navbar">
+            {this.state.isAuthed && <Navigation
+                onSelect={this.selected}
+                items={ this.state.isAdmin ? this.adminNav : this.studentNav}
+              />}
+            </div>
+    
+        );
+    }
+    }
 
 function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -85,7 +103,7 @@ function getCookie(name) {
 const userAuthFunc = () => {
     var cookie = getCookie("submit-server-cookie")
     var stateCookie = getCookie("submit-last-server-state")
-    if (cookie === undefined || stateCookie === undefined) {
+    if (cookie === undefined || stateCookie === undefined || stateCookie === "" ) {
       setCookie('submit-last-visited-path', window.location.pathname, 0.0034);
      return false
     }

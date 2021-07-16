@@ -139,7 +139,7 @@ class User extends Component {
     <Form.Group controlId="email">
       <Form.Label>Email: </Form.Label>
       <Form.Control defaultValue={this.state.email} />
-    </Form.Group>
+  </Form.Group>
 
 Roles:
 {this.checkAdminCookie() ? (this.parseResp(JSON.stringify(this.state.roles.elements)) !== "None" && <AdminUserRoles role={ this.parseResp(JSON.stringify(this.state.roles.elements))}></AdminUserRoles>) : <UserRoles></UserRoles>}
