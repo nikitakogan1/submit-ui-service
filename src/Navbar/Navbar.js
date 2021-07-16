@@ -53,12 +53,13 @@ function NavBar(props) {
             props.history.push(selected.itemId)
         }
     }
+    var auth = userAuthFunc()
     return (
         <div className="Navbar">
-        <Navigation
+        {<Navigation
            onSelect={selected}
-            items={isAdmin ? adminNav : studentNav}
-          />
+            items={ isAdmin ? adminNav : studentNav}
+          />}
         </div>
 
     );

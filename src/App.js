@@ -2,11 +2,12 @@ import React,{useState} from "react";
 import { Redirect,BrowserRouter,Router, Route, Switch,withRouter } from 'react-router-dom';
 import Login from "./Login/login";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
-//import Courses from "./Courses/Courses"
+import Courses from "./Courses/Courses"
 import { useHistory } from "react-router-dom";
 import User from "./Users/User";
 import {UserPrivateRoute} from "./Users/User"
 import NavBar from "./Navbar/Navbar"
+import UsersList from "./UsersList/UsersList"
 function App (){
   const [showNavBar,setShowNavBar] = useState(false)
   const history = useHistory()
@@ -34,8 +35,9 @@ function App (){
         <Route exact path="/">
           <Login setNavBar={setShowNavBar} history={history}/>
         </Route>
-        {/* <CoursesPrivateRoute path="/courses" component={Courses}></CoursesPrivateRoute> */}
+        <AdminPrivateRoute path="/courses" component={Courses}></AdminPrivateRoute>
         <UserPrivateRoute path="/users/:id" component={User} navbar={setShowNavBar} history={history}></UserPrivateRoute>
+        {/* <AdminPrivateRoute path="/users/" component={UsersList}></AdminPrivateRoute> */}
       </Switch>
       </BrowserRouter>
   </div>
@@ -44,7 +46,7 @@ function App (){
   );
 }
 
-const AuthWithCookie = () => {
+const AdminAuthFunc = () => {
   var cookie = getCookie("submit-server-cookie")
   var stateCookie = getCookie("submit-last-server-state")
   if (cookie === undefined || stateCookie === undefined) {
@@ -69,24 +71,24 @@ function setCookie(name,value,days) {
   document.cookie = name + "=" + (value || "")  + expires + "; path=/";
 }
 
-// const CoursesPrivateRoute = ({ component: Component, ...rest }) => {
+const AdminPrivateRoute = ({ component: Component, ...rest }) => {
 
-//   // Add your own authentication on the below line.
-//   const isLoggedIn = coursesAuthFunc()
-//   console.log(isLoggedIn)
-//   return (
-//     <Route
-//       {...rest}
-//       render={props =>
-//         isLoggedIn ? (
-//           <Component {...props} />
-//         ) : (
-//           <Redirect to={{ pathname: '/' }} />
-//         )
-//       }
-//     />
-//   )
-// }
+  // Add your own authentication on the below line.
+  const isLoggedIn = AdminAuthFunc()
+  console.log(isLoggedIn)
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        isLoggedIn ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to={{ pathname: '/' }} />
+        )
+      }
+    />
+  )
+}
 
 
 
