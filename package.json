@@ -7,7 +7,7 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "awesome-react-icons": "^1.4.8",
-    "bootstrap": "^4.0.0",
+    "bootstrap": "^5.0.2",
     "focus-trap-react": "^8.6.0",
     "http-proxy-middleware": "^2.0.0",
     "js-cookies": "^1.0.4",
