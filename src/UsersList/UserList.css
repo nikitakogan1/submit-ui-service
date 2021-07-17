@@ -1,32 +1,39 @@
 #addUserForm{
-    max-width: 55%;
+    max-width: 80%;
     position: inherit;
-    left: 42%;
-
+    left: 27%;
+    padding-left: 2%;
 }
 #addUserModal{
-    position: absolute;
-    max-width: 60%;
-    width: 50%;
+    position: inherit;
+    max-width: 80%;
+    width: 40%;
     left: 25%;
     clear: both;
     display: inline-block;
+
 }
+
 #deleteUserBut{
     position: absolute;
     max-width: 30%;
-    padding-right: 1%;
 }
 #addUser{
     position: absolute;
     max-width: 30%;
-    left: 67%;
-    bottom: 72%;
+    right: 27%;
 }
 #submitNewUser{
-    position: absolute;
+    position: fixed;
     max-width: 30%;
-    left: 1%;
+    right: 36%;
+    bottom: 40%;
+}
+#closeSubmitNewUser{
+    position: fixed;
+    max-width: 30%;
+    left: 26%;
+    bottom: 40%;
 }
 /* 
 .Modal {

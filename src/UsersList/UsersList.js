@@ -172,17 +172,14 @@ class UsersList extends Component {
                 <Form.Control placeholder="Enter email"/>
             </Form.Group>
             </Form.Row>
-            </Form>
-
-          </Modal.Body>
-          <Modal.Footer>
             <Button id="submitNewUser" variant="primary" type="submit">
                 Submit
-            </Button> 
-            <Button variant="secondary" onClick={handleClose}>
-              Close
             </Button>
-          </Modal.Footer>
+            <Button id="closeSubmitNewUser" variant="secondary" onClick={handleClose}>
+              Close
+            </Button> 
+            </Form>
+          </Modal.Body>
         </Modal>
       </>
     );
