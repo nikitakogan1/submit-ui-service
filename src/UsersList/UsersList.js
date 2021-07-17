@@ -72,7 +72,13 @@ class UsersList extends Component {
         clickToSelect: false,
         classes: "selection-row",
         onSelect: (props) => {
-            this.usersSelectedToDelete.push(props.user_name)
+            if (this.usersSelectedToDelete.includes(props.user_name)){
+                this.usersSelectedToDelete = this.usersSelectedToDelete.filter(function(item) {
+                    return item !== props.user_name
+                }) 
+            } else {
+                this.usersSelectedToDelete.push(props.user_name)
+            }
             console.log("final list to delete", this.usersSelectedToDelete)
           }
       };

@@ -1,22 +1,84 @@
 import React from "react";
 import { Component } from "react";
 import { withRouter } from "react-router-dom";
-import { Table } from 'semantic-ui-react';
 import "./Courses.css"
+import BootstrapTable from 'react-bootstrap-table-next';
+import Button from "react-bootstrap/Button"
+
+function removeItemOnce(arr, value) {
+  var index = arr.indexOf(value);
+  if (index > -1) {
+    arr.splice(index, 1);
+  }
+  return arr;
+}
 
 class Courses extends Component {
-    constructor(props) {
-      super(props);
-      this.state = {elements: [
-        {year:null,number:null,name:null}
-      ]
-    };
-    this.stateFromLogin = []
-    this.username = ""
-    this.userCoursesAsStudent = []
-    this.userCoursesAsStuff= []
-    this.componentDidMount=this.componentDidMount.bind(this);
+
+  constructor(props) {
+    super(props);
+    this.state = {coursesSelectedToDelete: [], elements: [
+      {year:null,number:null,name:null}
+    ]
+  };
+  this.componentDidMount=this.componentDidMount.bind(this);
+  this.deleteSelectedCourses=this.deleteSelectedCourses.bind(this);
+  this.onSelect=this.onSelect.bind(this);
+
+  }
+  deleteSelectedCourses = () => {
+    this.state.coursesSelectedToDelete.forEach( (course) => {
+        course = JSON.parse(course)
+        fetch('http://localhost:3000/api/courses/' + course.number + "/" + course.year, {method:'DELETE', 
+        headers: {'Authorization': 'Basic ' + btoa('username:password')}})
+        .then((response) => {
+        if (!response.ok){
+            alert("balagan")
+        }
+        return response.json()
+        });
+    })
+    this.props.history.go(0)
+}
+
+  columns = [{
+    dataField: 'name',
+    text: 'Course name',
+    // formatter: (cell, row) => <a href={cell.course.year + "/" + cell.course_number}> {cell} </a>,
+  }, {
+    dataField: 'year',
+    text: 'Course year'
+  }, {
+    dataField: 'number',
+    text: 'Course number'
+  }];
+
+  onSelect = (props) => {
+    //console.log("Zzz",this.state)
+    //console.log({"year": props.year, "number": props.number})
+    var index = this.state.coursesSelectedToDelete.indexOf(JSON.stringify({year: props.year, number: props.number}));
+    //console.log(index)
+    if (index !== -1) {
+      var arr = removeItemOnce(this.state.coursesSelectedToDelete, JSON.stringify({year: props.year, number: props.number}))
+      this.setState({coursesSelectedToDelete: arr}, () => {
+        console.log(this.state.coursesSelectedToDelete)
+      });
+    } else {
+      this.setState({coursesSelectedToDelete:[...this.state.coursesSelectedToDelete, JSON.stringify({year: props.year, number: props.number})]}, () => {
+        console.log(this.state.coursesSelectedToDelete)
+      })
     }
+  } 
+  
+  
+  selectRow = {
+    mode: "checkbox",
+    clickToSelect: false,
+    classes: "selection-row",
+    onSelect: this.onSelect
+  };
+
+
     
     getCookie(name) {
       const value = `; ${document.cookie}`;
@@ -36,50 +98,30 @@ class Courses extends Component {
 
     componentDidMount() {
       this.props.navbar(true);
-      if (this.props.location.state) {
-        this.stateFromLogin = JSON.parse(this.props.location.state);
-      } else {
-        this.stateFromLogin = JSON.parse(this.getCookie("submit-last-server-state"))
-      }
-      this.username = this.stateFromLogin.username
       fetch('http://localhost:3000/api/courses/', {method:'GET', 
       headers: {'Authorization': 'Basic ' + btoa('username:password')}})
       .then((response) => {
         return response.json()
       })
       .then (data => {
-        this.setState(data);
+        this.setState(data, () => {
+          console.log(this.state)
+        });
       });
     }
 
     render(){
       return (
-        <Table>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>Number</Table.HeaderCell>
-            <Table.HeaderCell>Year</Table.HeaderCell>
-            <Table.HeaderCell>Name</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-  
-        <Table.Body>
-          {this.state.elements.map(course => {
-            return (
-              <Table.Row key={course.number}>
-                <Table.Cell>{course.number}</Table.Cell>
-                <Table.Cell>
-                  {course.year}
-                </Table.Cell>
-                <Table.Cell>
-                  {course.name}
-                </Table.Cell>
-              </Table.Row>
-            );
-          })}
-        </Table.Body>
-      </Table>
-      
+
+      <React.Fragment>
+      <BootstrapTable selectRow={this.selectRow} hover keyField='number' data={ this.state.elements } columns={ this.columns } />
+            {/* <AddUserModal history={this.props.history}></AddUserModal> */}
+            <Button  variant="primary" id= "deleteCourseBut" onClick={this.deleteSelectedCourses}>
+                Delete Selected courses
+            </Button>
+      </React.Fragment>
+
+
       );
       }
   
