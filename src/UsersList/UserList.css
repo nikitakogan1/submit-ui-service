@@ -35,6 +35,10 @@
     left: 26%;
     bottom: 40%;
 }
+#registerUserText{
+    position: relative;
+    left: 1%;
+}
 /* 
 .Modal {
     height: 100%;

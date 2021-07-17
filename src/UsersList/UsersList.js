@@ -140,7 +140,7 @@ class UsersList extends Component {
         </Button>
   
         <Modal id="addUserModal" show={show} onHide={handleClose} animation={false}>
-            <Modal.Title>Register user</Modal.Title>
+            <Modal.Title id="registerUserText">Register user</Modal.Title>
           <Modal.Body>
 
           <Form  id="addUserForm" onSubmit={updateDetails}>
