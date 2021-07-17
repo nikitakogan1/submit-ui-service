@@ -174,7 +174,6 @@ class UsersList extends Component {
             </Form.Row>
             </Form>
 
-          </Modal.Body>
           <Modal.Footer>
             <Button id="submitNewUser" variant="primary" type="submit">
                 Submit
@@ -183,6 +182,7 @@ class UsersList extends Component {
               Close
             </Button>
           </Modal.Footer>
+          </Modal.Body>
         </Modal>
       </>
     );

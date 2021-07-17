@@ -1,11 +1,10 @@
-@media all and (min-width: 480px) {
       form {
         clear: both;
         display: inline-block;
         overflow: hidden;
         padding-right: 30%;
         position: absolute;
-        max-width: 60%;
+        max-width: 50%;
 
       }
       .list-group {
@@ -38,6 +37,5 @@
       right: 80%;
       left: 68%;
       bottom: 51%;
-    }
     }
   
