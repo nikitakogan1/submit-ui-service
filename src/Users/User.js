@@ -151,7 +151,7 @@ Roles:
   {this.state.alertFailure && <AlertFailed></AlertFailed>}
 </Form>
 <UserCourses courseOnClick={this.courseOnClick} studentCourses={this.state.courses_as_student.elements} staffCourses={this.state.courses_as_staff.elements}></UserCourses>
-{this.checkAdminCookie() && <AddUserToCourseAsStudentModal history={this.props.history} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={'http://localhost:3000/api/users/' + this.state.user_name}></AddUserToCourseAsStudentModal>}
+{this.checkAdminCookie() && <AddUserToCourseAsStudentModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={'http://localhost:3000/api/users/' + this.state.user_name}></AddUserToCourseAsStudentModal>}
 {this.checkAdminCookie() && <AddUserToCourseAsStaffModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} user_name={this.state.user_name} userURL={'http://localhost:3000/api/users/' + this.state.user_name}></AddUserToCourseAsStaffModal>}
 </React.Fragment>
 
@@ -397,7 +397,7 @@ function AddUserToCourseAsStudentModal(props) {
           <Modal.Title>Choose course</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-<GetCoursesList history={props.history} courses_as_student={props.courses_as_student} close={handleClose} userURL={props.userURL} user_name={props.user_name}></GetCoursesList>
+<GetCoursesList role={"student"} history={props.history} courses_as_staff={props.courses_as_staff} courses_as_student={props.courses_as_student} close={handleClose} userURL={props.userURL} user_name={props.user_name}></GetCoursesList>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
@@ -427,7 +427,7 @@ function AddUserToCourseAsStaffModal(props) {
           <Modal.Title>Choose course</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-<GetCoursesList history={props.history} courses_as_staff={props.courses_as_staff} close={handleClose} userURL={props.userURL} user_name={props.user_name}></GetCoursesList>
+<GetCoursesList role={"staff"} history={props.history} courses_as_student={props.courses_as_student} courses_as_staff={props.courses_as_staff} close={handleClose} userURL={props.userURL} user_name={props.user_name}></GetCoursesList>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
@@ -439,14 +439,24 @@ function AddUserToCourseAsStaffModal(props) {
   );
 }
 
+function removeItemOnce(arr, value) {
+  var index = arr.indexOf(value);
+  if (index > -1) {
+    arr.splice(index, 1);
+  }
+  return arr;
+}
+
+
 class GetCoursesList extends Component {
   constructor(props){
     super(props)
-    this.state = {checked: null,selected:[],coursesList:[],elements:[]}
+    this.state = {checked: null,selected:[],coursesList:[],elements:[], coursesListAsStaff: [], checkedStaff: null}
     this.componentDidMount=this.componentDidMount.bind(this);
     this.handleOnChange=this.handleOnChange.bind(this);
-    this.parseAnswer=this.parseAnswer.bind(this);
     this.updateCoursesAsStudent=this.updateCoursesAsStudent.bind(this);
+    this.parseAnswerCoursesAsStudent=this.parseAnswerCoursesAsStudent.bind(this)
+    this.parseAnswerCoursesAsStaff = this.parseAnswerCoursesAsStaff.bind(this);
   }
 
   async componentDidMount(){
@@ -458,13 +468,32 @@ class GetCoursesList extends Component {
     })
     .then (data => {
         this.setState({elements : data}, () => {
-          var courses = parseCourses(this.state.elements.elements)
-          this.setState({coursesList:courses}, () => {
-            this.parseAnswer()
-          })
-
-          console.log("coursesList",this.state.coursesList);
-          console.log("elements",this.state.elements);
+          if (this.props.role === "staff"){
+            var coursesStaff = parseCourses(this.state.elements.elements)
+            // var coursesOfStudent = Object.keys(this.props.courses_as_student.elements)
+            this.setState({coursesListAsStaff: coursesStaff}, () => {
+              this.parseAnswerCoursesAsStaff()
+            })
+          } else {
+            var coursesStudent = parseCourses(this.state.elements.elements)
+            var coursesOfStaff = Object.keys(this.props.courses_as_staff.elements)
+            coursesStudent.forEach((course) => {
+              var [number,year, name ] = course.split("/")
+              number = number.trim()
+              year = year.trim()
+              const numberAndYear = number + ":" + year
+              console.log(numberAndYear)
+              if (coursesOfStaff.includes(numberAndYear)){
+                coursesStudent = removeItemOnce(coursesStudent, course)
+              }
+              // if (coursesOfStudent.includes(numberAndYear)){
+              //   coursesStaff = removeItemOnce(coursesStaff, course)
+              // }
+            })
+            this.setState({coursesList:coursesStudent}, () => {
+              this.parseAnswerCoursesAsStudent()
+            })
+          }
         })
     });
 
@@ -488,12 +517,10 @@ class GetCoursesList extends Component {
     coursesToStore.forEach((course) => {
       body.courses_as_student.elements[course] = {}
     })
-    
-    console.log("body",body)
+    console.log(JSON.stringify(body))
     fetch(this.props.userURL, {method:'PUT', 
      body: (JSON.stringify(body)),headers: {'Authorization': 'Basic ' + btoa('username:password')}})
     .then((response) => {
-        console.log("respppppppppppppppppppppppppp:",response)
         return response.json()
     })
     this.props.close()
@@ -501,6 +528,7 @@ class GetCoursesList extends Component {
   }
 
   updateCoursesAsStaff = () => {
+    console.log("inside as metargel")
     var body = {user_name: this.props.user_name, courses_as_staff:{elements:{}}}
     var coursesToStore = []
     this.state.selected.forEach((course) => {
@@ -525,10 +553,14 @@ class GetCoursesList extends Component {
   }
 
 
-  parseAnswer(){
-    var coursesToRet = []
+  parseAnswerCoursesAsStudent(){
     var checkedCoursesToRet = []
-    var coursesFromProps= Object.keys(this.props.courses_as_student.elements);
+    if (this.props.courses_as_student !== undefined){
+      var coursesFromProps= Object.keys(this.props.courses_as_student.elements);
+    } else {
+      coursesFromProps=[]
+    }
+    
     console.log("parsed answer",coursesFromProps);
     this.state.coursesList.forEach( (course) => {
       coursesFromProps.forEach( (course2) => {
@@ -536,16 +568,31 @@ class GetCoursesList extends Component {
         var [number2,year2] = course2.split(":")
         if (number.trim() === number2.trim() && year.trim() === year2.trim()){
           checkedCoursesToRet.push(course)
-        } else {
-          coursesToRet.push(course)
         }
       })
     })
     this.setState({checked: checkedCoursesToRet}, () => {
-      console.log("checked courses",this.remove_duplicates(checkedCoursesToRet))
+      console.log("checked courses for student",this.remove_duplicates(checkedCoursesToRet))
     })
+  }
+
+
+  parseAnswerCoursesAsStaff(){
+    var checkedCoursesToRet = []
+    var coursesFromProps= Object.keys(this.props.courses_as_staff.elements);
     
-    return coursesToRet
+    this.state.coursesListAsStaff.forEach( (course) => {
+      coursesFromProps.forEach( (course2) => {
+        var [number,year] = course.split("/")
+        var [number2,year2] = course2.split(":")
+        if (number.trim() === number2.trim() && year.trim() === year2.trim()){
+          checkedCoursesToRet.push(course)
+        }
+      })
+    })
+    this.setState({checkedStaff: checkedCoursesToRet}, () => {
+      console.log("checked courses for staff",this.remove_duplicates(checkedCoursesToRet))
+    })
   }
 
   remove_duplicates(arr) {
@@ -561,15 +608,27 @@ class GetCoursesList extends Component {
 }
 
   render() {
+    var options;
+    var checked;
+    var applyFunc;
+    if (this.props.role === "staff"){
+      options = this.state.coursesListAsStaff;
+      checked = this.state.checkedStaff;
+      applyFunc=this.updateCoursesAsStaff
+    } else {
+      options = this.state.coursesList;
+      checked = this.state.checked;
+      applyFunc=this.updateCoursesAsStudent;
+    }
     return (
 <React.Fragment>
-{this.state.coursesList !== null && this.state.coursesList.length !== 0 && this.state.checked !== null && <DropdownMultiselect
-      options={this.state.coursesList}
+{options !== null && options.length !== 0 && checked !== null && <DropdownMultiselect
+      options={options}
       name="courses"
       handleOnChange= {this.handleOnChange}
-      selected={this.state.checked}
+      selected={checked}
     />}
-      <Button variant="primary" id="submitAddCourse" onClick={this.updateCoursesAsStudent}>
+      <Button variant="primary" id="submitAddCourse" onClick={applyFunc}>
       Save Changes
     </Button>
 </React.Fragment>
@@ -585,9 +644,7 @@ const parseCourses = (coursesList) => {
   }
   for (let i = 0; i < coursesList.length; i++) {
    courses[i] = coursesList[i].number + " / " + coursesList[i].year + " / " + coursesList[i].name
-   console.log(courses[i])
  }
- console.log(courses)
  return courses
 }
 
