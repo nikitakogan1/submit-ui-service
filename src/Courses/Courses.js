@@ -1,9 +1,12 @@
-import React from "react";
+import React,{useState} from "react";
 import { Component } from "react";
 import { withRouter } from "react-router-dom";
 import "./Courses.css"
 import BootstrapTable from 'react-bootstrap-table-next';
 import Button from "react-bootstrap/Button"
+import Form from "react-bootstrap/Form"
+import Modal from "react-bootstrap/Modal"
+import Col from "react-bootstrap/Col"
 
 function removeItemOnce(arr, value) {
   var index = arr.indexOf(value);
@@ -54,10 +57,7 @@ class Courses extends Component {
   }];
 
   onSelect = (props) => {
-    //console.log("Zzz",this.state)
-    //console.log({"year": props.year, "number": props.number})
     var index = this.state.coursesSelectedToDelete.indexOf(JSON.stringify({year: props.year, number: props.number}));
-    //console.log(index)
     if (index !== -1) {
       var arr = removeItemOnce(this.state.coursesSelectedToDelete, JSON.stringify({year: props.year, number: props.number}))
       this.setState({coursesSelectedToDelete: arr}, () => {
@@ -115,7 +115,7 @@ class Courses extends Component {
 
       <React.Fragment>
       <BootstrapTable selectRow={this.selectRow} hover keyField='number' data={ this.state.elements } columns={ this.columns } />
-            {/* <AddUserModal history={this.props.history}></AddUserModal> */}
+            <AddCourserModal history={this.props.history}></AddCourserModal>
             <Button  variant="primary" id= "deleteCourseBut" onClick={this.deleteSelectedCourses}>
                 Delete Selected courses
             </Button>
@@ -126,6 +126,80 @@ class Courses extends Component {
       }
   
    }
+
+
+   export function AddCourserModal(props) {
+    const [show, setShow] = useState(false);
+  
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+    const createCourse = (event) => {
+        event.preventDefault(event);
+        console.log(event.target.number.value)
+        console.log(event.target.year.value)
+        console.log(event.target.name.value)
+        var body = { number: parseInt(event.target.number.value), year: parseInt(event.target.year.value), name: event.target.name.value }
+        console.log(body)
+        fetch('http://localhost:3000/api/courses/', {method:'POST', 
+        body: JSON.stringify(body), headers: {'Authorization': 'Basic ' + btoa('username:password')}})
+        .then((response) => {
+          if (!response.ok){
+            alert("balagan")
+          }
+          return response.json()
+        });
+        handleClose()
+        props.history.go(0)
+    }
+
+    
+
+    return (
+      <>
+        <Button id="addCourse" variant="primary" onClick={handleShow}>
+          Add course
+        </Button>
+  
+        <Modal id="addCourseModal" show={show} onHide={handleClose} animation={false}>
+            <Modal.Title id= "AddCoursetitle">Create course</Modal.Title>
+        <Modal.Body>
+
+          <Form  id="addCourseForm" onSubmit={createCourse}>
+            <Form.Row>
+                <Form.Group as={Col} controlId="number">
+                <Form.Label>Number:</Form.Label>
+                <Form.Control placeholder="Enter course number" />
+                </Form.Group>
+            </Form.Row>
+
+            <Form.Group controlId="year"> 
+                <Form.Label>Year: </Form.Label>
+                <Form.Control placeholder="Enter course year"  />
+            </Form.Group>
+
+            <Form.Group controlId="name" >
+                <Form.Label>Name: </Form.Label>
+                <Form.Control placeholder="Enter last name"/>
+            </Form.Group>
+
+            <Button id="submitAddCourseBut" variant="primary" type="submit">
+                Submit
+            </Button>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    );
+  }
+
+
+
   export default withRouter(Courses);
 
 

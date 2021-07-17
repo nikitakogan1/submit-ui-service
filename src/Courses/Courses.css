@@ -1,0 +1,29 @@
+#addCourseForm{
+    max-width: 56%;
+    position: inherit;
+    left: 40%;
+
+}
+#addCourseModal{
+    position: absolute;
+    max-width: 45%;
+    width: 60%;
+    left: 25%;
+    clear: both;
+    display: inline-block;
+}
+#addCourse{
+    position: absolute;
+    max-width: 30%;
+    left: 66%;
+}
+#AddCoursetitle{
+    position: relative;
+    left: 1%;
+}
+#submitAddCourseBut{
+    position: fixed;
+    clear: both;
+    top: 62%;
+    right: 69%;
+}

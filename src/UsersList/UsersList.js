@@ -3,9 +3,9 @@ import { Component } from "react";
 import { withRouter } from "react-router-dom";
 import Col from "react-bootstrap/Col"
 import Form from "react-bootstrap/Form"
+import Modal from "react-bootstrap/Modal"
 import Button from "react-bootstrap/Button"
 import  { useState } from 'react';
-import Modal from "react-bootstrap/Modal"
 import FormGroup from "react-bootstrap/FormGroup"
 import { Table } from 'semantic-ui-react';
 import "./UserList.css"
