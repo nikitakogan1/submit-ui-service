@@ -140,9 +140,7 @@ class UsersList extends Component {
         </Button>
   
         <Modal id="addUserModal" show={show} onHide={handleClose} animation={false}>
-          <Modal.Header closeButton>
             <Modal.Title>Register user</Modal.Title>
-          </Modal.Header>
           <Modal.Body>
 
           <Form  id="addUserForm" onSubmit={updateDetails}>
@@ -174,14 +172,13 @@ class UsersList extends Component {
                 <Form.Control placeholder="Enter email"/>
             </Form.Group>
             </Form.Row>
-            <Button variant="primary" type="submit">
-                Submit
-            </Button>
-
             </Form>
 
           </Modal.Body>
           <Modal.Footer>
+            <Button id="submitNewUser" variant="primary" type="submit">
+                Submit
+            </Button> 
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>

@@ -151,7 +151,8 @@ Roles:
   {this.state.alertFailure && <AlertFailed></AlertFailed>}
 </Form>
 <UserCourses courseOnClick={this.courseOnClick} studentCourses={this.state.courses_as_student.elements} staffCourses={this.state.courses_as_staff.elements}></UserCourses>
-{this.checkAdminCookie() && <AddUserModal history={this.props.history} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={'http://localhost:3000/api/users/' + this.state.user_name}></AddUserModal>}
+{this.checkAdminCookie() && <AddUserToCourseAsStudentModal history={this.props.history} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={'http://localhost:3000/api/users/' + this.state.user_name}></AddUserToCourseAsStudentModal>}
+{this.checkAdminCookie() && <AddUserToCourseAsStaffModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} user_name={this.state.user_name} userURL={'http://localhost:3000/api/users/' + this.state.user_name}></AddUserToCourseAsStaffModal>}
 </React.Fragment>
 
 )}
@@ -378,7 +379,7 @@ const userAuthFunc = () => {
   return true
 }
 
-function AddUserModal(props) {
+function AddUserToCourseAsStudentModal(props) {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -387,8 +388,8 @@ function AddUserModal(props) {
 
   return (
     <>
-      <Button id="addUser" variant="primary" onClick={handleShow}>
-        Add user to course
+      <Button id="addUserAsStudent" variant="primary" onClick={handleShow}>
+        Add user to course as student
       </Button>
 
       <Modal show={show} onHide={handleClose} animation={false}>
@@ -397,6 +398,36 @@ function AddUserModal(props) {
         </Modal.Header>
         <Modal.Body>
 <GetCoursesList history={props.history} courses_as_student={props.courses_as_student} close={handleClose} userURL={props.userURL} user_name={props.user_name}></GetCoursesList>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+}
+
+function AddUserToCourseAsStaffModal(props) {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+
+  return (
+    <>
+      <Button id="addUserAsStaff" variant="primary" onClick={handleShow}>
+        Add user to course as staff
+      </Button>
+
+      <Modal show={show} onHide={handleClose} animation={false}>
+        <Modal.Header closeButton>
+          <Modal.Title>Choose course</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+<GetCoursesList history={props.history} courses_as_staff={props.courses_as_staff} close={handleClose} userURL={props.userURL} user_name={props.user_name}></GetCoursesList>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
@@ -468,6 +499,31 @@ class GetCoursesList extends Component {
     this.props.close()
     this.props.history.go(0)
   }
+
+  updateCoursesAsStaff = () => {
+    var body = {user_name: this.props.user_name, courses_as_staff:{elements:{}}}
+    var coursesToStore = []
+    this.state.selected.forEach((course) => {
+      var [number,year] = course.split("/")
+      number = number.trim()
+      year = year.trim()
+      coursesToStore.push((number+":"+year).trim())
+    })
+    coursesToStore.forEach((course) => {
+      body.courses_as_staff.elements[course] = {}
+    })
+    
+    console.log("body",body)
+    fetch(this.props.userURL, {method:'PUT', 
+     body: (JSON.stringify(body)),headers: {'Authorization': 'Basic ' + btoa('username:password')}})
+    .then((response) => {
+        console.log("respppppppppppppppppppppppppp:",response)
+        return response.json()
+    })
+    this.props.close()
+    this.props.history.go(0)
+  }
+
 
   parseAnswer(){
     var coursesToRet = []

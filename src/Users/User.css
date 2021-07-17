@@ -15,10 +15,12 @@
         bottom: auto;
         max-width: 60%;
       }
-     #addUser {
-      left: 80%;
+     #addUserAsStudent {
       position: absolute;
-      max-width: 60%;
+      max-width: 80%;
+      right: 80%;
+      left: 68%;
+      bottom: 44%;
     }
     #AdminUserRoles{
       position: relative;
@@ -29,6 +31,13 @@
       position: absolute;
       clear: both;
       top: 125%;
+    }
+    #addUserAsStaff{
+      position: absolute;
+      max-width: 80%;
+      right: 80%;
+      left: 68%;
+      bottom: 51%;
     }
     }
   

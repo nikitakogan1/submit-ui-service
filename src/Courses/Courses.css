@@ -22,8 +22,8 @@
     left: 1%;
 }
 #submitAddCourseBut{
-    position: fixed;
+    position: absolute;
     clear: both;
-    top: 62%;
-    right: 69%;
+    top: 84%;
+    left: 1%;
 }

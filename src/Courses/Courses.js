@@ -182,13 +182,12 @@ class Courses extends Component {
                 <Form.Label>Name: </Form.Label>
                 <Form.Control placeholder="Enter last name"/>
             </Form.Group>
-
-            <Button id="submitAddCourseBut" variant="primary" type="submit">
-                Submit
-            </Button>
             </Form>
           </Modal.Body>
           <Modal.Footer>
+          <Button id="submitAddCourseBut" variant="primary" type="submit">
+                Submit
+            </Button>
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>
