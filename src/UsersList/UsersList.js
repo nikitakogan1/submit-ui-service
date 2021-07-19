@@ -6,21 +6,21 @@ import Form from "react-bootstrap/Form"
 import Modal from "react-bootstrap/Modal"
 import Button from "react-bootstrap/Button"
 import  { useState } from 'react';
-import FormGroup from "react-bootstrap/FormGroup"
-import { Table } from 'semantic-ui-react';
 import "./UserList.css"
 //import '../../node_modules/bootstrap/dist/css/bootstrap.min.css'; 
 import BootstrapTable from 'react-bootstrap-table-next';
 
 class UsersList extends Component {
-    usersSelectedToDelete=[]
     constructor(props) {
       super(props);
-      this.state = {elements: [
+      this.state = {left_to_process:false,limit:1, after_id:1, elements: [
         {user_name:null,first_name:null,last_name:null}
-      ]
+      ],
     };
     this.componentDidMount=this.componentDidMount.bind(this);
+    this.previousPage=this.previousPage.bind(this);
+    this.nextPage=this.nextPage.bind(this);
+    this.goToBackEnd=this.goToBackEnd.bind(this);
     }
     
     getCookie(name) {
@@ -53,18 +53,41 @@ class UsersList extends Component {
         this.props.history.go(0)
     }
 
-    componentDidMount() {
-      this.props.navbar(true);  
-      fetch('http://localhost:3000/api/users/', {method:'GET', 
-      headers: {'Authorization': 'Basic ' + btoa('username:password')}})
-      .then((response) => {
-        return response.json()
-      })
-      .then (data => {
-        this.setState(data, () => {
-            console.log(this.state.elements)
+     nextPage = () => {
+        this.setState({after_id: this.state.after_id + this.state.limit}, () => {
+            this.goToBackEnd()
+        })
+    }
+
+    previousPage = () => {
+        this.setState({after_id: this.state.after_id - this.state.limit}, () => {
+            this.goToBackEnd()
+        })
+    }
+
+    goToBackEnd() {
+        var url = 'http://localhost:3000/api/users/?limit='+ this.state.limit + "&after_id=" + this.state.after_id 
+        console.log(url)
+        fetch(url, {method:'GET', 
+        headers: {'Authorization': 'Basic ' + btoa('username:password')}})
+        .then((response) => {
+          if (response.headers.has("X-Elements-Left-To-Process")){
+              this.setState({left_to_process:true})
+          } else {
+              this.setState({left_to_process:false})
+          }
+          return response.json()
+        })
+        .then (data => {
+          this.setState({elements:data.elements}, () => {
+              console.log(this.state.elements)
+          });
         });
-      });
+    }
+
+    componentDidMount() {
+      this.props.navbar(true);
+      this.goToBackEnd();
     }
 
     selectRow = {
@@ -104,6 +127,12 @@ class UsersList extends Component {
     <Button  variant="primary" id= "deleteUserBut" onClick={this.deleteSelectedUsers}>
         Delete Selected users
     </Button>
+    {this.state.after_id !== 1 && <Button  variant="secondary" id= "UsersPrevPage" onClick={this.previousPage}>
+        Previons page
+    </Button>}
+    {this.state.left_to_process === true && <Button  variant="secondary" id= "UsersNextPage" onClick={this.nextPage}>
+        Next page
+    </Button>}
     </div>
       );
       }

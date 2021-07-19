@@ -65,8 +65,10 @@ class NavBar extends Component{
         if (selected.itemId === "/users/") {
             console.log("pushing to", selected.itemId + this.username)
             this.props.history.push(selected.itemId + this.username)
+            this.props.history.go(0)
         } else {
             this.props.history.push(selected.itemId)
+            this.props.history.go(0)
         }
     }
     //var auth = userAuthFunc()

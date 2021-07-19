@@ -39,6 +39,14 @@
     position: relative;
     left: 1%;
 }
+#UsersNextPage{
+    position: absolute;
+    right: 34%;
+}
+#UsersPrevPage{
+    position: absolute;
+    right: 52%;
+}
 /* 
 .Modal {
     height: 100%;

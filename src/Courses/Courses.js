@@ -20,15 +20,31 @@ class Courses extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {coursesSelectedToDelete: [], elements: [
+    this.state = {left_to_process:false,limit:1, after_id:1,coursesSelectedToDelete: [], elements: [
       {year:null,number:null,name:null}
     ]
   };
   this.componentDidMount=this.componentDidMount.bind(this);
   this.deleteSelectedCourses=this.deleteSelectedCourses.bind(this);
   this.onSelect=this.onSelect.bind(this);
-
+  this.goToBackEnd=this.goToBackEnd.bind(this);
+  this.nextPage=this.nextPage.bind(this);
+  this.previousPage=this.previousPage.bind(this);
   }
+
+
+  nextPage = () => {
+    this.setState({after_id: this.state.after_id + this.state.limit}, () => {
+        this.goToBackEnd()
+    })
+  }
+
+  previousPage = () => {
+    this.setState({after_id: this.state.after_id - this.state.limit}, () => {
+        this.goToBackEnd()
+    })
+  }
+
   deleteSelectedCourses = () => {
     this.state.coursesSelectedToDelete.forEach( (course) => {
         course = JSON.parse(course)
@@ -98,14 +114,25 @@ class Courses extends Component {
 
     componentDidMount() {
       this.props.navbar(true);
-      fetch('http://localhost:3000/api/courses/', {method:'GET', 
+      this.goToBackEnd();
+    }
+
+    goToBackEnd() {
+      var url = 'http://localhost:3000/api/courses/?limit='+ this.state.limit + "&after_id=" + this.state.after_id 
+      console.log(url)
+      fetch(url, {method:'GET', 
       headers: {'Authorization': 'Basic ' + btoa('username:password')}})
       .then((response) => {
+        if (response.headers.has("X-Elements-Left-To-Process")){
+            this.setState({left_to_process:true})
+        } else {
+            this.setState({left_to_process:false})
+        }
         return response.json()
       })
       .then (data => {
-        this.setState(data, () => {
-          console.log(this.state)
+        this.setState({elements:data.elements}, () => {
+            console.log(this.state.elements)
         });
       });
     }
@@ -119,9 +146,13 @@ class Courses extends Component {
             <Button  variant="primary" id= "deleteCourseBut" onClick={this.deleteSelectedCourses}>
                 Delete Selected courses
             </Button>
+            {this.state.after_id !== 1 && <Button  variant="secondary" id= "UsersPrevPage" onClick={this.previousPage}>
+                Previons page
+            </Button>}
+            {this.state.left_to_process === true && <Button  variant="secondary" id= "UsersNextPage" onClick={this.nextPage}>
+                Next page
+            </Button>}
       </React.Fragment>
-
-
       );
       }
   
