@@ -23,11 +23,13 @@
 }
 #submitAddCourseBut{
     position: fixed;
+    clear: both;
+    top: 36%;
     right: 31%;
-    bottom: 59%;
 }
 #closeAddCourseBut{
     position: fixed;
+    clear: both;
+    top: 36%;
     left: 26%;
-    bottom: 59%;
 }

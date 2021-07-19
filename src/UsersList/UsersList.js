@@ -11,6 +11,7 @@ import "./UserList.css"
 import BootstrapTable from 'react-bootstrap-table-next';
 
 class UsersList extends Component {
+  usersSelectedToDelete=[]
     constructor(props) {
       super(props);
       this.state = {left_to_process:false,limit:1, after_id:1, elements: [
