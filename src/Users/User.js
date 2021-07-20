@@ -12,6 +12,10 @@ import DropdownMultiselect from "react-multiselect-dropdown-bootstrap";
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
+import Multiselect from 'multiselect-react-dropdown';
+
+
+
 class User extends Component {
     userURL = ""
     userNameFromReq = ""
@@ -153,7 +157,7 @@ Roles:
   {this.state.alertSuccess && <AlertSuccess></AlertSuccess>}
   {this.state.alertFailure && <AlertFailed></AlertFailed>}
 </Form>
-<UserCourses courseOnClick={this.courseOnClick} studentCourses={this.state.courses_as_student.elements} staffCourses={this.state.courses_as_staff.elements}></UserCourses>
+{(this.state.courses_as_student.elements !== {} ||  this.state.courses_as_staff.elements !== {}) && <UserCourses courseOnClick={this.courseOnClick} user_name={this.state.user_name} studentCourses={this.state.courses_as_student.elements} staffCourses={this.state.courses_as_staff.elements} history={this.props.history}></UserCourses>}
 <div className="adminPanel">
 {this.checkAdminCookie() && <AddUserToCourseAsStudentModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={'http://localhost:3000/api/users/' + this.state.user_name}></AddUserToCourseAsStudentModal>}
 {this.checkAdminCookie() && <AddUserToCourseAsStaffModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} user_name={this.state.user_name} userURL={'http://localhost:3000/api/users/' + this.state.user_name}></AddUserToCourseAsStaffModal>}
@@ -311,7 +315,7 @@ class UserCourses extends Component {
   constructor(props){
     super(props);
     this.state = {
-      coursesSelectedToDelete:[]
+      coursesSelectedToDelete:[], staffCoursesSelectedToDelete:[], studentCoursesList:[], staffCoursesList:[]
     }
   }
   columns = [{
@@ -326,25 +330,16 @@ class UserCourses extends Component {
     text: 'Course number'
   }];
 
-  // onSelect = (event) => {
-  //   var index  = this.state.coursesSelected.indexOf(JSON.stringify({year: parseInt(event.year), number: parseInt(event.number)}));
-  //   if (index !== -1){
-  //     var arr = removeItemOnce(this.state.oursesSelected, JSON.stringify({year: parseInt(event.year), number: parseInt(event.number)}))
-  //     this.setState({selectedToDelete: arr}, ()=> {
-  //       console.log(this.state.coursesSelected)
-  //     })
-  //   } else {
-  //     this.state.coursesSelected.push(JSON.stringify({year: parseInt(event.year), number: parseInt(event.number)}));
-  //     this.setState({selectedToDelete: [...this.state.coursesSelected, JSON.stringify({year: parseInt(event.year), number: parseInt(event.number)})]}, () => {
-  //       console.log(this.state.coursesSelected)
-  //     })
+ componentDidMount() {
+   console.log("Xxxxxxx",this.props.studentCourses)
+  this.setState({studentCoursesList:this.props.studentCourses}, () => {
+    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",this.state.studentCoursesList)
+  })
+  this.setState({staffCoursesList:Object.keys(this.props.staffCourses)})
+ }
 
-  //   }
-  // }
-
-  onSelect = (props) => {
+  onSelectStudentTable = (props) => {
     var arr=[]
-    var arr2=[]
     var index = this.state.coursesSelectedToDelete.indexOf(JSON.stringify({year: props.year, number: props.number}));
     if (index !== -1) {
       arr = removeItemOnce(this.state.coursesSelectedToDelete, JSON.stringify({year: props.year, number: props.number}))
@@ -362,6 +357,27 @@ class UserCourses extends Component {
     }
   } 
 
+  onSelectStaffTable = (props) => {
+    var arr=[]
+    var index = this.state.staffCoursesSelectedToDelete.indexOf(JSON.stringify({year: props.year, number: props.number}));
+    if (index !== -1) {
+      arr = removeItemOnce(this.state.staffCoursesSelectedToDelete, JSON.stringify({year: props.year, number: props.number}))
+      this.setState({staffCoursesSelectedToDelete: arr}, () => {
+        console.log(this.state.staffCoursesSelectedToDelete)
+      });
+    } else {
+      arr = [...this.state.staffCoursesSelectedToDelete, JSON.stringify({year: props.year, number: props.number})]
+      arr.forEach((course) => {
+        course = course.replaceAll("\\","");
+      })
+      this.setState({staffCoursesSelectedToDelete:arr}, () => {
+        console.log(this.state.staffCoursesSelectedToDelete)
+      })
+    }
+  } 
+
+
+
 
   removeItemOnce(arr, value) {
     var index = arr.indexOf(value);
@@ -372,12 +388,71 @@ class UserCourses extends Component {
   }
 
 
-  selectRow = {
+  deleteSelectedCoursesAsStudent = () => {
+    console.log("hine:",this.state.coursesSelectedToDelete)
+    console.log("prop1", this.props.studentCourses);
+    var body = {username: this.props.user_name, courses_as_student:{elements:this.props.studentCourses}}
+    this.state.coursesSelectedToDelete.forEach((course) => {
+      course = JSON.parse(course)
+      var toRemove = course.number + ":" + course.year
+      if (Object.keys(body.courses_as_student.elements).includes(toRemove)){
+        delete body.courses_as_student.elements[toRemove]
+        console.log("it works")
+      }
+      console.log(body)
+    })
+
+    fetch('http://localhost:3000/api/users/' + this.props.user_name , {method:'PUT', body: JSON.stringify(body),
+    headers: {'Authorization': 'Basic ' + btoa('username:password')}})
+    .then((response) => {
+    if (!response.ok){
+        alert("balagan")
+    }
+    return response.json()
+    });
+    this.props.history.go(0)
+}
+
+deleteSelectedCoursesAsStaff = () => {
+  console.log("hine:",this.state.staffCoursesSelectedToDelete)
+  console.log("prop1", this.props.staffCourses);
+  var body = {username: this.props.user_name, courses_as_staff:{elements:this.props.staffCourses}}
+  this.state.staffCoursesSelectedToDelete.forEach((course) => {
+    course = JSON.parse(course)
+    var toRemove = course.number + ":" + course.year
+    if (Object.keys(body.courses_as_staff.elements).includes(toRemove)){
+      delete body.courses_as_staff.elements[toRemove]
+      console.log("it works")
+    }
+    console.log(body)
+  })
+
+  fetch('http://localhost:3000/api/users/' + this.props.user_name , {method:'PUT', body: JSON.stringify(body),
+  headers: {'Authorization': 'Basic ' + btoa('username:password')}})
+  .then((response) => {
+  if (!response.ok){
+      alert("balagan")
+  }
+  return response.json()
+  });
+  this.props.history.go(0)
+}
+
+
+  selectRowStudent = {
     mode: "checkbox",
     clickToSelect: false,
     classes: "selection-row",
-    onSelect: this.onSelect
+    onSelect: this.onSelectStudentTable
   };
+
+  selectRowStaff = {
+    mode: "checkbox",
+    clickToSelect: false,
+    classes: "selection-row",
+    onSelect: this.onSelectStaffTable
+  };
+
 
 render(){
   var studentCoursesList = Object.keys(this.props.studentCourses)
@@ -386,10 +461,16 @@ render(){
   return (
     <div className="tables">
     <React.Fragment>
-    <BootstrapTable id= "userCoursesTable" selectRow={this.selectRow} hover keyField='number' data={as_student} columns={ this.columns } pagination={ paginationFactory(PagingOptions) } />
-    <BootstrapTable id= "staffCoursesTable" selectRow={this.selectRow} hover keyField='number' data={as_staff} columns={ this.columns }  pagination={ paginationFactory(PagingOptions) }
-/>
+    {studentCoursesList.length !== 0 && <BootstrapTable id= "userCoursesTable" selectRow={this.selectRowStudent} hover keyField='number' data={as_student} columns={ this.columns } pagination={ paginationFactory(PagingOptions) } />}
+    {staffCoursesList.length !== 0 && <BootstrapTable id= "staffCoursesTable" selectRow={this.selectRowStaff} hover keyField='number' data={as_staff} columns={ this.columns }  pagination={ paginationFactory(PagingOptions) }
+/>}
     </React.Fragment>
+    <Button  variant="secondary" id= "deleteCourseButInUser" onClick={this.deleteSelectedCoursesAsStudent}>
+                Delete Selected courses as student
+            </Button>
+            <Button  variant="secondary" id= "deleteCourseButInStaff" onClick={this.deleteSelectedCoursesAsStaff}>
+                Delete Selected courses as staff
+            </Button>
     </div>
   )
 }
@@ -541,10 +622,11 @@ class GetCoursesList extends Component {
     super(props)
     this.state = {checked: null,selected:[],coursesList:[],elements:[], coursesListAsStaff: [], checkedStaff: null}
     this.componentDidMount=this.componentDidMount.bind(this);
-    this.handleOnChange=this.handleOnChange.bind(this);
     this.updateCoursesAsStudent=this.updateCoursesAsStudent.bind(this);
     this.parseAnswerCoursesAsStudent=this.parseAnswerCoursesAsStudent.bind(this)
     this.parseAnswerCoursesAsStaff = this.parseAnswerCoursesAsStaff.bind(this);
+    this.onSelect=this.onSelect.bind(this);
+    this.onRemove=this.onRemove.bind(this);
   }
 
   async componentDidMount(){
@@ -574,9 +656,6 @@ class GetCoursesList extends Component {
               if (coursesOfStaff.includes(numberAndYear)){
                 coursesStudent = removeItemOnce(coursesStudent, course)
               }
-              // if (coursesOfStudent.includes(numberAndYear)){
-              //   coursesStaff = removeItemOnce(coursesStaff, course)
-              // }
             })
             this.setState({coursesList:coursesStudent}, () => {
               this.parseAnswerCoursesAsStudent()
@@ -587,17 +666,13 @@ class GetCoursesList extends Component {
 
   }
 
-   handleOnChange(coursesSelected){
-     this.setState({selected: coursesSelected}, () => {
-      console.log("updated selected state:" ,this.state.selected)
-    });
-  }
+
 
   updateCoursesAsStudent = () => {
     var body = {user_name: this.props.user_name, courses_as_student:{elements:{}}}
     var coursesToStore = []
     this.state.selected.forEach((course) => {
-      var [number,year] = course.split("/")
+      var [number,year] = course.name.split("/")
       number = number.trim()
       year = year.trim()
       coursesToStore.push((number+":"+year).trim())
@@ -613,13 +688,14 @@ class GetCoursesList extends Component {
     })
     this.props.close()
     this.props.history.go(0)
+    console.log("vvvvvvvv",this.state.selected)
   }
 
   updateCoursesAsStaff = () => {
     var body = {user_name: this.props.user_name, courses_as_staff:{elements:{}}}
     var coursesToStore = []
     this.state.selected.forEach((course) => {
-      var [number,year] = course.split("/")
+      var [number,year] = course.name.split("/")
       number = number.trim()
       year = year.trim()
       coursesToStore.push((number+":"+year).trim())
@@ -658,8 +734,12 @@ class GetCoursesList extends Component {
         }
       })
     })
-    this.setState({checked: checkedCoursesToRet}, () => {
-      console.log("checked courses for student",this.remove_duplicates(checkedCoursesToRet))
+    var toRet=[]
+    checkedCoursesToRet.forEach((course)=> {
+      toRet.push({name: course, id:course})
+    })
+    this.setState({checked: toRet}, () => {
+      console.log("checked courses for student",this.remove_duplicates(toRet))
     })
   }
 
@@ -677,7 +757,11 @@ class GetCoursesList extends Component {
         }
       })
     })
-    this.setState({checkedStaff: checkedCoursesToRet}, () => {
+    var toRet=[]
+    checkedCoursesToRet.forEach((course)=> {
+      toRet.push({name: course, id:course})
+    })
+    this.setState({checkedStaff: toRet}, () => {
       console.log("checked courses for staff",this.remove_duplicates(checkedCoursesToRet))
     })
   }
@@ -694,10 +778,20 @@ class GetCoursesList extends Component {
     return ret_arr;
 }
 
+  onSelect(selectedList, selectedItem) {
+    this.setState({selected: selectedList})
+  }
+
+  onRemove(selectedList, removedItem) {
+    this.setState({checkedStaff: selectedList})
+  }
+
+
   render() {
-    var options;
     var checked;
     var applyFunc;
+    var options;
+    console.log(this.props.role)
     if (this.props.role === "staff"){
       options = this.state.coursesListAsStaff;
       checked = this.state.checkedStaff;
@@ -707,13 +801,24 @@ class GetCoursesList extends Component {
       checked = this.state.checked;
       applyFunc=this.updateCoursesAsStudent;
     }
+    console.log("options",options)
+    var finalOptions = []
+    options.forEach((option) => {
+      option = {name: option, id: option}
+      finalOptions.push(option)
+    })
+    console.log("beeeeeeee,",options)
     return (
 <React.Fragment>
-{options !== null && options.length !== 0 && checked !== null && <DropdownMultiselect
-      options={options}
-      name="courses"
-      handleOnChange= {this.handleOnChange}
-      selected={checked}
+{options !== null && options.length !== 0 && checked !== null && <Multiselect
+      options={finalOptions}
+      // name="courses"
+      onRemove={this.onRemove}
+      onSelect={this.onSelect}
+      selectedValues={checked}
+      disablePreSelectedValues
+      displayValue="name" // Property name to display in the dropdown options
+
     />}
       <Button variant="primary" id="submitAddCourse" onClick={applyFunc}>
       Save Changes
@@ -723,6 +828,9 @@ class GetCoursesList extends Component {
   }
 
 }
+
+
+
 
 const parseCourses = (coursesList) => {
   var courses=[]
