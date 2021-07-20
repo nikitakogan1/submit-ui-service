@@ -37,5 +37,46 @@
       bottom: 20%;
       right: 10%;
     }
-
+    #deleteCourseButInUser{
+      position: fixed;
+      max-width: 60%;
+      bottom: 74%;
+      right: 46%;
+    }
+    #deleteCourseButInStaff{
+      position: fixed;
+      max-width: 60%;
+      bottom: 42.5%;
+      right: 46%;
+    }
+    #addUserAsStudent{
+      position: fixed;
+      max-width: 60%;
+      bottom: 20%;
+      right: 13%;
+    }
+    #addUserAsStaff{
+      position: fixed;
+      max-width: 60%;
+      bottom: 20%;
+      right: 33%;
+    }
+    #submitUserFormBut{
+      position: fixed;
+      max-width: 60%;
+      bottom: 33%;
+      left: 26%;
+    }
+    #alertSuccessUser{
+      position: fixed;
+      max-width: 60%;
+      bottom: 13%;
+      left: 26%;
+    }
+    #alertFailedUser{
+      position: fixed;
+      max-width: 60%;
+      bottom: 13%;
+      left: 26%;
+    }
 }

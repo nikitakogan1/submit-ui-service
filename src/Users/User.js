@@ -151,7 +151,7 @@ class User extends Component {
 Roles:
 {this.checkAdminCookie() ? (this.parseResp(JSON.stringify(this.state.roles.elements)) !== "None" && <AdminUserRoles role={ this.parseResp(JSON.stringify(this.state.roles.elements))}></AdminUserRoles>) : <UserRoles></UserRoles>}
   </Form.Row>
-  <Button variant="primary" type="submit">
+  <Button id="submitUserFormBut" variant="primary" type="submit">
     Submit
   </Button>
   {this.state.alertSuccess && <AlertSuccess></AlertSuccess>}
@@ -466,10 +466,10 @@ render(){
 />}
     </React.Fragment>
     <Button  variant="secondary" id= "deleteCourseButInUser" onClick={this.deleteSelectedCoursesAsStudent}>
-                Delete Selected courses as student
+                Delete
             </Button>
             <Button  variant="secondary" id= "deleteCourseButInStaff" onClick={this.deleteSelectedCoursesAsStaff}>
-                Delete Selected courses as staff
+                Delete
             </Button>
     </div>
   )
@@ -480,7 +480,7 @@ render(){
 
 const PagingOptions = {
   page: 1,
-  sizePerPage: 1,
+  sizePerPage: 3,
   nextPageText: '>',
   prePageText: '<',
   hideSizePerPage: true, // hide the size per page dropdown
@@ -489,7 +489,7 @@ const PagingOptions = {
 
 const AlertSuccess = () => {
     return (
-      <div class="alert alert-success" role="alert">
+      <div id="alertSuccessUser" class="alert alert-success" role="alert">
       User data updated successfully!
       </div>
     )
@@ -497,7 +497,7 @@ const AlertSuccess = () => {
 
   const AlertFailed = () => {
     return (
-     <div class="alert alert-danger" role="alert">
+     <div id="alertFailedUser" class="alert alert-danger" role="alert">
        Failed to update user data! try again!
      </div>
     )
@@ -640,23 +640,11 @@ class GetCoursesList extends Component {
         this.setState({elements : data}, () => {
           if (this.props.role === "staff"){
             var coursesStaff = parseCourses(this.state.elements.elements)
-            // var coursesOfStudent = Object.keys(this.props.courses_as_student.elements)
             this.setState({coursesListAsStaff: coursesStaff}, () => {
               this.parseAnswerCoursesAsStaff()
             })
           } else {
             var coursesStudent = parseCourses(this.state.elements.elements)
-            var coursesOfStaff = Object.keys(this.props.courses_as_staff.elements)
-            coursesStudent.forEach((course) => {
-              var [number,year, name ] = course.split("/")
-              number = number.trim()
-              year = year.trim()
-              const numberAndYear = number + ":" + year
-              console.log(numberAndYear)
-              if (coursesOfStaff.includes(numberAndYear)){
-                coursesStudent = removeItemOnce(coursesStudent, course)
-              }
-            })
             this.setState({coursesList:coursesStudent}, () => {
               this.parseAnswerCoursesAsStudent()
             })
@@ -793,26 +781,29 @@ class GetCoursesList extends Component {
     var options;
     console.log(this.props.role)
     if (this.props.role === "staff"){
-      options = this.state.coursesListAsStaff;
+      console.log("into ssss")
+      console.log(this.state.coursesList)
+      console.log(this.state.coursesListAsStaff)
+      options = this.state.coursesListAsStaff.filter(n => !this.state.coursesList.includes(n));
       checked = this.state.checkedStaff;
       applyFunc=this.updateCoursesAsStaff
     } else {
-      options = this.state.coursesList;
+      console.log("into courses")
+      console.log(this.state.coursesList)
+      console.log(this.state.coursesListAsStaff)
+      options = this.state.coursesList.filter(n => !this.state.coursesListAsStaff.includes(n));
       checked = this.state.checked;
       applyFunc=this.updateCoursesAsStudent;
     }
-    console.log("options",options)
     var finalOptions = []
     options.forEach((option) => {
       option = {name: option, id: option}
       finalOptions.push(option)
     })
-    console.log("beeeeeeee,",options)
     return (
 <React.Fragment>
 {options !== null && options.length !== 0 && checked !== null && <Multiselect
       options={finalOptions}
-      // name="courses"
       onRemove={this.onRemove}
       onSelect={this.onSelect}
       selectedValues={checked}
