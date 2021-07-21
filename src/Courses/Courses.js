@@ -66,11 +66,17 @@ class Courses extends Component {
     // formatter: (cell, row) => <a href={cell.course.year + "/" + cell.course_number}> {cell} </a>,
   }, {
     dataField: 'year',
-    text: 'Course year'
-  }, {
+    text: 'Year',
+    // formatter: (cell, row) => {
+    //   console.log(row);
+    //   return <div>{`${row.year} : ${row.number}`}</div>;
+    // }
+  },
+  {
     dataField: 'number',
     text: 'Course number'
-  }];
+  },
+];
 
   onSelect = (props) => {
     var index = this.state.coursesSelectedToDelete.indexOf(JSON.stringify({year: props.year, number: props.number}));
@@ -118,6 +124,8 @@ class Courses extends Component {
     }
 
     goToBackEnd() {
+      var i = 0;
+      var toRet=[]
       var url = 'http://localhost:3000/api/courses/?limit='+ this.state.limit + "&after_id=" + this.state.after_id 
       console.log(url)
       fetch(url, {method:'GET', 
@@ -131,17 +139,30 @@ class Courses extends Component {
         return response.json()
       })
       .then (data => {
-        this.setState({elements:data.elements}, () => {
+        data.elements.forEach((element) => {
+          element.id=this.getRandomInt(1,100000000);
+          console.log(element)
+          toRet.push(element)
+        })
+        this.setState({elements:toRet}, () => {
             console.log(this.state.elements)
         });
       });
     }
 
+     getRandomInt(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+
+
     render(){
       return (
 
       <React.Fragment>
-      <BootstrapTable selectRow={this.selectRow} hover keyField='number' data={ this.state.elements } columns={ this.columns } />
+      <BootstrapTable selectRow={this.selectRow} hover keyField='id' data={ this.state.elements } columns={ this.columns } />
             <AddCourserModal history={this.props.history}></AddCourserModal>
             <Button  variant="primary" id= "deleteCourseBut" onClick={this.deleteSelectedCourses}>
                 Delete Selected courses
