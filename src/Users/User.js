@@ -160,7 +160,7 @@ Roles:
 {(this.state.courses_as_student.elements !== {} ||  this.state.courses_as_staff.elements !== {}) && <UserCourses courseOnClick={this.courseOnClick} user_name={this.state.user_name} studentCourses={this.state.courses_as_student.elements} staffCourses={this.state.courses_as_staff.elements} history={this.props.history}></UserCourses>}
 <div className="adminPanel">
 {this.checkAdminCookie() && <AddUserToCourseAsStudentModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={'http://localhost:3000/api/users/' + this.state.user_name}></AddUserToCourseAsStudentModal>}
-{this.checkAdminCookie() && <AddUserToCourseAsStaffModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} user_name={this.state.user_name} userURL={'http://localhost:3000/api/users/' + this.state.user_name}></AddUserToCourseAsStaffModal>}
+{this.checkAdminCookie() && <AddUserToCourseAsStaffModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={'http://localhost:3000/api/users/' + this.state.user_name}></AddUserToCourseAsStaffModal>}
 </div>
 </React.Fragment>
 
@@ -627,6 +627,7 @@ class GetCoursesList extends Component {
     this.parseAnswerCoursesAsStaff = this.parseAnswerCoursesAsStaff.bind(this);
     this.onSelect=this.onSelect.bind(this);
     this.onRemove=this.onRemove.bind(this);
+    this.checkCourses=this.checkCourses.bind(this);
   }
 
   async componentDidMount(){
@@ -639,14 +640,17 @@ class GetCoursesList extends Component {
     .then (data => {
         this.setState({elements : data}, () => {
           if (this.props.role === "staff"){
-            var coursesStaff = parseCourses(this.state.elements.elements)
+            var coursesStaff = parseCourses(this.state.elements.elements);
+            coursesStaff = this.checkCourses(true,coursesStaff);
+            console.log("i look for", coursesStaff)
             this.setState({coursesListAsStaff: coursesStaff}, () => {
-              this.parseAnswerCoursesAsStaff()
+              this.parseAnswerCoursesAsStaff();
             })
           } else {
-            var coursesStudent = parseCourses(this.state.elements.elements)
+            var coursesStudent = parseCourses(this.state.elements.elements);
+            coursesStudent = this.checkCourses(false,coursesStudent);
             this.setState({coursesList:coursesStudent}, () => {
-              this.parseAnswerCoursesAsStudent()
+              this.parseAnswerCoursesAsStudent();
             })
           }
         })
@@ -654,6 +658,34 @@ class GetCoursesList extends Component {
 
   }
 
+
+  checkCourses = (isStaff, courses) => {
+    console.log(this.props.courses_as_staff)
+    console.log(this.props.courses_as_student)
+    var keys = [];
+    if (isStaff){
+      keys = Object.keys(this.props.courses_as_student.elements);
+    } else {
+      keys = Object.keys(this.props.courses_as_staff.elements);
+    }
+    var coursesToRet = courses;
+    keys.forEach((key) => {
+      var [number,year] = key.split(":");
+      number = number.trim()
+      year = year.trim()
+      courses.forEach((course) => {
+        var [courseNumber,courseYear,_] = course.split("/");
+        courseNumber = courseNumber.trim();
+        courseYear = courseYear.trim();
+        console.log("a",courseYear)
+        console.log("b",courseNumber)
+        if (number === courseNumber && year === courseYear){
+          coursesToRet = removeItemOnce(courses,course);
+        }
+      })
+    })
+    return coursesToRet;
+  }
 
 
   updateCoursesAsStudent = () => {
@@ -781,14 +813,12 @@ class GetCoursesList extends Component {
     var options;
     console.log(this.props.role)
     if (this.props.role === "staff"){
-      console.log("into ssss")
       console.log(this.state.coursesList)
       console.log(this.state.coursesListAsStaff)
       options = this.state.coursesListAsStaff.filter(n => !this.state.coursesList.includes(n));
       checked = this.state.checkedStaff;
       applyFunc=this.updateCoursesAsStaff
     } else {
-      console.log("into courses")
       console.log(this.state.coursesList)
       console.log(this.state.coursesListAsStaff)
       options = this.state.coursesList.filter(n => !this.state.coursesListAsStaff.includes(n));
