@@ -84,35 +84,13 @@ class User extends Component {
         this.props.navbar(true)
     }
 
-    parseResp(str){ 
-      console.log("parse resp",str)
-      if (str.includes("admin")){
-        return "Admin"
-      } else if (str.includes("secretary")) {
-        return "Secretary"
-      } else if (str.includes("std_user")){
-        return "User"
-      }
-      var toRet = str.replaceAll("{","").replaceAll("}","").replaceAll(",", " ").replaceAll(":"," ").replaceAll("\"","")
-      if (toRet === ""){
-        return "None"
-      }
-    }
+
 
     checkAdmin() {
-      if (this.parseResp(JSON.stringify(this.state.roles.elements)) === "Admin") {
+      if (parseResp(JSON.stringify(this.state.roles.elements)) === "Admin") {
         return true
       }
       return false
-    }
-
-    checkAdminCookie(){
-      var state_cookie = getCookie("submit-last-server-state");
-      if (state_cookie !== undefined){
-        console.log(state_cookie);
-        var roles = JSON.parse(state_cookie).roles;
-      }
-      return this.parseResp(JSON.stringify(roles)) === "Admin"
     }
 
     courseOnClick = (course) => {
@@ -121,7 +99,7 @@ class User extends Component {
     }
 
     render() {
-        console.log("the state before sending is", this.parseResp(JSON.stringify(this.state.roles.elements)))
+        console.log("the state before sending is", parseResp(JSON.stringify(this.state.roles.elements)))
         return (
           <React.Fragment>
 <Form onSubmit={this.updateDetails}>
@@ -149,7 +127,7 @@ class User extends Component {
   </Form.Group>
 
 Roles:
-{this.checkAdminCookie() ? (this.parseResp(JSON.stringify(this.state.roles.elements)) !== "None" && <AdminUserRoles role={ this.parseResp(JSON.stringify(this.state.roles.elements))}></AdminUserRoles>) : <UserRoles></UserRoles>}
+{checkAdminCookie() ? (parseResp(JSON.stringify(this.state.roles.elements)) !== "None" && <AdminUserRoles role={ parseResp(JSON.stringify(this.state.roles.elements))}></AdminUserRoles>) : <UserRoles></UserRoles>}
   </Form.Row>
   <Button id="submitUserFormBut" variant="primary" type="submit">
     Submit
@@ -157,16 +135,39 @@ Roles:
   {this.state.alertSuccess && <AlertSuccess></AlertSuccess>}
   {this.state.alertFailure && <AlertFailed></AlertFailed>}
 </Form>
-{(this.state.courses_as_student.elements !== {} ||  this.state.courses_as_staff.elements !== {}) && <UserCourses courseOnClick={this.courseOnClick} user_name={this.state.user_name} studentCourses={this.state.courses_as_student.elements} staffCourses={this.state.courses_as_staff.elements} history={this.props.history}></UserCourses>}
+{(this.state.courses_as_student.elements !== {} ||  this.state.courses_as_staff.elements !== {}) && <UserCourses checkAdminCookie={this.checkAdminCookie} courseOnClick={this.courseOnClick} user_name={this.state.user_name} studentCourses={this.state.courses_as_student.elements} staffCourses={this.state.courses_as_staff.elements} history={this.props.history}></UserCourses>}
 <div className="adminPanel">
-{this.checkAdminCookie() && <AddUserToCourseAsStudentModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={'http://localhost:3000/api/users/' + this.state.user_name}></AddUserToCourseAsStudentModal>}
-{this.checkAdminCookie() && <AddUserToCourseAsStaffModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={'http://localhost:3000/api/users/' + this.state.user_name}></AddUserToCourseAsStaffModal>}
+{checkAdminCookie() && <AddUserToCourseAsStudentModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={'http://localhost:3000/api/users/' + this.state.user_name}></AddUserToCourseAsStudentModal>}
+{checkAdminCookie() && <AddUserToCourseAsStaffModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={'http://localhost:3000/api/users/' + this.state.user_name}></AddUserToCourseAsStaffModal>}
 </div>
 </React.Fragment>
 
 )}
 }
  
+function parseResp(str){ 
+  console.log("parse resp",str)
+  if (str.includes("admin")){
+    return "Admin"
+  } else if (str.includes("secretary")) {
+    return "Secretary"
+  } else if (str.includes("std_user")){
+    return "User"
+  }
+  var toRet = str.replaceAll("{","").replaceAll("}","").replaceAll(",", " ").replaceAll(":"," ").replaceAll("\"","")
+  if (toRet === ""){
+    return "None"
+  }
+}
+
+function checkAdminCookie(){
+  var state_cookie = getCookie("submit-last-server-state");
+  if (state_cookie !== undefined){
+    console.log(state_cookie);
+    var roles = JSON.parse(state_cookie).roles;
+  }
+  return parseResp(JSON.stringify(roles)) === "Admin"
+}
 
 
 class AdminUserRoles extends Component {
@@ -461,17 +462,19 @@ render(){
   return (
     <div className="tables">
     <React.Fragment>
-    {studentCoursesList.length !== 0 && <BootstrapTable id= "userCoursesTable" selectRow={this.selectRowStudent} hover keyField='number' data={as_student} columns={ this.columns } pagination={ paginationFactory(PagingOptions) } />}
-    {staffCoursesList.length !== 0 && <BootstrapTable id= "staffCoursesTable" selectRow={this.selectRowStaff} hover keyField='number' data={as_staff} columns={ this.columns }  pagination={ paginationFactory(PagingOptions) }
-/>}
-    </React.Fragment>
-    <Button  variant="secondary" id= "deleteCourseButInUser" onClick={this.deleteSelectedCoursesAsStudent}>
-                Delete
-            </Button>
-            <Button  variant="secondary" id= "deleteCourseButInStaff" onClick={this.deleteSelectedCoursesAsStaff}>
-                Delete
-            </Button>
-    </div>
+    {checkAdminCookie() && studentCoursesList.length !== 0 && <BootstrapTable id= "userCoursesTable" selectRow={this.selectRowStudent} hover keyField='number' data={as_student} columns={ this.columns } pagination={ paginationFactory(PagingOptions) } />}
+    {checkAdminCookie() && staffCoursesList.length !== 0 && <BootstrapTable id= "staffCoursesTable" selectRow={this.selectRowStaff} hover keyField='number' data={as_staff} columns={ this.columns }  pagination={ paginationFactory(PagingOptions) }/>}
+    {!checkAdminCookie() && studentCoursesList.length !== 0 && <BootstrapTable id= "userCoursesTable"  hover keyField='number' data={as_student} columns={ this.columns } pagination={ paginationFactory(PagingOptions) } />}
+    {!checkAdminCookie() && staffCoursesList.length !== 0 && <BootstrapTable id= "staffCoursesTable"  hover keyField='number' data={as_staff} columns={ this.columns }  pagination={ paginationFactory(PagingOptions) }/>}
+     
+     </React.Fragment>
+     {checkAdminCookie() &&  <Button  variant="secondary" id= "deleteCourseButInUser" onClick={this.deleteSelectedCoursesAsStudent}>
+          Delete
+      </Button>}
+      {checkAdminCookie() &&  <Button  variant="secondary" id= "deleteCourseButInStaff" onClick={this.deleteSelectedCoursesAsStaff}>
+          Delete
+      </Button>}
+</div>
   )
 }
 
