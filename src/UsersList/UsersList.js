@@ -14,7 +14,7 @@ class UsersList extends Component {
   usersSelectedToDelete=[]
     constructor(props) {
       super(props);
-      this.state = {left_to_process:false,limit:1, after_id:1, elements: [
+      this.state = {left_to_process:false,limit:1, after_id:0, elements: [
         {user_name:null,first_name:null,last_name:null}
       ],
     };
@@ -67,7 +67,10 @@ class UsersList extends Component {
     }
 
     goToBackEnd() {
-        var url = 'http://localhost:3000/api/users/?limit='+ this.state.limit + "&after_id=" + this.state.after_id 
+        var url = 'http://localhost:3000/api/users/?limit='+ this.state.limit
+        if (this.state.after_id > 0) {
+          url = url + "&after_id=" + this.state.after_id
+        }
         console.log(url)
         fetch(url, {method:'GET', 
         headers: {'Authorization': 'Basic ' + btoa('username:password')}})
@@ -128,7 +131,7 @@ class UsersList extends Component {
     <Button  variant="primary" id= "deleteUserBut" onClick={this.deleteSelectedUsers}>
         Delete Selected users
     </Button>
-    {this.state.after_id !== 1 && <Button  variant="secondary" id= "UsersPrevPage" onClick={this.previousPage}>
+    {this.state.after_id > 0 && <Button  variant="secondary" id= "UsersPrevPage" onClick={this.previousPage}>
         Previons page
     </Button>}
     {this.state.left_to_process === true && <Button  variant="secondary" id= "UsersNextPage" onClick={this.nextPage}>

@@ -20,8 +20,8 @@ class Courses extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {left_to_process:false,limit:1, after_id:1,coursesSelectedToDelete: [], elements: [
-      {year:null,number:null,name:null}
+    this.state = {left_to_process:false,limit:1, after_id:0,coursesSelectedToDelete: [], elements: [
+      {number:null,name:null}
     ]
   };
   this.componentDidMount=this.componentDidMount.bind(this);
@@ -124,9 +124,11 @@ class Courses extends Component {
     }
 
     goToBackEnd() {
-      var i = 0;
       var toRet=[]
-      var url = 'http://localhost:3000/api/courses/?limit='+ this.state.limit + "&after_id=" + this.state.after_id 
+      var url = 'http://localhost:3000/api/courses/?limit='+ this.state.limit
+      if (this.state.after_id > 0) {
+        url = url + "&after_id=" + this.state.after_id
+      }
       console.log(url)
       fetch(url, {method:'GET', 
       headers: {'Authorization': 'Basic ' + btoa('username:password')}})
@@ -139,6 +141,7 @@ class Courses extends Component {
         return response.json()
       })
       .then (data => {
+        console.log(data)
         data.elements.forEach((element) => {
           element.id=this.getRandomInt(1,100000000);
           console.log(element)
@@ -167,7 +170,7 @@ class Courses extends Component {
             <Button  variant="primary" id= "deleteCourseBut" onClick={this.deleteSelectedCourses}>
                 Delete Selected courses
             </Button>
-            {this.state.after_id !== 1 && <Button  variant="secondary" id= "UsersPrevPage" onClick={this.previousPage}>
+            {this.state.after_id > 0 && <Button  variant="secondary" id= "UsersPrevPage" onClick={this.previousPage}>
                 Previons page
             </Button>}
             {this.state.left_to_process === true && <Button  variant="secondary" id= "UsersNextPage" onClick={this.nextPage}>
@@ -189,9 +192,8 @@ class Courses extends Component {
     const createCourse = (event) => {
         event.preventDefault(event);
         console.log(event.target.number.value)
-        console.log(event.target.year.value)
         console.log(event.target.name.value)
-        var body = { number: parseInt(event.target.number.value), year: parseInt(event.target.year.value), name: event.target.name.value }
+        var body = { number: parseInt(event.target.number.value), name: event.target.name.value }
         console.log(body)
         fetch('http://localhost:3000/api/courses/', {method:'POST', 
         body: JSON.stringify(body), headers: {'Authorization': 'Basic ' + btoa('username:password')}})
@@ -224,12 +226,6 @@ class Courses extends Component {
                 <Form.Control placeholder="Enter course number" />
                 </Form.Group>
             </Form.Row>
-
-            <Form.Group controlId="year"> 
-                <Form.Label>Year: </Form.Label>
-                <Form.Control placeholder="Enter course year"  />
-            </Form.Group>
-
             <Form.Group controlId="name" >
                 <Form.Label>Name: </Form.Label>
                 <Form.Control placeholder="Enter last name"/>
