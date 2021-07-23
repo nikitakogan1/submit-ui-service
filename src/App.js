@@ -11,21 +11,7 @@ import UsersList from "./UsersList/UsersList"
 function App (){
   const [showNavBar,setShowNavBar] = useState(false)
   const history = useHistory()
-  // const addCourseOnSubmit = (event) => {
-  //   event.preventDefault(event);
-  //   console.log(event.target.name.value);
-  //   console.log(event.target.year.value);
-  //   console.log(event.target.number.value);
-  //   var body = {year:parseInt(event.target.year.value), number:parseInt(event.target.number.value), name:event.target.name.value}
-  //   console.log( JSON.stringify(body))
-  //   fetch('http://localhost:3000/api/courses/', {method:'POST', 
-  //    body: JSON.stringify(body), headers: {'Authorization': 'Basic ' + btoa('admin:admin')}})
-  //    .then((response) => response.json())
-  //    .then (data => {
-  //      console.log(data);
-  //    });
-     
-  // };
+ 
   return (
     <React.Fragment>
     <div className="App">
@@ -50,9 +36,11 @@ const AdminAuthFunc = () => {
   var cookie = getCookie("submit-server-cookie")
   var stateCookie = getCookie("submit-last-server-state")
   if (cookie === undefined || stateCookie === undefined) {
+    setCookie('submit-last-visited-path', window.location.pathname, 0.0034);
     return false
    }
-   return true
+   var cookieJson = JSON.parse(stateCookie)
+   return cookieJson.roles.indexOf("admin") >= 0
 }
   
 function getCookie(name) {

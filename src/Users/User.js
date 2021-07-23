@@ -634,7 +634,7 @@ class GetCoursesList extends Component {
   }
 
   async componentDidMount(){
-    var coursesURL = "http://localhost:3000/api/courses/"
+    var coursesURL = window.location.origin + "/api/courses/"
     await fetch(coursesURL, {method:'GET', 
     headers: {'Authorization': 'Basic ' + btoa('username:password')}})
     .then((response) => {
