@@ -248,7 +248,7 @@ class AdminUserRoles extends Component {
         this.setState({isStdUsr : e.currentTarget.checked})
       }}
       type="radio"
-      label={`Standart user`}
+      label={`Standard user`}
       id={`standartUser`}
       checked={this.state.isStdUsr === true}
       />
