@@ -8,6 +8,9 @@ import User from "./Users/User";
 import {UserPrivateRoute} from "./Users/User"
 import NavBar from "./Navbar/Navbar"
 import UsersList from "./UsersList/UsersList"
+import AgentList from "./Agents/Agents"
+
+
 function App (){
   const [showNavBar,setShowNavBar] = useState(false)
   const history = useHistory()
@@ -24,6 +27,8 @@ function App (){
         <AdminPrivateRoute path="/courses" component={Courses} navbar={setShowNavBar} history={history}></AdminPrivateRoute>
         <UserPrivateRoute path="/users/:id" component={User} navbar={setShowNavBar} history={history}></UserPrivateRoute>
         <AdminPrivateRoute path="/users/" component={UsersList} navbar={setShowNavBar} history={history}></AdminPrivateRoute>
+        <AdminPrivateRoute path="/agents/" component={AgentList} navbar={setShowNavBar} history={history}></AdminPrivateRoute>
+
       </Switch>
       </BrowserRouter>
   </div>

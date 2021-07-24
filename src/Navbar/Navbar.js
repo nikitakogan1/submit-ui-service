@@ -71,7 +71,7 @@ class NavBar extends Component{
             this.props.history.go(0)
         }
     }
-    //var auth = userAuthFunc()
+
 
     render(){
         return (
