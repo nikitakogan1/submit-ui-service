@@ -9,17 +9,29 @@ import {UserPrivateRoute} from "./Users/User"
 import NavBar from "./Navbar/Navbar"
 import UsersList from "./UsersList/UsersList"
 import AgentList from "./Agents/Agents"
-
-
+import Button from "react-bootstrap/Button"
+import "./App.css"
 function App (){
   const [showNavBar,setShowNavBar] = useState(false)
   const history = useHistory()
  
+
+  const LogOutBut = () => {
+    eraseCookie("submit-server-cookie")
+    eraseCookie("submit-last-server-state")
+    history.go(0)
+    function eraseCookie(name) {   
+      document.cookie = name+'=; Max-Age=-99999999;';  
+  }
+  }
+
+
   return (
     <React.Fragment>
     <div className="App">
     <BrowserRouter>
     {showNavBar && <NavBar history={history}></NavBar>}
+    {getCookie("submit-server-cookie") !== undefined && getCookie("submit-last-server-state") !== undefined && <Button id="logoutBut" history={history} onClick={LogOutBut}>Log out</Button>}
       <Switch>
         <Route exact path="/">
           <Login setNavBar={setShowNavBar} history={history}/>
@@ -29,7 +41,6 @@ function App (){
         <AdminPrivateRoute path="/users/" component={UsersList} navbar={setShowNavBar} history={history}></AdminPrivateRoute>
         <AdminPrivateRoute path="/agents/" component={AgentList} navbar={setShowNavBar} history={history}></AdminPrivateRoute>
         <Route component={PageNotFound} path={"/not-found"}/>
-
       </Switch>
       </BrowserRouter>
   </div>
@@ -37,6 +48,8 @@ function App (){
 
   );
 }
+
+
 
 
 const PageNotFound = () => {
