@@ -1,5 +1,6 @@
 import { Component } from "react";
 import BootstrapTable from 'react-bootstrap-table-next';
+import Button from "react-bootstrap/Button";
 
 export default class AgentList extends Component {
 
@@ -8,11 +9,23 @@ export default class AgentList extends Component {
         this.state = {
             left_to_process: false,
             after_id: 0,
-            limit: 1,
+            limit: 5,
             elements: null
         }
         this.goToBackEnd=this.goToBackEnd.bind(this);
         this.componentDidMount=this.componentDidMount.bind(this);
+    }
+
+    nextPage = () => {
+      this.setState({after_id: this.state.after_id + this.state.limit}, () => {
+          this.goToBackEnd()
+      })
+    }
+
+    previousPage = () => {
+      this.setState({after_id: this.state.after_id - this.state.limit}, () => {
+          this.goToBackEnd()
+      })
     }
 
     columns = [{
@@ -20,6 +33,19 @@ export default class AgentList extends Component {
         text: 'Agent ID',
         formatter: (cell, row) => <a href={"/agents/" + cell}> {cell} </a>,
       }, {
+        dataField: 'status',
+        text: 'Status',
+        formatter: (cell, row) => <div></div>,
+        style: function callback(cell, row, rowIndex, colIndex) {
+          if (cell === 0) {
+            return { backgroundColor: 'green' };
+          } else if (cell === 1) {
+            return { backgroundColor: 'red' };
+          }
+          return {};
+        }
+      },
+      {
         dataField: 'hostname',
         text: 'Host name'
       }, {
@@ -36,14 +62,15 @@ export default class AgentList extends Component {
       },
       {
         dataField: 'last_keepalive',
-        text: 'Last keepalive'
+        text: 'Last keepalive',
+        formatter: (cell, row) => <h10>{new Date(cell).toString()}</h10>
       },
       {
         dataField: 'logged_in_user',
         text: 'User'
       },
       {
-        dataField: 'num_running_task',
+        dataField: 'num_running_tasks',
         text: 'num running tasks'
       },
     ];
@@ -58,7 +85,6 @@ export default class AgentList extends Component {
         if (this.state.after_id > 0) {
           url = url + "&after_id=" + this.state.after_id
         }
-        console.log(url)
         fetch(url, {method:'GET'})
         .then((response) => {
           if (response.headers.has("X-Elements-Left-To-Process")){
@@ -78,7 +104,9 @@ export default class AgentList extends Component {
     render() {
         return (
             <div>
-            { this.state.elements !== null && this.state.lenght !== 0 && <BootstrapTable hover keyField='id' data={ this.state.elements } columns={ this.columns } /> }
+            { this.state.elements !== null && this.state.elements.length > 0 && <BootstrapTable hover keyField='id' data={ this.state.elements } columns={ this.columns } /> }
+            {this.state.after_id > 0 && <Button variant="primary" id= "UsersPrevPage" onClick={this.previousPage}>Previons page</Button>}
+            {this.state.left_to_process === true && <Button variant="primary" id= "UsersNextPage" onClick={this.nextPage}>Next page</Button>}
             </div>
         )
     }

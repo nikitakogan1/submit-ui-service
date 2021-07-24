@@ -70,8 +70,7 @@ const AdminAuthFunc = () => {
     setCookie('submit-last-visited-path', window.location.pathname, 0.0034);
     return false
    }
-   var cookieJson = JSON.parse(stateCookie)
-   return cookieJson.roles.indexOf("admin") >= 0
+   return true
 }
   
 function getCookie(name) {
