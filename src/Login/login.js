@@ -66,7 +66,7 @@ class Login extends Component {
   async handleSubmit(event) {
     var last_visited_cookie = this.getCookie("submit-last-visited-path")
     event.preventDefault();
-    await fetch('http://localhost:3000/api/', {method:'GET', 
+    await fetch(window.location.origin + '/api/', {method:'GET', 
     headers: {'Authorization': 'Basic ' + btoa(this.state.username + ":" + this.state.password)}})
     .then((response) => {
         if (response.ok) {

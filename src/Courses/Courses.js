@@ -48,7 +48,7 @@ class Courses extends Component {
   deleteSelectedCourses = () => {
     this.state.coursesSelectedToDelete.forEach( (course) => {
         course = JSON.parse(course)
-        fetch('http://localhost:3000/api/courses/' + course.number + "/" + course.year, {method:'DELETE', 
+        fetch(window.location.origin + '/api/courses/' + course.number + "/" + course.year, {method:'DELETE', 
         headers: {'Authorization': 'Basic ' + btoa('username:password')}})
         .then((response) => {
         if (!response.ok){
@@ -125,7 +125,7 @@ class Courses extends Component {
 
     goToBackEnd() {
       var toRet=[]
-      var url = 'http://localhost:3000/api/courses/?limit='+ this.state.limit
+      var url = window.location.origin + '/api/courses/?limit='+ this.state.limit
       if (this.state.after_id > 0) {
         url = url + "&after_id=" + this.state.after_id
       }
@@ -195,7 +195,7 @@ class Courses extends Component {
         console.log(event.target.name.value)
         var body = { number: parseInt(event.target.number.value), name: event.target.name.value }
         console.log(body)
-        fetch('http://localhost:3000/api/courses/', {method:'POST', 
+        fetch(window.location.origin + '/api/courses/', {method:'POST', 
         body: JSON.stringify(body), headers: {'Authorization': 'Basic ' + btoa('username:password')}})
         .then((response) => {
           if (!response.ok){

@@ -42,7 +42,7 @@ class UsersList extends Component {
 
     deleteSelectedUsers = () => {
         this.usersSelectedToDelete.forEach( (username) => {
-            fetch('http://localhost:3000/api/users/' + username, {method:'DELETE', 
+            fetch(window.location.origin  +  'api/users/' + username, {method:'DELETE', 
             headers: {'Authorization': 'Basic ' + btoa('username:password')}})
             .then((response) => {
             if (!response.ok){
@@ -67,7 +67,7 @@ class UsersList extends Component {
     }
 
     goToBackEnd() {
-        var url = 'http://localhost:3000/api/users/?limit='+ this.state.limit
+        var url = window.location.origin + '/api/users/?limit='+ this.state.limit
         if (this.state.after_id > 0) {
           url = url + "&after_id=" + this.state.after_id
         }
@@ -157,7 +157,7 @@ class UsersList extends Component {
         console.log(event.target.user_name.value)
         var body = {"users":[{"user_name":event.target.user_name.value, "email": event.target.email.value ,"password":event.target.password.value, "last_name": event.target.last_name.value, "first_name": event.target.first_name.value ,"roles":{"elements":{"std_user":{}}},"courses_as_student":{"elements":{}},"courses_as_staff":{"elements":{}}}]}
         console.log(body)
-        fetch('http://localhost:3000/api/users/', {method:'POST', 
+        fetch(window.location.origin + '/api/users/', {method:'POST', 
         body: JSON.stringify(body), headers: {'Authorization': 'Basic ' + btoa('username:password')}})
         .then((response) => {
           return response.json()

@@ -46,7 +46,7 @@ class User extends Component {
         var body = {"user_name":this.state.user_name,"last_name":event.target.last_name.value, "email": event.target.email.value, "first_name":event.target.first_name.value,"password":this.state.password,
         "roles":roles,"courses_as_student":this.state.courses_as_student,"courses_as_staff":this.state.courses_as_staff}
         console.log( JSON.stringify(body))
-         fetch('http://localhost:3000/api/users/' + this.userNameFromReq , {method:'PUT', 
+         fetch(window.location.origin + '/api/users/' + this.userNameFromReq , {method:'PUT', 
          body: JSON.stringify(body), headers: {'Authorization': 'Basic ' + btoa('username:password')}})
          .then((response) => {
           if (response.ok) {
@@ -69,7 +69,7 @@ class User extends Component {
         console.log("the state cookie is" ,state_cookie)
         this.username = JSON.parse(state_cookie).user_name;
         console.log("the username is", this.username);
-        this.userURL = "http://localhost:3000/api/users/" + this.userNameFromReq
+        this.userURL = window.location.origin + '/api/users/' + this.userNameFromReq
         fetch(this.userURL, {method:'GET', 
         headers: {'Authorization': 'Basic ' + btoa('username:password')}})
         .then((response) => {
@@ -140,8 +140,8 @@ Roles:
 </Form>
 {(this.state.courses_as_student.elements !== {} ||  this.state.courses_as_staff.elements !== {}) && <UserCourses checkAdminCookie={this.checkAdminCookie} courseOnClick={this.courseOnClick} user_name={this.state.user_name} studentCourses={this.state.courses_as_student.elements} staffCourses={this.state.courses_as_staff.elements} history={this.props.history}></UserCourses>}
 <div className="adminPanel">
-{checkAdminCookie() && <AddUserToCourseAsStudentModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={'http://localhost:3000/api/users/' + this.state.user_name}></AddUserToCourseAsStudentModal>}
-{checkAdminCookie() && <AddUserToCourseAsStaffModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={'http://localhost:3000/api/users/' + this.state.user_name}></AddUserToCourseAsStaffModal>}
+{checkAdminCookie() && <AddUserToCourseAsStudentModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={window.location.origin + '/api/users/' + this.state.user_name}></AddUserToCourseAsStudentModal>}
+{checkAdminCookie() && <AddUserToCourseAsStaffModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={window.location.origin + 'api/users/' + this.state.user_name}></AddUserToCourseAsStaffModal>}
 </div>
 </React.Fragment>
 
@@ -401,7 +401,7 @@ class UserCourses extends Component {
       console.log(body)
     })
 
-    fetch('http://localhost:3000/api/users/' + this.props.user_name , {method:'PUT', body: JSON.stringify(body),
+    fetch(window.location.origin + 'api/users/' + this.props.user_name , {method:'PUT', body: JSON.stringify(body),
     headers: {'Authorization': 'Basic ' + btoa('username:password')}})
     .then((response) => {
     if (!response.ok){
@@ -426,7 +426,7 @@ deleteSelectedCoursesAsStaff = () => {
     console.log(body)
   })
 
-  fetch('http://localhost:3000/api/users/' + this.props.user_name , {method:'PUT', body: JSON.stringify(body),
+  fetch(window.location.origin + '/api/users/' + this.props.user_name , {method:'PUT', body: JSON.stringify(body),
   headers: {'Authorization': 'Basic ' + btoa('username:password')}})
   .then((response) => {
   if (!response.ok){
