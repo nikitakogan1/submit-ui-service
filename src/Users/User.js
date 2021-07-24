@@ -466,10 +466,10 @@ render(){
     {!checkAdminCookie() && staffCoursesList.length !== 0 && <BootstrapTable id= "staffCoursesTable"  hover keyField='number' data={as_staff} columns={ this.columns }  pagination={ paginationFactory(PagingOptions) }/>}
      
      </React.Fragment>
-     {checkAdminCookie() &&  <Button  variant="secondary" id= "deleteCourseButInUser" onClick={this.deleteSelectedCoursesAsStudent}>
+     {checkAdminCookie() && studentCoursesList.length !== 0 && <Button  variant="secondary" id= "deleteCourseButInUser" onClick={this.deleteSelectedCoursesAsStudent}>
           Delete
       </Button>}
-      {checkAdminCookie() &&  <Button  variant="secondary" id= "deleteCourseButInStaff" onClick={this.deleteSelectedCoursesAsStaff}>
+      {checkAdminCookie() && staffCoursesList.length !== 0 && <Button  variant="secondary" id= "deleteCourseButInStaff" onClick={this.deleteSelectedCoursesAsStaff}>
           Delete
       </Button>}
 </div>
