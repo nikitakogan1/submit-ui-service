@@ -73,6 +73,9 @@ class User extends Component {
         fetch(this.userURL, {method:'GET', 
         headers: {'Authorization': 'Basic ' + btoa('username:password')}})
         .then((response) => {
+            if (response.status === 404){
+              this.props.history.push("/not-found")
+            }
             return response.json()
         })
         .then (data => {
@@ -332,9 +335,7 @@ class UserCourses extends Component {
   }];
 
  componentDidMount() {
-   console.log("Xxxxxxx",this.props.studentCourses)
   this.setState({studentCoursesList:this.props.studentCourses}, () => {
-    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",this.state.studentCoursesList)
   })
   this.setState({staffCoursesList:Object.keys(this.props.staffCourses)})
  }
@@ -345,16 +346,13 @@ class UserCourses extends Component {
     if (index !== -1) {
       arr = removeItemOnce(this.state.coursesSelectedToDelete, JSON.stringify({year: props.year, number: props.number}))
       this.setState({coursesSelectedToDelete: arr}, () => {
-        console.log(this.state.coursesSelectedToDelete)
       });
     } else {
       arr = [...this.state.coursesSelectedToDelete, JSON.stringify({year: props.year, number: props.number})]
       arr.forEach((course) => {
         course = course.replaceAll("\\","");
       })
-      this.setState({coursesSelectedToDelete:arr}, () => {
-        console.log(this.state.coursesSelectedToDelete)
-      })
+      this.setState({coursesSelectedToDelete:arr})
     }
   } 
 

@@ -28,6 +28,7 @@ function App (){
         <UserPrivateRoute path="/users/:id" component={User} navbar={setShowNavBar} history={history}></UserPrivateRoute>
         <AdminPrivateRoute path="/users/" component={UsersList} navbar={setShowNavBar} history={history}></AdminPrivateRoute>
         <AdminPrivateRoute path="/agents/" component={AgentList} navbar={setShowNavBar} history={history}></AdminPrivateRoute>
+        <Route component={PageNotFound} path={"/not-found"}/>
 
       </Switch>
       </BrowserRouter>
@@ -35,6 +36,18 @@ function App (){
     </React.Fragment>
 
   );
+}
+
+
+const PageNotFound = () => {
+  return (
+      <div id="wrapper">
+          {/* <img src="https://i.imgur.com/qIufhof.png" /> */}
+          <div id="info">
+              <h3>This page could not be found</h3>
+          </div>
+      </div >
+  )
 }
 
 const AdminAuthFunc = () => {
