@@ -15,7 +15,7 @@ function App (){
   const [showNavBar,setShowNavBar] = useState(false)
   const history = useHistory()
  
-
+  // remove cookies in order to log out.
   const LogOutBut = () => {
     eraseCookie("submit-server-cookie")
     eraseCookie("submit-last-server-state")
