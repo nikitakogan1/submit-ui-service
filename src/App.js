@@ -17,11 +17,11 @@ function App (){
  
   // remove cookies in order to log out.
   const LogOutBut = () => {
-    eraseCookie("submit-server-cookie")
-    eraseCookie("submit-last-server-state")
-    history.go(0)
+    eraseCookie("submit-server-cookie");
+    eraseCookie("submit-last-server-state");
+    history.go(0);
     function eraseCookie(name) {   
-      document.cookie = name+'=; Max-Age=-99999999;';  
+      setCookie(name, undefined, 0.000001);
   }
   }
 
@@ -40,10 +40,9 @@ function App (){
         <UserPrivateRoute path="/users/:id" component={User} navbar={setShowNavBar} history={history}></UserPrivateRoute>
         <AdminPrivateRoute path="/users/" component={UsersList} navbar={setShowNavBar} history={history}></AdminPrivateRoute>
         <AdminPrivateRoute path="/agents/" component={AgentList} navbar={setShowNavBar} history={history}></AdminPrivateRoute>
-        <Route component={PageNotFound} path={"/not-found"}/>
-        {/* <Route component={Page401} path={"/unauthorized"}/>
-        <Route component={Page401} path={"/unauthorized"}/>
-        <Route component={Page401} path={"/error"}/> */}
+        <Route component={Page403} path={"/unauthorized"}/>
+        <Route component={SomethingWentWrongPage} path={"/internal-error"}/>
+        <Route component={PageNotFound} path={"/"}/>
       </Switch>
       </BrowserRouter>
   </div>
@@ -66,7 +65,7 @@ const SomethingWentWrongPage = () => {
 
 
 
-const Page401 = () => {
+const Page403 = () => {
   return (
       <div id="wrapper">
           {/* <img src="https://i.imgur.com/qIufhof.png" /> */}

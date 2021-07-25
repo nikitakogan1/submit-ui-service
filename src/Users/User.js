@@ -69,6 +69,10 @@ class User extends Component {
         fetch(this.userURL, {method:'GET', 
         headers: {'Authorization': 'Basic ' + btoa('username:password')}})
         .then((response) => {
+            if (response.status === 403){
+              this.props.history.push("/unauthorized");
+              this.props.history.go(0);
+            }
             return response.json()
         })
         .then (data => {
