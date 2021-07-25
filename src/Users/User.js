@@ -540,7 +540,7 @@ const userAuthFunc = () => {
   var cookie = getCookie("submit-server-cookie")
   var stateCookie = getCookie("submit-last-server-state")
   if (cookie === undefined || stateCookie === undefined) {
-    setCookie('submit-last-visited-path', window.location.pathname, 0.0034);
+    //setCookie('submit-last-visited-path', window.location.pathname, 0.0034);
    return false
   }
   return true

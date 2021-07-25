@@ -19,6 +19,7 @@ function App (){
   const LogOutBut = () => {
     eraseCookie("submit-server-cookie");
     eraseCookie("submit-last-server-state");
+    eraseCookie("submit-last-visited-path");
     history.go(0);
     function eraseCookie(name) {   
       setCookie(name, undefined, 0.000001);
@@ -93,7 +94,7 @@ const AdminAuthFunc = () => {
   var cookie = getCookie("submit-server-cookie")
   var stateCookie = getCookie("submit-last-server-state")
   if (cookie === undefined || stateCookie === undefined) {
-    setCookie('submit-last-visited-path', window.location.pathname, 0.0034);
+    //setCookie('submit-last-visited-path', window.location.pathname, 0.0034);
     return false
    }
    return true

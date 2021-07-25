@@ -92,7 +92,7 @@ class Login extends Component {
             });
        } else {
             this.props.history.push({
-                pathname: decodeURIComponent("/users/" + this.state.username),
+                pathname: decodeURIComponent("/users/" + this.profile.user_name),
                 state: JSON.stringify(this.profile),
             });
         }
