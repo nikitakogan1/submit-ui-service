@@ -87,6 +87,10 @@ export default class AgentList extends Component {
         }
         fetch(url, {method:'GET'})
         .then((response) => {
+          if (response.status === 403){
+            this.props.history.push("/unauthorized");
+            this.props.history.go(0);
+          }
           if (response.headers.has("X-Elements-Left-To-Process")){
               this.setState({left_to_process:true})
           } else {
