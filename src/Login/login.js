@@ -31,25 +31,17 @@ class Login extends Component {
   }
 
     componentDidMount(){
+        this.props.navbar(false)
         var state_cookie = getCookie("submit-last-server-state")
-        var auth_cookie = getCookie("submit-server-cookie")
-        //var last_visited_cookie = getCookie("submit-last-visited-path")
-        if (auth_cookie !== undefined && state_cookie !== undefined && state_cookie !== "") {
-          console.log("aa",state_cookie)
-          console.log("state cookie",JSON.parse(state_cookie).user_name)
-          /*if (last_visited_cookie === null){
-            setCookie("submit-last-visited-path", "/users/" + JSON.parse(state_cookie).user_name.toString(), 0.0034)
-          }*/
-            //console.log("pushing to", getCookie("submit-last-visited-path"))
-            this.props.history.push({
-                pathname: "/users/" + JSON.parse(state_cookie).user_name.toString(),
-                state: state_cookie
-            });
+        if (state_cookie !== undefined && state_cookie !== null && state_cookie !== "") {
+          this.props.history.push({
+            pathname: "/users/" + JSON.parse(state_cookie).user_name.toString(),
+            state: state_cookie
+          });
         }
     }
   
   async handleSubmit(event) {
-    //var last_visited_cookie = getCookie("submit-last-visited-path")
     event.preventDefault();
     await fetch(window.location.origin + '/api/', {method:'GET', 
     headers: {'Authorization': 'Basic ' + btoa(this.state.username + ":" + this.state.password)}})
@@ -66,23 +58,14 @@ class Login extends Component {
         return jsonResp
     })
     .then (data => {
-      setCookie("submit-last-server-state", JSON.stringify(data), 0.0034)
+      setCookie("submit-last-server-state", JSON.stringify(data))
       this.profile = data
     });
     if (this.okToServe) {
-      var last_visited_cookie = null; // REMOVE THIS LINE AFTER THE BELOW CODE GETS UNCOMMENTED/DELETED
-        if (last_visited_cookie != null) {
-          console.log("REMOVE THIS LINE AFTER THE BELOW CODE GETS UNCOMMENTED/DELETED");
-            /*this.props.history.push({
-                pathname: decodeURIComponent(last_visited_cookie.toString()),
-                state: JSON.stringify(this.profile),
-            });*/
-       } else {
-            this.props.history.push({
-                pathname: decodeURIComponent("/users/" + this.profile.user_name),
-                state: JSON.stringify(this.profile),
-            });
-        }
+      this.props.history.push({
+        pathname: decodeURIComponent("/users/" + this.profile.user_name),
+        state: JSON.stringify(this.profile),
+      });
     }
   }
 

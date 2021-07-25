@@ -1,5 +1,5 @@
 import React,{useState} from "react";
-import {BrowserRouter, Route, Switch, withRouter} from 'react-router-dom';
+import {BrowserRouter, Route, Switch, withRouter, Redirect} from 'react-router-dom';
 import Login from "./Login/login";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import Courses from "./Courses/Courses"
@@ -10,7 +10,7 @@ import UsersList from "./UsersList/UsersList"
 import AgentList from "./Agents/Agents"
 import Button from "react-bootstrap/Button"
 import "./App.css"
-import {getCookie, setCookie, eraseCookie, SessionRoute} from  "./Utils/session"
+import {eraseCookie, isLoggedIn, SessionRoute} from  "./Utils/session"
 function App (){
   const [showNavBar,setShowNavBar] = useState(false)
   const history = useHistory()
@@ -20,44 +20,67 @@ function App (){
     setShowNavBar(false);
     eraseCookie("submit-server-cookie");
     eraseCookie("submit-last-server-state");
-    //eraseCookie("submit-last-visited-path");
     history.push("/");
     history.go(0);
   }
 
-  const SomethingWentWrongPage = () => {
+  const SomethingWentWrongPage = ({ component: Component, ...rest }) => {
     setShowNavBar(true);
     return (
-        <div id="wrapper">
-            {/* <img src="https://i.imgur.com/qIufhof.png" /> */}
+      <Route
+        {...rest}
+        render={props =>
+          isLoggedIn() ? (
+            <div id="wrapper">
             <div id="info">
-                <h3>Something went wrong.. please try again!</h3>
+                <h3>Something went wrong... please try again!</h3>
             </div>
         </div >
+          ) : (
+            <Redirect to={{ pathname: '/' }} />
+          )
+        }
+      />
     )
   }
   
-  const Page403 = () => {
+  const Page403 = ({ component: Component, ...rest }) => {
     setShowNavBar(true);
     return (
-        <div id="wrapper">
-            {/* <img src="https://i.imgur.com/qIufhof.png" /> */}
+      <Route
+        {...rest}
+        render={props =>
+          isLoggedIn() ? (
+            <div id="wrapper">
             <div id="info">
                 <h3>You are not authorized to see this page</h3>
             </div>
         </div >
+          ) : (
+            <Redirect to={{ pathname: '/' }} />
+          )
+        }
+      />
     )
   }
   
-  const PageNotFound = () => {
+  const PageNotFound = ({ component: Component, ...rest }) => {
     setShowNavBar(true);
     return (
-        <div id="wrapper">
-            {/* <img src="https://i.imgur.com/qIufhof.png" /> */}
+      <Route
+        {...rest}
+        render={props =>
+          isLoggedIn() ? (
+            <div id="wrapper">
             <div id="info">
                 <h3>This page could not be found</h3>
             </div>
         </div >
+          ) : (
+            <Redirect to={{ pathname: '/' }} />
+          )
+        }
+      />
     )
   }
 
@@ -66,10 +89,10 @@ function App (){
     <div className="App">
     <BrowserRouter>
     {showNavBar && <NavBar history={history}></NavBar>}
-    {getCookie("submit-server-cookie") !== undefined && getCookie("submit-last-server-state") !== undefined && <Button id="logoutBut" history={history} onClick={LogOutBut}>Log out</Button>}
+    {isLoggedIn() && <Button id="logoutBut" history={history} onClick={LogOutBut}>Log out</Button>}
       <Switch>
         <Route exact path="/">
-          <Login setNavBar={setShowNavBar} history={history}/>
+          <Login navbar={setShowNavBar} history={history}/>
         </Route>
         <SessionRoute path="/courses" component={Courses} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/users/:id" component={User} navbar={setShowNavBar} history={history}></SessionRoute>

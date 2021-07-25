@@ -14,7 +14,7 @@ class UsersList extends Component {
   usersSelectedToDelete=[]
     constructor(props) {
       super(props);
-      this.state = {left_to_process:false,limit:1, after_id:0, elements: [
+      this.state = {left_to_process:false,limit:5, after_id:0, elements: [
         {user_name:null,first_name:null,last_name:null}
       ],
     };

@@ -6,20 +6,35 @@ export function getCookie(name) {
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
-export function setCookie(name,value,days) {
+export function setCookie(name, value) {
     var expires = "";
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days*24*60*60*1000));
-        expires = "; expires=" + date.toUTCString();
-    }
+    var date = new Date();
+    date.setTime(date.getTime() + 5*60*1000);
+    expires = "; expires=" + date.toUTCString();
     document.cookie = name + "=" + (value || "")  + expires + "; path=/";
 }
 
 export function eraseCookie(name) {   
     if (getCookie(name) !== undefined) {
-        setCookie(name, undefined, 0.000001);
+        var expires = "";
+        var date = new Date();
+        date.setTime(date.getTime() + 1);
+        expires = "; expires=" + date.toUTCString();
+        document.cookie = name + "={}" + expires + "; path=/";
     }
+}
+
+export function isLoggedIn() {
+    var cookie = getCookie("submit-server-cookie")
+    var stateCookie = getCookie("submit-last-server-state")
+    let isLoggedIn = true;
+    if (cookie === undefined || stateCookie === undefined) {
+        // make sure no cookies remain
+        eraseCookie("submit-server-cookie");
+        eraseCookie("submit-last-server-state");
+        isLoggedIn = false
+    }
+    return isLoggedIn
 }
 
 export const SessionRoute = ({ component: Component, ...rest }) => {

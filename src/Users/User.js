@@ -12,7 +12,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import Multiselect from 'multiselect-react-dropdown';
-import {getCookie, setCookie } from  "../Utils/session";
+import {getCookie} from  "../Utils/session";
 
 
 class User extends Component {
