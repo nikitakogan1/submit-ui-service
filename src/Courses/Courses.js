@@ -20,9 +20,7 @@ class Courses extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {left_to_process:false,limit:1, after_id:0,coursesSelectedToDelete: [], elements: [
-      {number:null,name:null}
-    ]
+    this.state = {left_to_process:false,limit:5, after_id:0,coursesSelectedToDelete: [], elements: [], isAdminView: false
   };
   this.componentDidMount=this.componentDidMount.bind(this);
   this.deleteSelectedCourses=this.deleteSelectedCourses.bind(this);
@@ -100,30 +98,19 @@ class Courses extends Component {
     onSelect: this.onSelect
   };
 
-
-    
-    getCookie(name) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
-    }
-
-    setCookie(name,value,days) {
-      var expires = "";
-      if (days) {
-          var date = new Date();
-          date.setTime(date.getTime() + (days*24*60*60*1000));
-          expires = "; expires=" + date.toUTCString();
-      }
-      document.cookie = name + "=" + (value || "")  + expires + "; path=/";
-  }
-
     componentDidMount() {
       this.props.navbar(true);
-      this.goToBackEnd();
+      this.setState({isAdminView: checkAdminCookie()}, () => {
+        this.goToBackEnd();
+      })
     }
 
     goToBackEnd() {
+      if (this.state.isAdminView){
+        var header = {}
+      } else {
+        header = {'X-Submit-User': getUserNameFromCookie() }
+      }
       var toRet=[]
       var url = window.location.origin + '/api/courses/?limit='+ this.state.limit
       if (this.state.after_id > 0) {
@@ -131,7 +118,7 @@ class Courses extends Component {
       }
       console.log(url)
       fetch(url, {method:'GET', 
-      headers: {'Authorization': 'Basic ' + btoa('username:password')}})
+      headers: header})
       .then((response) => {
         if (response.headers.has("X-Elements-Left-To-Process")){
             this.setState({left_to_process:true})
@@ -141,12 +128,15 @@ class Courses extends Component {
         return response.json()
       })
       .then (data => {
-        console.log(data)
-        data.elements.forEach((element) => {
-          element.id=this.getRandomInt(1,100000000);
-          console.log(element)
-          toRet.push(element)
-        })
+        console.log("mydata",data)
+        if (data.elements !== undefined ) {
+          data.elements.forEach((element) => {
+            element.id=this.getRandomInt(1,100000000);
+            console.log(element)
+            toRet.push(element)
+          })
+        }
+
         this.setState({elements:toRet}, () => {
             console.log(this.state.elements)
         });
@@ -165,11 +155,12 @@ class Courses extends Component {
       return (
 
       <React.Fragment>
-      <BootstrapTable selectRow={this.selectRow} hover keyField='id' data={ this.state.elements } columns={ this.columns } />
-            <AddCourserModal history={this.props.history}></AddCourserModal>
-            <Button  variant="primary" id= "deleteCourseBut" onClick={this.deleteSelectedCourses}>
+      {this.state.isAdminView && <BootstrapTable selectRow={this.selectRow} hover keyField='id' data={ this.state.elements } columns={ this.columns } />}
+      {!this.state.isAdminView && <BootstrapTable hover keyField='id' data={ this.state.elements } columns={ this.columns } />}
+            {this.state.isAdminView && <AddCourserModal history={this.props.history}></AddCourserModal>}
+            {this.state.isAdminView && <Button  variant="primary" id= "deleteCourseBut" onClick={this.deleteSelectedCourses}>
                 Delete Selected courses
-            </Button>
+            </Button>}
             {this.state.after_id > 0 && <Button  variant="secondary" id= "UsersPrevPage" onClick={this.previousPage}>
                 Previons page
             </Button>}
@@ -242,8 +233,54 @@ class Courses extends Component {
       </>
     );
   }
+  function parseResp(str){ 
+    console.log("parse resp",str)
+    if (str.includes("admin")){
+      return "Admin"
+    } else if (str.includes("secretary")) {
+      return "Secretary"
+    } else if (str.includes("std_user")){
+      return "User"
+    }
+    var toRet = str.replaceAll("{","").replaceAll("}","").replaceAll(",", " ").replaceAll(":"," ").replaceAll("\"","")
+    if (toRet === ""){
+      return "None"
+    }
+  }
+  
+  function checkAdminCookie(){
+    var state_cookie = getCookie("submit-last-server-state");
+    if (state_cookie !== undefined){
+      console.log(state_cookie);
+      var roles = JSON.parse(state_cookie).roles;
+    }
+    return parseResp(JSON.stringify(roles)) === "Admin"
+  }
 
+  function getUserNameFromCookie() {
+    var state_cookie = getCookie("submit-last-server-state");
+    if (state_cookie !== undefined){
+      console.log(state_cookie);
+      var user_name = JSON.parse(state_cookie).user_name;
+    }
+    return user_name
+  }
+    
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
 
+  function setCookie(name,value,days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
 
   export default withRouter(Courses);
 

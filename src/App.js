@@ -36,11 +36,14 @@ function App (){
         <Route exact path="/">
           <Login setNavBar={setShowNavBar} history={history}/>
         </Route>
-        <AdminPrivateRoute path="/courses" component={Courses} navbar={setShowNavBar} history={history}></AdminPrivateRoute>
+        <UserPrivateRoute path="/courses" component={Courses} navbar={setShowNavBar} history={history}></UserPrivateRoute>
         <UserPrivateRoute path="/users/:id" component={User} navbar={setShowNavBar} history={history}></UserPrivateRoute>
         <AdminPrivateRoute path="/users/" component={UsersList} navbar={setShowNavBar} history={history}></AdminPrivateRoute>
         <AdminPrivateRoute path="/agents/" component={AgentList} navbar={setShowNavBar} history={history}></AdminPrivateRoute>
         <Route component={PageNotFound} path={"/not-found"}/>
+        {/* <Route component={Page401} path={"/unauthorized"}/>
+        <Route component={Page401} path={"/unauthorized"}/>
+        <Route component={Page401} path={"/error"}/> */}
       </Switch>
       </BrowserRouter>
   </div>
@@ -49,6 +52,30 @@ function App (){
   );
 }
 
+const SomethingWentWrongPage = () => {
+  return (
+      <div id="wrapper">
+          {/* <img src="https://i.imgur.com/qIufhof.png" /> */}
+          <div id="info">
+              <h3>Something went wrong.. please try again!</h3>
+          </div>
+      </div >
+  )
+}
+
+
+
+
+const Page401 = () => {
+  return (
+      <div id="wrapper">
+          {/* <img src="https://i.imgur.com/qIufhof.png" /> */}
+          <div id="info">
+              <h3>You are not authorized to see this page</h3>
+          </div>
+      </div >
+  )
+}
 
 
 

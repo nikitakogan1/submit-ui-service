@@ -29,7 +29,7 @@ class NavBar extends Component{
         },
         {
           title: 'My profile',
-          itemId: '/users/',
+          itemId: '/users/admin',
         },
       ]
     studentNav = [
@@ -38,26 +38,29 @@ class NavBar extends Component{
             itemId: '/courses',
           },
           {
-            title: 'Assignments',
-            itemId: '/users',
+            title: 'My assignments',
+            itemId: '/assignments',
           },
           {
             title: 'My profile',
             itemId: '/users/',
+          },
+          {
+            title: 'My appeals',
+            itemId: '/appeals/',
           },
     ]  
 
 
     componentDidMount(){
         if (getCookie("submit-last-server-state") !== undefined && getCookie("submit-last-server-state") !== ""){
-            console.log("aaaa",getCookie("submit-last-server-state"))
             this.username = JSON.parse(getCookie("submit-last-server-state")).user_name
             var role = JSON.parse(getCookie("submit-last-server-state")).roles[0]
             if (role === "admin"){
                 this.setState({isAdmin: true})
             }
             this.setState({isAuthed: true}, () => {
-                console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",this.state.isAuthed, this.state.isAdmin)
+                console.log("Auted:",this.state.isAuthed, this.state.isAdmin)
             })
         }
     }
