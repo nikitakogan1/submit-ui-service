@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import {Fragment} from "react";
 import { Component } from "react";
-import { withRouter,Route, Redirect } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import "./User.css"
 import Col from "react-bootstrap/Col"
 import Form from "react-bootstrap/Form"
@@ -8,7 +8,6 @@ import Button from "react-bootstrap/Button"
 import  { useState } from 'react';
 import Modal from "react-bootstrap/Modal"
 import FormGroup from "react-bootstrap/FormGroup"
-import DropdownMultiselect from "react-multiselect-dropdown-bootstrap";
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
@@ -105,7 +104,7 @@ class User extends Component {
     render() {
         console.log("the state before sending is", parseResp(JSON.stringify(this.state.roles.elements)))
         return (
-          <React.Fragment>
+          <Fragment>
 <Form onSubmit={this.updateDetails}>
   <Form.Row>
     <Form.Group as={Col} controlId="user_name">
@@ -144,7 +143,7 @@ Roles:
 {checkAdminCookie() && <AddUserToCourseAsStudentModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={window.location.origin + '/api/users/' + this.state.user_name}></AddUserToCourseAsStudentModal>}
 {checkAdminCookie() && <AddUserToCourseAsStaffModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={window.location.origin + 'api/users/' + this.state.user_name}></AddUserToCourseAsStaffModal>}
 </div>
-</React.Fragment>
+</Fragment>
 
 )}
 }
@@ -288,7 +287,7 @@ return (
   <Form.Check
     disabled
     type="radio"
-    label={`Standart user`}
+    label={`Standard user`}
     id={`standartUser`}
     defaultChecked
   />
@@ -456,13 +455,21 @@ render(){
   const [as_student,as_staff] = createTableWithCourses(studentCoursesList,staffCoursesList)
   return (
     <div className="tables">
-    <React.Fragment>
+    <Fragment>
+    {checkAdminCookie() && <h5>Course As Student:</h5>}
+    {checkAdminCookie() && <br></br>}
     {checkAdminCookie() && studentCoursesList.length !== 0 && <BootstrapTable id= "userCoursesTable" selectRow={this.selectRowStudent} hover keyField='number' data={as_student} columns={ this.columns } pagination={ paginationFactory(PagingOptions) } />}
+    {checkAdminCookie() && <h5>Course As Staff:</h5>}
+    {checkAdminCookie() && <br></br>}
     {checkAdminCookie() && staffCoursesList.length !== 0 && <BootstrapTable id= "staffCoursesTable" selectRow={this.selectRowStaff} hover keyField='number' data={as_staff} columns={ this.columns }  pagination={ paginationFactory(PagingOptions) }/>}
+    {!checkAdminCookie() && <h5>Course As Student:</h5>}
+    {!checkAdminCookie() && <br></br>}
     {!checkAdminCookie() && studentCoursesList.length !== 0 && <BootstrapTable id= "userCoursesTable"  hover keyField='number' data={as_student} columns={ this.columns } pagination={ paginationFactory(PagingOptions) } />}
+    {!checkAdminCookie() && <h5>Course As Staff:</h5>}
+    {!checkAdminCookie() && <br></br>}
     {!checkAdminCookie() && staffCoursesList.length !== 0 && <BootstrapTable id= "staffCoursesTable"  hover keyField='number' data={as_staff} columns={ this.columns }  pagination={ paginationFactory(PagingOptions) }/>}
      
-     </React.Fragment>
+     </Fragment>
      {checkAdminCookie() && studentCoursesList.length !== 0 && <Button  variant="primary" id= "deleteCourseButInUser" onClick={this.deleteSelectedCoursesAsStudent}>
           Delete
       </Button>}
@@ -499,35 +506,6 @@ const AlertSuccess = () => {
        Failed to update user data! try again!
      </div>
     )
-}
-
-export const UserPrivateRoute = ({ component: Component, ...rest }) => {
-
-  // Add your own authentication on the below line.
-  const isLoggedIn = userAuthFunc()
-  
-  return (
-    <Route
-      {...rest}
-      render={props =>
-        isLoggedIn ? (
-          <Component {...props} {...rest} />
-        ) : (
-          <Redirect to={{ pathname: '/' }} />
-        )
-      }
-    />
-  )
-}
-
-const userAuthFunc = () => {
-  var cookie = getCookie("submit-server-cookie")
-  var stateCookie = getCookie("submit-last-server-state")
-  if (cookie === undefined || stateCookie === undefined) {
-    //setCookie('submit-last-visited-path', window.location.pathname, 0.0034);
-   return false
-  }
-  return true
 }
 
 function AddUserToCourseAsStudentModal(props) {
@@ -653,7 +631,7 @@ class GetCoursesList extends Component {
       number = number.trim()
       year = year.trim()
       courses.forEach((course) => {
-        var [courseNumber,courseYear,_] = course.split("/");
+        var [courseNumber,courseYear] = course.split("/");
         courseNumber = courseNumber.trim();
         courseYear = courseYear.trim();
         if (number === courseNumber && year === courseYear){
@@ -795,7 +773,7 @@ class GetCoursesList extends Component {
       finalOptions.push(option)
     })
     return (
-<React.Fragment>
+<Fragment>
 {options !== null && options.length !== 0 && checked !== null && <Multiselect
       options={finalOptions}
       onRemove={this.onRemove}
@@ -808,7 +786,7 @@ class GetCoursesList extends Component {
       <Button variant="primary" id="submitAddCourse" onClick={applyFunc}>
       Save Changes
     </Button>
-</React.Fragment>
+</Fragment>
     )
   }
 

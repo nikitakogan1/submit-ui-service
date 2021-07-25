@@ -1,10 +1,9 @@
-import React, {useState} from 'react';
 import { Component } from 'react';
 import {Navigation} from 'react-minimal-side-navigation';
 import 'react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css';
 import { withRouter } from "react-router-dom";
 import "./Navbar.css";
-import {getCookie, setCookie } from  "../Utils/session";
+import {getCookie} from  "../Utils/session";
 
 class NavBar extends Component{
     username = ""

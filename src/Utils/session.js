@@ -1,3 +1,4 @@
+import {Redirect, Route} from 'react-router-dom';
 
 export function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -16,5 +17,31 @@ export function setCookie(name,value,days) {
 }
 
 export function eraseCookie(name) {   
-    setCookie(name, undefined, 0.000001);
+    if (getCookie(name) !== undefined) {
+        setCookie(name, undefined, 0.000001);
+    }
+}
+
+export const SessionRoute = ({ component: Component, ...rest }) => {
+    var cookie = getCookie("submit-server-cookie")
+    var stateCookie = getCookie("submit-last-server-state")
+    let isLoggedIn = true;
+    if (cookie === undefined || stateCookie === undefined) {
+        // make sure no cookies remain
+        eraseCookie("submit-server-cookie");
+        eraseCookie("submit-last-server-state");
+        isLoggedIn = false
+    }
+    return (
+      <Route
+        {...rest}
+        render={props =>
+          isLoggedIn ? (
+            <Component {...props} {...rest} />
+          ) : (
+            <Redirect to={{ pathname: '/' }} />
+          )
+        }
+      />
+    )
 }
