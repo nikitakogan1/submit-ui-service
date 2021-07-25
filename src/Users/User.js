@@ -30,9 +30,6 @@ class User extends Component {
     
       updateDetails = (event) => {
         event.preventDefault(event);
-        console.log(event.target.Admin.checked)
-        console.log(event.target.Secretary.checked)
-        console.log(event.target.standartUser.checked)
         var roles = this.state.roles;
         if (event.target.standartUser.checked){
           roles = {"elements":{"std_user":{}}}
@@ -45,7 +42,6 @@ class User extends Component {
         }
         var body = {"user_name":this.state.user_name,"last_name":event.target.last_name.value, "email": event.target.email.value, "first_name":event.target.first_name.value,"password":this.state.password,
         "roles":roles,"courses_as_student":this.state.courses_as_student,"courses_as_staff":this.state.courses_as_staff}
-        console.log( JSON.stringify(body))
          fetch(window.location.origin + '/api/users/' + this.userNameFromReq , {method:'PUT', 
          body: JSON.stringify(body), headers: {'Authorization': 'Basic ' + btoa('username:password')}})
          .then((response) => {
@@ -319,16 +315,15 @@ class UserCourses extends Component {
       coursesSelectedToDelete:[], staffCoursesSelectedToDelete:[], studentCoursesList:[], staffCoursesList:[]
     }
   }
-  columns = [{
-    dataField: 'name',
-    text: 'Course name',
-    // formatter: (cell, row) => <a href={cell.course.year + "/" + cell.course_number}> {cell} </a>,
-  }, {
+  columns = 
+  [
+    {
+      dataField: 'number',
+      text: 'Course number'
+    },
+    {
     dataField: 'year',
     text: 'Course year'
-  }, {
-    dataField: 'number',
-    text: 'Course number'
   }];
 
  componentDidMount() {
@@ -410,15 +405,12 @@ class UserCourses extends Component {
 }
 
 deleteSelectedCoursesAsStaff = () => {
-  console.log("hine:",this.state.staffCoursesSelectedToDelete)
-  console.log("prop1", this.props.staffCourses);
   var body = {username: this.props.user_name, courses_as_staff:{elements:this.props.staffCourses}}
   this.state.staffCoursesSelectedToDelete.forEach((course) => {
     course = JSON.parse(course)
     var toRemove = course.number + ":" + course.year
     if (Object.keys(body.courses_as_staff.elements).includes(toRemove)){
       delete body.courses_as_staff.elements[toRemove]
-      console.log("it works")
     }
     console.log(body)
   })
@@ -640,7 +632,6 @@ class GetCoursesList extends Component {
           if (this.props.role === "staff"){
             var coursesStaff = parseCourses(this.state.elements.elements);
             coursesStaff = this.checkCourses(true,coursesStaff);
-            console.log("i look for", coursesStaff)
             this.setState({coursesListAsStaff: coursesStaff}, () => {
               this.parseAnswerCoursesAsStaff();
             })
@@ -658,8 +649,6 @@ class GetCoursesList extends Component {
 
 
   checkCourses = (isStaff, courses) => {
-    console.log(this.props.courses_as_staff)
-    console.log(this.props.courses_as_student)
     var keys = [];
     if (isStaff){
       keys = Object.keys(this.props.courses_as_student.elements);
@@ -675,8 +664,6 @@ class GetCoursesList extends Component {
         var [courseNumber,courseYear,_] = course.split("/");
         courseNumber = courseNumber.trim();
         courseYear = courseYear.trim();
-        console.log("a",courseYear)
-        console.log("b",courseNumber)
         if (number === courseNumber && year === courseYear){
           coursesToRet = removeItemOnce(courses,course);
         }
@@ -698,7 +685,6 @@ class GetCoursesList extends Component {
     coursesToStore.forEach((course) => {
       body.courses_as_student.elements[course] = {}
     })
-    console.log(JSON.stringify(body))
     fetch(this.props.userURL, {method:'PUT', 
      body: (JSON.stringify(body)),headers: {'Authorization': 'Basic ' + btoa('username:password')}})
     .then((response) => {
@@ -706,7 +692,6 @@ class GetCoursesList extends Component {
     })
     this.props.close()
     this.props.history.go(0)
-    console.log("vvvvvvvv",this.state.selected)
   }
 
   updateCoursesAsStaff = () => {
@@ -722,11 +707,9 @@ class GetCoursesList extends Component {
       body.courses_as_staff.elements[course] = {}
     })
     
-    console.log("body",body)
     fetch(this.props.userURL, {method:'PUT', 
      body: (JSON.stringify(body)),headers: {'Authorization': 'Basic ' + btoa('username:password')}})
     .then((response) => {
-        console.log("respppppppppppppppppppppppppp:",response)
         return response.json()
     })
     this.props.close()
@@ -742,7 +725,6 @@ class GetCoursesList extends Component {
       coursesFromProps=[]
     }
     
-    console.log("parsed answer",coursesFromProps);
     this.state.coursesList.forEach( (course) => {
       coursesFromProps.forEach( (course2) => {
         var [number,year] = course.split("/")
@@ -757,7 +739,6 @@ class GetCoursesList extends Component {
       toRet.push({name: course, id:course})
     })
     this.setState({checked: toRet}, () => {
-      console.log("checked courses for student",this.remove_duplicates(toRet))
     })
   }
 
@@ -779,9 +760,7 @@ class GetCoursesList extends Component {
     checkedCoursesToRet.forEach((course)=> {
       toRet.push({name: course, id:course})
     })
-    this.setState({checkedStaff: toRet}, () => {
-      console.log("checked courses for staff",this.remove_duplicates(checkedCoursesToRet))
-    })
+    this.setState({checkedStaff: toRet})
   }
 
   remove_duplicates(arr) {
@@ -809,16 +788,11 @@ class GetCoursesList extends Component {
     var checked;
     var applyFunc;
     var options;
-    console.log(this.props.role)
     if (this.props.role === "staff"){
-      console.log(this.state.coursesList)
-      console.log(this.state.coursesListAsStaff)
       options = this.state.coursesListAsStaff.filter(n => !this.state.coursesList.includes(n));
       checked = this.state.checkedStaff;
       applyFunc=this.updateCoursesAsStaff
     } else {
-      console.log(this.state.coursesList)
-      console.log(this.state.coursesListAsStaff)
       options = this.state.coursesList.filter(n => !this.state.coursesListAsStaff.includes(n));
       checked = this.state.checked;
       applyFunc=this.updateCoursesAsStudent;
