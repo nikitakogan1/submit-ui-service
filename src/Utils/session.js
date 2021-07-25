@@ -37,6 +37,14 @@ export function isLoggedIn() {
     return isLoggedIn
 }
 
+export function getLoggedInUserName() {
+  let stateCookie = getCookie("submit-last-server-state")
+  if (stateCookie !== null && stateCookie !== undefined && stateCookie !== "") {
+    return JSON.parse(stateCookie).user_name;
+  }
+  return "";
+}
+
 export const SessionRoute = ({ component: Component, ...rest }) => {
     var cookie = getCookie("submit-server-cookie")
     var stateCookie = getCookie("submit-last-server-state")

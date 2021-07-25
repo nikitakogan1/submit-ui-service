@@ -8,21 +8,12 @@ import User from "./Users/User";
 import NavBar from "./Navbar/Navbar"
 import UsersList from "./UsersList/UsersList"
 import AgentList from "./Agents/Agents"
-import Button from "react-bootstrap/Button"
 import "./App.css"
-import {eraseCookie, isLoggedIn, SessionRoute} from  "./Utils/session"
+import {isLoggedIn, getLoggedInUserName, SessionRoute} from  "./Utils/session"
 function App (){
   const [showNavBar,setShowNavBar] = useState(false)
   const history = useHistory()
- 
-  // remove cookies in order to log out.
-  const LogOutBut = () => {
-    setShowNavBar(false);
-    eraseCookie("submit-server-cookie");
-    eraseCookie("submit-last-server-state");
-    history.push("/");
-    history.go(0);
-  }
+  const loggedInUserName = getLoggedInUserName()
 
   const SomethingWentWrongPage = ({ component: Component, ...rest }) => {
     setShowNavBar(true);
@@ -89,7 +80,9 @@ function App (){
     <div className="App">
     <BrowserRouter>
     {showNavBar && <NavBar history={history}></NavBar>}
-    {isLoggedIn() && <Button id="logoutBut" history={history} onClick={LogOutBut}>Log out</Button>}
+    {isLoggedIn() && <div id="session-div">
+      <h7>Hello {loggedInUserName}</h7>
+    </div>}
       <Switch>
         <Route exact path="/">
           <Login navbar={setShowNavBar} history={history}/>

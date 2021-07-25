@@ -3,7 +3,7 @@ import {Navigation} from 'react-minimal-side-navigation';
 import 'react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css';
 import { withRouter } from "react-router-dom";
 import "./Navbar.css";
-import {getCookie} from  "../Utils/session";
+import {getCookie, eraseCookie} from  "../Utils/session";
 
 class NavBar extends Component{
     username = ""
@@ -16,8 +16,20 @@ class NavBar extends Component{
     }
     adminNav = [
         {
+          title: 'My profile',
+          itemId: '/users/',
+        },
+        {
+          title: 'Logout',
+          itemId: 'logout',
+        },
+        {
           title: 'All courses',
           itemId: '/courses',
+        },
+        {
+          title: 'All assignments',
+          itemId: '/assignments',
         },
         {
           title: 'All users',
@@ -27,13 +39,17 @@ class NavBar extends Component{
           title: 'Agent managment',
           itemId: '/agents',
         },
-        {
-          title: 'My profile',
-          itemId: '/users/admin',
-        },
       ]
     studentNav = [
-        {
+          {
+            title: 'My profile',
+            itemId: '/users/',
+          },
+          {
+            title: 'Logout',
+            itemId: 'logout',
+          },
+          {
             title: 'My courses',
             itemId: '/courses',
           },
@@ -42,39 +58,38 @@ class NavBar extends Component{
             itemId: '/assignments',
           },
           {
-            title: 'My profile',
-            itemId: '/users/',
-          },
-          {
             title: 'My appeals',
-            itemId: '/appeals/',
+            itemId: '/appeals',
           },
     ]  
 
 
     componentDidMount(){
-        if (getCookie("submit-last-server-state") !== undefined && getCookie("submit-last-server-state") !== ""){
-            this.username = JSON.parse(getCookie("submit-last-server-state")).user_name
-            var role = JSON.parse(getCookie("submit-last-server-state")).roles[0]
-            if (role === "admin"){
+      let stateCookie = getCookie("submit-last-server-state");
+        if (stateCookie !== undefined && stateCookie !== ""){
+            let stateCookieJson = JSON.parse(stateCookie);
+            this.username = stateCookieJson.user_name;
+            if (stateCookieJson.roles.indexOf("admin") >= 0){
                 this.setState({isAdmin: true})
             }
-            this.setState({isAuthed: true}, () => {
-                console.log("Auted:",this.state.isAuthed, this.state.isAdmin)
-            })
+            this.setState({isAuthed: true})
         }
     }
+
     selected = (selected) => {
         if (selected.itemId === "/users/") {
-            console.log("pushing to", selected.itemId + this.username)
             this.props.history.push(selected.itemId + this.username)
             this.props.history.go(0)
+        } else if (selected.itemId === "logout") {
+          eraseCookie("submit-server-cookie");
+          eraseCookie("submit-last-server-state");
+          this.props.history.push("/");
+          this.props.history.go(0);
         } else {
             this.props.history.push(selected.itemId)
             this.props.history.go(0)
         }
     }
-
 
     render(){
         return (
@@ -87,6 +102,6 @@ class NavBar extends Component{
     
         );
     }
-    }
+}
 
   export default withRouter(NavBar);
