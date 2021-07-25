@@ -23,22 +23,6 @@ class UsersList extends Component {
     this.nextPage=this.nextPage.bind(this);
     this.goToBackEnd=this.goToBackEnd.bind(this);
     }
-    
-    getCookie(name) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
-    }
-
-    setCookie(name,value,days) {
-      var expires = "";
-      if (days) {
-          var date = new Date();
-          date.setTime(date.getTime() + (days*24*60*60*1000));
-          expires = "; expires=" + date.toUTCString();
-      }
-      document.cookie = name + "=" + (value || "")  + expires + "; path=/";
-  }
 
     deleteSelectedUsers = () => {
         this.usersSelectedToDelete.forEach( (username) => {
@@ -135,10 +119,10 @@ class UsersList extends Component {
     <Button  variant="primary" id= "deleteUserBut" onClick={this.deleteSelectedUsers}>
         Delete Selected users
     </Button>
-    {this.state.after_id > 0 && <Button  variant="secondary" id= "UsersPrevPage" onClick={this.previousPage}>
+    {this.state.after_id > 0 && <Button  variant="primary" id= "UsersPrevPage" onClick={this.previousPage}>
         Previons page
     </Button>}
-    {this.state.left_to_process === true && <Button  variant="secondary" id= "UsersNextPage" onClick={this.nextPage}>
+    {this.state.left_to_process === true && <Button  variant="primary" id= "UsersNextPage" onClick={this.nextPage}>
         Next page
     </Button>}
     </div>
@@ -212,7 +196,7 @@ class UsersList extends Component {
             <Button id="submitNewUser" variant="primary" type="submit">
                 Submit
             </Button>
-            <Button id="closeSubmitNewUser" variant="secondary" onClick={handleClose}>
+            <Button id="closeSubmitNewUser" variant="primary" onClick={handleClose}>
               Close
             </Button> 
             </Form>

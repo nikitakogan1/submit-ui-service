@@ -11,6 +11,7 @@ import UsersList from "./UsersList/UsersList"
 import AgentList from "./Agents/Agents"
 import Button from "react-bootstrap/Button"
 import "./App.css"
+import {getCookie, setCookie, eraseCookie } from  "./Utils/session"
 function App (){
   const [showNavBar,setShowNavBar] = useState(false)
   const history = useHistory()
@@ -19,11 +20,9 @@ function App (){
   const LogOutBut = () => {
     eraseCookie("submit-server-cookie");
     eraseCookie("submit-last-server-state");
-    eraseCookie("submit-last-visited-path");
+    //eraseCookie("submit-last-visited-path");
+    history.push("/");
     history.go(0);
-    function eraseCookie(name) {   
-      setCookie(name, undefined, 0.000001);
-  }
   }
 
 
@@ -98,22 +97,6 @@ const AdminAuthFunc = () => {
     return false
    }
    return true
-}
-  
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-  }
-
-function setCookie(name,value,days) {
-  var expires = "";
-  if (days) {
-      var date = new Date();
-      date.setTime(date.getTime() + (days*24*60*60*1000));
-      expires = "; expires=" + date.toUTCString();
-  }
-  document.cookie = name + "=" + (value || "")  + expires + "; path=/";
 }
 
 const AdminPrivateRoute = ({ component: Component, ...rest }) => {

@@ -3,6 +3,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import "./login.css";
 import { withRouter } from 'react-router-dom';
+import {getCookie, setCookie } from  "../Utils/session";
 
 class Login extends Component {
     okToServe = false;  
@@ -29,33 +30,17 @@ class Login extends Component {
     return this.state.username.length > 0 && this.state.password.length > 0;
   }
 
-  getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-  }
-
-   setCookie(name,value,days) {
-    var expires = "";
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days*24*60*60*1000));
-        expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
-}
-
     componentDidMount(){
-        var state_cookie = this.getCookie("submit-last-server-state")
-        var auth_cookie = this.getCookie("submit-server-cookie")
-        var last_visited_cookie = this.getCookie("submit-last-visited-path")
+        var state_cookie = getCookie("submit-last-server-state")
+        var auth_cookie = getCookie("submit-server-cookie")
+        //var last_visited_cookie = getCookie("submit-last-visited-path")
         if (auth_cookie !== undefined && state_cookie !== undefined && state_cookie !== "") {
           console.log("aa",state_cookie)
           console.log("state cookie",JSON.parse(state_cookie).user_name)
-          if (last_visited_cookie === null){
-            this.setCookie("submit-last-visited-path", "/users/" + JSON.parse(state_cookie).user_name.toString(), 0.0034)
-          }
-            console.log("pushing to", this.getCookie("submit-last-visited-path"))
+          /*if (last_visited_cookie === null){
+            setCookie("submit-last-visited-path", "/users/" + JSON.parse(state_cookie).user_name.toString(), 0.0034)
+          }*/
+            //console.log("pushing to", getCookie("submit-last-visited-path"))
             this.props.history.push({
                 pathname: "/users/" + JSON.parse(state_cookie).user_name.toString(),
                 state: state_cookie
@@ -64,7 +49,7 @@ class Login extends Component {
     }
   
   async handleSubmit(event) {
-    var last_visited_cookie = this.getCookie("submit-last-visited-path")
+    //var last_visited_cookie = getCookie("submit-last-visited-path")
     event.preventDefault();
     await fetch(window.location.origin + '/api/', {method:'GET', 
     headers: {'Authorization': 'Basic ' + btoa(this.state.username + ":" + this.state.password)}})
@@ -81,15 +66,17 @@ class Login extends Component {
         return jsonResp
     })
     .then (data => {
-      this.setCookie("submit-last-server-state", JSON.stringify(data), 0.0034)
+      setCookie("submit-last-server-state", JSON.stringify(data), 0.0034)
       this.profile = data
     });
     if (this.okToServe) {
+      var last_visited_cookie = null; // REMOVE THIS LINE AFTER THE BELOW CODE GETS UNCOMMENTED/DELETED
         if (last_visited_cookie != null) {
-            this.props.history.push({
+          console.log("REMOVE THIS LINE AFTER THE BELOW CODE GETS UNCOMMENTED/DELETED");
+            /*this.props.history.push({
                 pathname: decodeURIComponent(last_visited_cookie.toString()),
                 state: JSON.stringify(this.profile),
-            });
+            });*/
        } else {
             this.props.history.push({
                 pathname: decodeURIComponent("/users/" + this.profile.user_name),

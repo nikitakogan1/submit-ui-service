@@ -3,7 +3,8 @@ import { Component } from 'react';
 import {Navigation} from 'react-minimal-side-navigation';
 import 'react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css';
 import { withRouter } from "react-router-dom";
-import "./Navbar.css"
+import "./Navbar.css";
+import {getCookie, setCookie } from  "../Utils/session";
 
 class NavBar extends Component{
     username = ""
@@ -34,7 +35,7 @@ class NavBar extends Component{
       ]
     studentNav = [
         {
-            title: 'All courses',
+            title: 'My courses',
             itemId: '/courses',
           },
           {
@@ -88,31 +89,5 @@ class NavBar extends Component{
         );
     }
     }
-
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-  }
-  
-  function setCookie(name,value,days) {
-    var expires = "";
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days*24*60*60*1000));
-        expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
-  }
-
-const userAuthFunc = () => {
-    var cookie = getCookie("submit-server-cookie")
-    var stateCookie = getCookie("submit-last-server-state")
-    if (cookie === undefined || stateCookie === undefined || stateCookie === "" ) {
-      //setCookie('submit-last-visited-path', window.location.pathname, 0.0034);
-     return false
-    }
-    return true
-  }
 
   export default withRouter(NavBar);

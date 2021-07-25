@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button"
 import Form from "react-bootstrap/Form"
 import Modal from "react-bootstrap/Modal"
 import Col from "react-bootstrap/Col"
+import {getCookie} from  "../Utils/session"
 
 function removeItemOnce(arr, value) {
   var index = arr.indexOf(value);
@@ -109,7 +110,10 @@ class Courses extends Component {
       if (this.state.isAdminView){
         var header = {}
       } else {
-        header = {'X-Submit-User': getUserNameFromCookie() }
+        var userNameFromCookie = getUserNameFromCookie()
+        if (userNameFromCookie !== null) {
+          header = {'X-Submit-User': getUserNameFromCookie() }
+        }
       }
       var toRet=[]
       var url = window.location.origin + '/api/courses/?limit='+ this.state.limit
@@ -161,10 +165,10 @@ class Courses extends Component {
             {this.state.isAdminView && <Button  variant="primary" id= "deleteCourseBut" onClick={this.deleteSelectedCourses}>
                 Delete Selected courses
             </Button>}
-            {this.state.after_id > 0 && <Button  variant="secondary" id= "UsersPrevPage" onClick={this.previousPage}>
+            {this.state.after_id > 0 && <Button  variant="primary" id= "UsersPrevPage" onClick={this.previousPage}>
                 Previons page
             </Button>}
-            {this.state.left_to_process === true && <Button  variant="secondary" id= "UsersNextPage" onClick={this.nextPage}>
+            {this.state.left_to_process === true && <Button  variant="primary" id= "UsersNextPage" onClick={this.nextPage}>
                 Next page
             </Button>}
       </React.Fragment>
@@ -224,7 +228,7 @@ class Courses extends Component {
             <Button id="submitAddCourseBut" variant="primary" type="submit">
                 Submit
             </Button>
-            <Button id="closeAddCourseBut" variant="secondary" onClick={handleClose}>
+            <Button id="closeAddCourseBut" variant="primary" onClick={handleClose}>
               Close
             </Button>
             </Form>
@@ -260,27 +264,15 @@ class Courses extends Component {
   function getUserNameFromCookie() {
     var state_cookie = getCookie("submit-last-server-state");
     if (state_cookie !== undefined){
-      console.log(state_cookie);
-      var user_name = JSON.parse(state_cookie).user_name;
+      var stateJson = JSON.parse(state_cookie);
+      if (stateJson.roles.indexOf("admin") !== -1 || stateJson.roles.indexOf("secretary") !== -1) {
+        return null;
+      } else {
+        return stateJson.user_name;
+      }
     }
-    return user_name
+    return null;
   }
-    
-  function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-  }
-
-  function setCookie(name,value,days) {
-    var expires = "";
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days*24*60*60*1000));
-        expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
-}
 
   export default withRouter(Courses);
 

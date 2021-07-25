@@ -13,7 +13,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import Multiselect from 'multiselect-react-dropdown';
-
+import {getCookie, setCookie } from  "../Utils/session";
 
 
 class User extends Component {
@@ -463,10 +463,10 @@ render(){
     {!checkAdminCookie() && staffCoursesList.length !== 0 && <BootstrapTable id= "staffCoursesTable"  hover keyField='number' data={as_staff} columns={ this.columns }  pagination={ paginationFactory(PagingOptions) }/>}
      
      </React.Fragment>
-     {checkAdminCookie() && studentCoursesList.length !== 0 && <Button  variant="secondary" id= "deleteCourseButInUser" onClick={this.deleteSelectedCoursesAsStudent}>
+     {checkAdminCookie() && studentCoursesList.length !== 0 && <Button  variant="primary" id= "deleteCourseButInUser" onClick={this.deleteSelectedCoursesAsStudent}>
           Delete
       </Button>}
-      {checkAdminCookie() && staffCoursesList.length !== 0 && <Button  variant="secondary" id= "deleteCourseButInStaff" onClick={this.deleteSelectedCoursesAsStaff}>
+      {checkAdminCookie() && staffCoursesList.length !== 0 && <Button  variant="primary" id= "deleteCourseButInStaff" onClick={this.deleteSelectedCoursesAsStaff}>
           Delete
       </Button>}
 </div>
@@ -520,22 +520,6 @@ export const UserPrivateRoute = ({ component: Component, ...rest }) => {
   )
 }
 
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
-}
-
-function setCookie(name,value,days) {
-  var expires = "";
-  if (days) {
-      var date = new Date();
-      date.setTime(date.getTime() + (days*24*60*60*1000));
-      expires = "; expires=" + date.toUTCString();
-  }
-  document.cookie = name + "=" + (value || "")  + expires + "; path=/";
-}
-
 const userAuthFunc = () => {
   var cookie = getCookie("submit-server-cookie")
   var stateCookie = getCookie("submit-last-server-state")
@@ -567,7 +551,7 @@ function AddUserToCourseAsStudentModal(props) {
 <GetCoursesList role={"student"} history={props.history} courses_as_staff={props.courses_as_staff} courses_as_student={props.courses_as_student} close={handleClose} userURL={props.userURL} user_name={props.user_name}></GetCoursesList>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="primary" onClick={handleClose}>
             Close
           </Button>
         </Modal.Footer>
@@ -597,7 +581,7 @@ function AddUserToCourseAsStaffModal(props) {
 <GetCoursesList role={"staff"} history={props.history} courses_as_student={props.courses_as_student} courses_as_staff={props.courses_as_staff} close={handleClose} userURL={props.userURL} user_name={props.user_name}></GetCoursesList>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="primary" onClick={handleClose}>
             Close
           </Button>
         </Modal.Footer>
