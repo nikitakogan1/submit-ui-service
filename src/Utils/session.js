@@ -45,6 +45,7 @@ export function getLoggedInUserName() {
   return "";
 }
 
+
 export const SessionRoute = ({ component: Component, ...rest }) => {
     var cookie = getCookie("submit-server-cookie")
     var stateCookie = getCookie("submit-last-server-state")
