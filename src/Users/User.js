@@ -141,7 +141,7 @@ Roles:
 {(this.state.courses_as_student.elements !== {} ||  this.state.courses_as_staff.elements !== {}) && <UserCourses checkAdminCookie={this.checkAdminCookie} courseOnClick={this.courseOnClick} user_name={this.state.user_name} studentCourses={this.state.courses_as_student.elements} staffCourses={this.state.courses_as_staff.elements} history={this.props.history}></UserCourses>}
 <div className="adminPanel">
 {checkAdminCookie() && <AddUserToCourseAsStudentModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={window.location.origin + '/api/users/' + this.state.user_name}></AddUserToCourseAsStudentModal>}
-{checkAdminCookie() && <AddUserToCourseAsStaffModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={window.location.origin + 'api/users/' + this.state.user_name}></AddUserToCourseAsStaffModal>}
+{checkAdminCookie() && <AddUserToCourseAsStaffModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={window.location.origin + '/api/users/' + this.state.user_name}></AddUserToCourseAsStaffModal>}
 </div>
 </Fragment>
 
@@ -400,7 +400,7 @@ class UserCourses extends Component {
       console.log(body)
     })
 
-    fetch(window.location.origin + 'api/users/' + this.props.user_name , {method:'PUT', body: JSON.stringify(body),
+    fetch(window.location.origin + '/api/users/' + this.props.user_name , {method:'PUT', body: JSON.stringify(body),
     headers: {'Authorization': 'Basic ' + btoa('username:password')}})
     .then((response) => {
     if (!response.ok){
@@ -676,7 +676,7 @@ class GetCoursesList extends Component {
     coursesToStore.forEach((course) => {
       body.courses_as_staff.elements[course] = {}
     })
-    
+    console.log(this.props.userURL)
     fetch(this.props.userURL, {method:'PUT', 
      body: (JSON.stringify(body)),headers: {'Authorization': 'Basic ' + btoa('username:password')}})
     .then((response) => {
