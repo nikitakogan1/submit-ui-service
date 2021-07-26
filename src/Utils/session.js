@@ -39,7 +39,7 @@ export function isLoggedIn() {
 
 export function getLoggedInUserName() {
   let stateCookie = getCookie("submit-last-server-state")
-  if (stateCookie !== null && stateCookie !== undefined && stateCookie !== "") {
+  if (stateCookie !== undefined && stateCookie !== undefined && stateCookie !== "") {
     return JSON.parse(stateCookie).user_name;
   }
   return "";
