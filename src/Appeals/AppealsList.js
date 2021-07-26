@@ -2,10 +2,9 @@ import React from "react";
 import { Component } from "react";
 import BootstrapTable from 'react-bootstrap-table-next';
 import {getLoggedInUserName} from "../Utils/session";
-import { Type } from 'react-bootstrap-table2-editor';
 
 
-export default class AssignmentsList extends Component {
+export default class AppealList extends Component {
     constructor(props) {
       super(props);
       this.state = {left_to_process:false,limit:5, after_id:0, elements: [],
@@ -29,8 +28,9 @@ export default class AssignmentsList extends Component {
         })
     }
 
+
     goToBackEnd() {
-        var url = window.location.origin + '/api/assignment_instances/?limit='+ this.state.limit
+        var url = window.location.origin + '/api/appeals/?limit='+ this.state.limit
         if (this.state.after_id > 0) {
           url = url + "&after_id=" + this.state.after_id
         }
@@ -61,35 +61,26 @@ export default class AssignmentsList extends Component {
       this.goToBackEnd();
     }
 
-    columns = [{
-        dataField: 'assignment_def',
-        formatter: (cell, row) => <a href={"/assignments/" + cell.replaceAll(":","/")}> {cell} </a>,
-        text: 'Assignment name',
-      }, {
-        dataField: 'due_by',
-        text: 'Due by',
-        formatter: (cell) => {
-          let dateObj = cell;
-          if (typeof cell !== 'object') {
-            dateObj = new Date(cell);
-          } return `${('0' + dateObj.getDate()).slice(-2)}/${('0' + (dateObj.getMonth() + 1)).slice(-2)}/${dateObj.getFullYear()}`;
-          }, editor: {
-            type: Type.DATE
-          }
-        
-      }, {
-        dataField: 'state',
-        text: 'State'
-      },
-      {
-        dataField: 'grade',
-        text: 'Grade'
-      },
-      {
-        dataField: 'copy',
-        text: 'Detected as copy?'
-      }
-    ];
+    // columns = [{
+    //     dataField: 'assignment_def',
+    //     text: 'Assignment name',
+    //   }, {
+    //     dataField: 'due_by',
+    //     text: 'Due by'
+    //   }, {
+    //     dataField: 'state',
+    //     text: 'State'
+    //   },
+    //   {
+    //     dataField: 'grade',
+    //     text: 'Grade'
+    //   },
+    //   {
+    //     dataField: 'copy',
+    //     text: 'Detected as copy?'
+    //   }
+    // ];
+
     render(){
       return (
     <div className="UsersList">
