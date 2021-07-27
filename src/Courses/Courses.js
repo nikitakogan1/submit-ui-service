@@ -153,10 +153,10 @@ class Courses extends Component {
             {this.state.isAdminView && <Button  variant="primary" id= "deleteCourseBut" onClick={this.deleteSelectedCourses}>
                 Delete Selected courses
             </Button>}
-            {this.state.after_id > 0 && <Button  variant="secondary" id= "UsersPrevPage" onClick={this.previousPage}>
+            {this.state.after_id > 0 && <Button  variant="primary" id= "UsersPrevPage" onClick={this.previousPage}>
                 Previons page
             </Button>}
-            {this.state.left_to_process === true && <Button  variant="secondary" id= "UsersNextPage" onClick={this.nextPage}>
+            {this.state.left_to_process === true && <Button  variant="primary" id= "UsersNextPage" onClick={this.nextPage}>
                 Next page
             </Button>}
       </React.Fragment>
@@ -213,7 +213,7 @@ class Courses extends Component {
             <Button id="submitAddCourseBut" variant="primary" type="submit">
                 Submit
             </Button>
-            <Button id="closeAddCourseBut" variant="secondary" onClick={handleClose}>
+            <Button id="closeAddCourseBut" variant="primary" onClick={handleClose}>
               Close
             </Button>
             </Form>
