@@ -2,7 +2,6 @@ import React from "react";
 import { Component } from "react";
 import BootstrapTable from 'react-bootstrap-table-next';
 import {getLoggedInUserName} from "../Utils/session";
-import { Type } from 'react-bootstrap-table2-editor';
 
 
 export default class AssignmentsList extends Component {
@@ -58,29 +57,35 @@ export default class AssignmentsList extends Component {
       this.goToBackEnd();
     }
 
+    parseStatus= (number) => {
+      if (number === 0){
+        return "Assigned"
+      } else if (number === 1) {
+        return "Submitted"
+      } else {
+        return "Graded"
+      }
+    }
+
+
     columns = [{
         dataField: 'assignment_def',
-        formatter: (cell, row) => <a href={"/assignments/" + cell.replaceAll(":","/")}> {cell} </a>,
+        formatter: (cell, row) => <a href={"/assignment_instances/" + cell.replaceAll(":","/")}> {cell} </a>,
         text: 'Assignment name',
       }, {
         dataField: 'due_by',
         text: 'Due by',
-        formatter: (cell) => {
-          let dateObj = cell;
-          if (typeof cell !== 'object') {
-            dateObj = new Date(cell);
-          } return `${('0' + dateObj.getDate()).slice(-2)}/${('0' + (dateObj.getMonth() + 1)).slice(-2)}/${dateObj.getFullYear()}`;
-          }, editor: {
-            type: Type.DATE
-          }
-        
+        formatter: (cell, row) => <h10>{new Date(cell).toString()}</h10>
       }, {
         dataField: 'state',
-        text: 'State'
+        text: 'State',
+        formatter: (cell, row) => <h10>{this.parseStatus(cell)} </h10>
       },
       {
         dataField: 'grade',
-        text: 'Grade'
+        text: 'Grade',
+        formatter: (cell, row) => <h10>{row.state === 0 ? "-" : cell} </h10>
+
       },
       {
         dataField: 'copy',
@@ -89,7 +94,7 @@ export default class AssignmentsList extends Component {
     ];
     render(){
       return (
-    <div className="UsersList">
+    <div className="AssignmentList">
     <p className="Table-header"></p>
      
     {this.state.elements !== null && <BootstrapTable hover keyField='assignment_def' data={ this.state.elements } columns={ this.columns } />}

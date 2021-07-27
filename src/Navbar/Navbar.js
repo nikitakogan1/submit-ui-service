@@ -28,8 +28,12 @@ class NavBar extends Component{
           itemId: '/courses',
         },
         {
-          title: 'All assignments',
-          itemId: '/assignments',
+          title: 'All assignment definitons',
+          itemId: '/assignment_definitions',
+        },
+        {
+          title: 'All assignments instances',
+          itemId: '/assignment_instances',
         },
         {
           title: 'All users',
@@ -55,7 +59,7 @@ class NavBar extends Component{
           },
           {
             title: 'My assignments',
-            itemId: '/assignments',
+            itemId: '/assignment_instances',
           },
           {
             title: 'My appeals',

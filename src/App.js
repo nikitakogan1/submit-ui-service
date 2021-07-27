@@ -91,9 +91,9 @@ function App (){
           <Login navbar={setShowNavBar} history={history}/>
         </Route>
         <SessionRoute path="/courses" component={Courses} navbar={setShowNavBar} history={history}></SessionRoute>
-        <SessionRoute path="/assignments/:id" component={Assignment} navbar={setShowNavBar} history={history}></SessionRoute>
+        <SessionRoute path="/assignment_instances/:id" component={Assignment} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/users/:id" component={User} navbar={setShowNavBar} history={history}></SessionRoute>
-        <SessionRoute path="/assignments" component={AssignmentsList} navbar={setShowNavBar} history={history}></SessionRoute>
+        <SessionRoute path="/assignment_instances" component={AssignmentsList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/users/" component={UsersList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/agents/" component={AgentList} navbar={setShowNavBar} history={history}></SessionRoute>
         <Route component={Page403} path={"/unauthorized"}/>

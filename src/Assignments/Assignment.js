@@ -20,8 +20,7 @@ export default class Assignment extends Component{
     goToBackEnd() {
         //http://localhost:8080/assignment_instances/1/2021/ass4/nikita
         var username = getLoggedInUserName()
-        var url = window.location.origin + "/api/" + window.location.pathname.replace("/assignments","assignment_instances") + "/" + username
-        //headers {'X-Submit-User': getLoggedInUserName()}
+        var url = window.location.origin + "/api/" + window.location.pathname + "/" + username
         fetch(url, {method:'GET'})
         .then((response) => {
           if (response.status === 403){
