@@ -99,9 +99,7 @@ export default class AgentList extends Component {
           return response.json()
         })
         .then (data => {
-          this.setState({elements:data.elements}, () => {
-              console.log(this.state.elements)
-          });
+          this.setState({elements:data.elements});
         });
     }
 

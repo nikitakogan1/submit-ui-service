@@ -55,7 +55,6 @@ class UsersList extends Component {
         if (this.state.after_id > 0) {
           url = url + "&after_id=" + this.state.after_id
         }
-        console.log(url)
         fetch(url, {method:'GET', 
         headers: {'Authorization': 'Basic ' + btoa('username:password')}})
         .then((response) => {
@@ -71,9 +70,7 @@ class UsersList extends Component {
           return response.json()
         })
         .then (data => {
-          this.setState({elements:data.elements}, () => {
-              console.log(this.state.elements)
-          });
+          this.setState({elements:data.elements});
         });
     }
 
@@ -94,7 +91,6 @@ class UsersList extends Component {
             } else {
                 this.usersSelectedToDelete.push(props.user_name)
             }
-            console.log("final list to delete", this.usersSelectedToDelete)
           }
       };
 
@@ -142,9 +138,7 @@ class UsersList extends Component {
 
     const updateDetails = (event) => {
         event.preventDefault(event);
-        console.log(event.target.user_name.value)
         var body = {"users":[{"user_name":event.target.user_name.value, "email": event.target.email.value ,"password":event.target.password.value, "last_name": event.target.last_name.value, "first_name": event.target.first_name.value ,"roles":{"elements":{"std_user":{}}},"courses_as_student":{"elements":{}},"courses_as_staff":{"elements":{}}}]}
-        console.log(body)
         fetch(window.location.origin + '/api/users/', {method:'POST', 
         body: JSON.stringify(body), headers: {'Authorization': 'Basic ' + btoa('username:password')}})
         .then((response) => {

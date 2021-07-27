@@ -34,7 +34,6 @@ export default class AssignmentsList extends Component {
         if (this.state.after_id > 0) {
           url = url + "&after_id=" + this.state.after_id
         }
-        console.log(url)
         fetch(url, {method:'GET', 
         headers: {'X-Submit-User': getLoggedInUserName()}})
         .then((response) => {
@@ -50,9 +49,7 @@ export default class AssignmentsList extends Component {
           return response.json()
         })
         .then (data => {
-          this.setState({elements:data.elements}, () => {
-              console.log(this.state.elements)
-          });
+          this.setState({elements:data.elements});
         });
     }
 

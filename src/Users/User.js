@@ -51,9 +51,6 @@ class User extends Component {
           }
           return response.json()
          })
-         .then (data => {
-           console.log(data);
-         });
          this.props.history.go(0)
     }
 
@@ -61,9 +58,7 @@ class User extends Component {
      componentDidMount() {
         this.userNameFromReq = this.props.match.params.id
         var state_cookie = getCookie("submit-last-server-state");
-        console.log("the state cookie is" ,state_cookie)
         this.username = JSON.parse(state_cookie).user_name;
-        console.log("the username is", this.username);
         this.userURL = window.location.origin + '/api/users/' + this.userNameFromReq
         fetch(this.userURL, {method:'GET', 
         headers: {'Authorization': 'Basic ' + btoa('username:password')}})
@@ -80,10 +75,8 @@ class User extends Component {
         })
         .then (data => {
             this.setState(data);
-            console.log("final state is",this.state);
         });
         this.checkAdmin()
-        console.log("proooooooops:",this.props)
         this.props.navbar(true)
     }
 
@@ -97,12 +90,10 @@ class User extends Component {
     }
 
     courseOnClick = (course) => {
-      console.log(course)
       this.props.history.push("/courses/" + course.replaceAll(":","/"))
     }
 
     render() {
-        console.log("the state before sending is", parseResp(JSON.stringify(this.state.roles.elements)))
         return (
           <Fragment>
 <Form onSubmit={this.updateDetails}>
@@ -149,7 +140,6 @@ Roles:
 }
  
 function parseResp(str){ 
-  console.log("parse resp",str)
   if (str.includes("admin")){
     return "Admin"
   } else if (str.includes("secretary")) {
@@ -166,7 +156,6 @@ function parseResp(str){
 function checkAdminCookie(){
   var state_cookie = getCookie("submit-last-server-state");
   if (state_cookie !== undefined){
-    console.log(state_cookie);
     var roles = JSON.parse(state_cookie).roles;
   }
   return parseResp(JSON.stringify(roles)) === "Admin"
@@ -185,7 +174,6 @@ class AdminUserRoles extends Component {
 
   componentDidMount() {
     var role = this.props.role
-    console.log("the role is",role)
     if (role === "Admin"){
       this.setState({isAdmin : true})
     }
@@ -300,17 +288,13 @@ const createTableWithCourses = (as_student, as_staff) => {
   var staffCoursesToRet=[]
 
   as_student.forEach((course) => {
-    console.log(course)
     const [number,year] = course.split(":");
     studentCoursesToRet.push({number: number, year: year})
-    console.log(studentCoursesToRet)
   })
  
   as_staff.forEach((course) => {
-    console.log(course)
     const [number,year] = course.split(":");
     staffCoursesToRet.push({number: number, year: year})
-    console.log(staffCoursesToRet)
   })
   return [studentCoursesToRet,staffCoursesToRet]
 }
@@ -360,17 +344,13 @@ class UserCourses extends Component {
     var index = this.state.staffCoursesSelectedToDelete.indexOf(JSON.stringify({year: props.year, number: props.number}));
     if (index !== -1) {
       arr = removeItemOnce(this.state.staffCoursesSelectedToDelete, JSON.stringify({year: props.year, number: props.number}))
-      this.setState({staffCoursesSelectedToDelete: arr}, () => {
-        console.log(this.state.staffCoursesSelectedToDelete)
-      });
+      this.setState({staffCoursesSelectedToDelete: arr});
     } else {
       arr = [...this.state.staffCoursesSelectedToDelete, JSON.stringify({year: props.year, number: props.number})]
       arr.forEach((course) => {
         course = course.replaceAll("\\","");
       })
-      this.setState({staffCoursesSelectedToDelete:arr}, () => {
-        console.log(this.state.staffCoursesSelectedToDelete)
-      })
+      this.setState({staffCoursesSelectedToDelete:arr})
     }
   } 
 
@@ -387,17 +367,13 @@ class UserCourses extends Component {
 
 
   deleteSelectedCoursesAsStudent = () => {
-    console.log("hine:",this.state.coursesSelectedToDelete)
-    console.log("prop1", this.props.studentCourses);
     var body = {username: this.props.user_name, courses_as_student:{elements:this.props.studentCourses}}
     this.state.coursesSelectedToDelete.forEach((course) => {
       course = JSON.parse(course)
       var toRemove = course.number + ":" + course.year
       if (Object.keys(body.courses_as_student.elements).includes(toRemove)){
         delete body.courses_as_student.elements[toRemove]
-        console.log("it works")
       }
-      console.log(body)
     })
 
     fetch(window.location.origin + '/api/users/' + this.props.user_name , {method:'PUT', body: JSON.stringify(body),
@@ -419,7 +395,6 @@ deleteSelectedCoursesAsStaff = () => {
     if (Object.keys(body.courses_as_staff.elements).includes(toRemove)){
       delete body.courses_as_staff.elements[toRemove]
     }
-    console.log(body)
   })
 
   fetch(window.location.origin + '/api/users/' + this.props.user_name , {method:'PUT', body: JSON.stringify(body),
@@ -676,7 +651,6 @@ class GetCoursesList extends Component {
     coursesToStore.forEach((course) => {
       body.courses_as_staff.elements[course] = {}
     })
-    console.log(this.props.userURL)
     fetch(this.props.userURL, {method:'PUT', 
      body: (JSON.stringify(body)),headers: {'Authorization': 'Basic ' + btoa('username:password')}})
     .then((response) => {

@@ -20,9 +20,7 @@ export default class Assignment extends Component{
     goToBackEnd() {
         //http://localhost:8080/assignment_instances/1/2021/ass4/nikita
         var username = getLoggedInUserName()
-        console.log("the username is", username)
         var url = window.location.origin + "/api/" + window.location.pathname.replace("/assignments","assignment_instances") + "/" + username
-        console.log(url)
         //headers {'X-Submit-User': getLoggedInUserName()}
         fetch(url, {method:'GET'})
         .then((response) => {
@@ -41,8 +39,6 @@ export default class Assignment extends Component{
 
     onChangeHandler=event=>{
         var files = event.target.files;
-        console.log("the files",files);
-        console.log(this.validateSize(files));
         if(this.validateSize(files)){ 
             console.log("files",files);
         // if return true allow to setState
@@ -55,7 +51,6 @@ export default class Assignment extends Component{
 
     fileUploadHandler = () => {
         const data = new FormData()
-        console.log(this.state.selectedFiles);
         data.append('file', this.state.selectedFiles)
         console.log("Data",data);
         //send the request
@@ -63,10 +58,23 @@ export default class Assignment extends Component{
  
   };
 
+
+    columns = [{
+        dataField: 'assignment_def',
+        text: 'Assignment',
+    }, {
+        dataField: 'grade',
+        text: 'Grade',
+    }, {
+        dataField: 'copy',
+        text: 'Copy detection',
+    },
+    ];
+
+
     validateSize=(files)=>{
         let sum = 0
         let size = 30000;
-        console.log("filessss", JSON.stringify(files))
         for (let i=0;i<files.length;i++){
             console.log(files[i].size);
             sum += files[i].size
@@ -81,7 +89,7 @@ export default class Assignment extends Component{
     render(){
         return (
             //should remove hello later.
-            <div> Hello from assignment {window.location.pathname}
+            
             <Form >
                 <Form.Group onChange={this.onChangeHandler} controlId="formFileMultiple" className="mb-3">
                     <Form.Label >Submit assignment</Form.Label>
@@ -89,7 +97,6 @@ export default class Assignment extends Component{
                 </Form.Group> 
                 <Button variant="primary" id= "assignmentUploadBut" onClick={this.fileUploadHandler}>Submit assignment</Button>
             </Form>
-            </div>
         )
     }
 
