@@ -2,6 +2,7 @@ import { Component } from "react";
 import {getLoggedInUserName} from "../Utils/session";
 import Form from "react-bootstrap/Form"
 import "./Assignment.css"
+import Button from "react-bootstrap/Button"
 
 export default class Assignment extends Component{
     constructor(props){
@@ -54,8 +55,8 @@ export default class Assignment extends Component{
 
     fileUploadHandler = () => {
         const data = new FormData()
-        console.log(this.state.selectedFile);
-        data.append('file', this.state.selectedFile)
+        console.log(this.state.selectedFiles);
+        data.append('file', this.state.selectedFiles)
         console.log("Data",data);
         //send the request
         //TODO: Ask david about how to make the requests.
@@ -81,11 +82,12 @@ export default class Assignment extends Component{
         return (
             //should remove hello later.
             <div> Hello from assignment {window.location.pathname}
-            <Form onSubmit={this.fileUploadHandler}>
+            <Form >
                 <Form.Group onChange={this.onChangeHandler} controlId="formFileMultiple" className="mb-3">
                     <Form.Label >Submit assignment</Form.Label>
-                    <Form.Control id="submitAssignmentBut" type="file" multiple  size="lg" />
+                    <Form.Control type="file" multiple  size="lg" />
                 </Form.Group> 
+                <Button variant="primary" id= "assignmentUploadBut" onClick={this.fileUploadHandler}>Submit assignment</Button>
             </Form>
             </div>
         )
