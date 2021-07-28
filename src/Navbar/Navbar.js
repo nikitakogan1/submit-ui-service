@@ -43,6 +43,10 @@ class NavBar extends Component{
           title: 'Agent managment',
           itemId: '/agents',
         },
+        {
+          title: 'My messages',
+          itemId: '/messages',
+        },
       ]
     studentNav = [
           {
@@ -64,6 +68,10 @@ class NavBar extends Component{
           {
             title: 'My appeals',
             itemId: '/appeals',
+          },
+          {
+            title: 'My messages',
+            itemId: '/messages',
           },
     ]  
 

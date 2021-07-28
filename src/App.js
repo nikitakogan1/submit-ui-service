@@ -13,7 +13,7 @@ import {isLoggedIn, getLoggedInUserName, SessionRoute} from  "./Utils/session"
 import AssignmentsList from "./Assignments/AssignmentList"
 import Assignment from "./Assignments/Assignment"
 import AssignmentDefList from "./AssignmentDef/AssignmentDef"
-
+import Messages from "./Messages/Messages"
 
 function App (){
   const [showNavBar,setShowNavBar] = useState(false)
@@ -99,6 +99,7 @@ function App (){
         <SessionRoute path="/assignment_definitions" component={AssignmentDefList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/users/" component={UsersList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/agents/" component={AgentList} navbar={setShowNavBar} history={history}></SessionRoute>
+        <SessionRoute path="/messages/" component={Messages} navbar={setShowNavBar} history={history}></SessionRoute>
         <Route component={Page403} path={"/unauthorized"}/>
         <Route component={SomethingWentWrongPage} path={"/internal-error"}/>
         <Route component={PageNotFound} path={"/"}/>

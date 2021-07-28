@@ -91,7 +91,7 @@ export default class Assignment extends Component{
             //should remove hello later.
             
             <Form >
-                <Form.Group onChange={this.onChangeHandler} controlId="formFileMultiple" className="mb-3">
+                <Form.Group onChange={this.onChangeHandler} controlId="formFileMultiple" >
                     <Form.Label >Submit assignment</Form.Label>
                     <Form.Control type="file" multiple  size="lg" />
                 </Form.Group> 

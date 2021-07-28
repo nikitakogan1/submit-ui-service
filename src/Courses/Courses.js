@@ -62,14 +62,9 @@ class Courses extends Component {
   columns = [{
     dataField: 'name',
     text: 'Course name',
-    // formatter: (cell, row) => <a href={cell.course.year + "/" + cell.course_number}> {cell} </a>,
   }, {
     dataField: 'year',
     text: 'Year',
-    // formatter: (cell, row) => {
-    //   console.log(row);
-    //   return <div>{`${row.year} : ${row.number}`}</div>;
-    // }
   },
   {
     dataField: 'number',
@@ -153,10 +148,10 @@ class Courses extends Component {
             {this.state.isAdminView && <Button  variant="primary" id= "deleteCourseBut" onClick={this.deleteSelectedCourses}>
                 Delete Selected courses
             </Button>}
-            {this.state.after_id > 0 && <Button  variant="primary" id= "UsersPrevPage" onClick={this.previousPage}>
+            {this.state.after_id > 0 && <Button  variant="primary" id= "CoursesPrevPage" onClick={this.previousPage}>
                 Previons page
             </Button>}
-            {this.state.left_to_process === true && <Button  variant="primary" id= "UsersNextPage" onClick={this.nextPage}>
+            {this.state.left_to_process === true && <Button  variant="primary" id= "CoursesNextPage" onClick={this.nextPage}>
                 Next page
             </Button>}
       </React.Fragment>
