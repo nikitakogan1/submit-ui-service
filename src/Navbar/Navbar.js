@@ -96,15 +96,15 @@ class NavBar extends Component{
     }
 
     render(){
-        return (
-          <div className="Navbar">
-            {this.state.isAuthed && <Navigation
-                onSelect={this.selected}
-                items={ this.state.isAdmin ? this.adminNav : this.studentNav}
-              />}
-            </div>
-    
-        );
+      return (
+        <div className="Navbar">
+          {this.state.isAuthed && <Navigation
+              onSelect={this.selected}
+              items={ this.state.isAdmin ? this.adminNav : this.studentNav}
+            />}
+          </div>
+  
+      );
     }
 }
 

@@ -4,7 +4,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import {getLoggedInUserName} from "../Utils/session";
 
 
-export default class AssignmentsList extends Component {
+export default class AssignmentDefList extends Component {
     constructor(props) {
       super(props);
       this.state = {left_to_process:false,limit:5, after_id:0, elements: [],
@@ -29,7 +29,7 @@ export default class AssignmentsList extends Component {
     }
 
     goToBackEnd() {
-        var url = window.location.origin + '/api/assignment_instances/?limit='+ this.state.limit
+        var url = window.location.origin + '/api/assignment_definitions/?limit='+ this.state.limit
         if (this.state.after_id > 0) {
           url = url + "&after_id=" + this.state.after_id
         }
@@ -57,20 +57,9 @@ export default class AssignmentsList extends Component {
       this.goToBackEnd();
     }
 
-    parseStatus= (number) => {
-      if (number === 0){
-        return "Assigned"
-      } else if (number === 1) {
-        return "Submitted"
-      } else {
-        return "Graded"
-      }
-    }
-
-
     columns = [{
-        dataField: 'assignment_def',
-        formatter: (cell, row) => <a href={"/assignment_instances/" + cell.replaceAll(":","/")}> {cell.replaceAll(":","/")} </a>,
+        dataField: 'name',
+        formatter: (cell, row) => <a href={"/assignment_definitions/" + cell.replaceAll(":","/")}> {cell} </a>,
         text: 'Assignment name',
       }, {
         dataField: 'due_by',
@@ -79,18 +68,13 @@ export default class AssignmentsList extends Component {
       }, {
         dataField: 'state',
         text: 'State',
-        formatter: (cell, row) => <h10>{this.parseStatus(cell)} </h10>
+        formatter: (cell, row) => <h10>{cell === 0 ? "Drafted" : "Published"} </h10>
       },
       {
-        dataField: 'grade',
-        text: 'Grade',
-        formatter: (cell, row) => <h10>{row.state === 0 ? "-" : cell} </h10>
-
+        dataField: 'course',
+        text: 'Course',
+        formatter: (cell, row) => <h10>{cell.replaceAll(":","/")} </h10>
       },
-      {
-        dataField: 'copy',
-        text: 'Detected as copy?'
-      }
     ];
     render(){
       return (

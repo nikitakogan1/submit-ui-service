@@ -174,14 +174,17 @@ class Courses extends Component {
 
     const createCourse = (event) => {
         event.preventDefault(event);
-        var body = { number: parseInt(event.target.number.value), name: event.target.name.value }
+        var body = { number: parseInt(event.target.number.value), name: event.target.name.value , year: 2021}
         fetch(window.location.origin + '/api/courses/', {method:'POST', 
         body: JSON.stringify(body), headers: {'Authorization': 'Basic ' + btoa('username:password')}})
         .then((response) => {
+          console.log(body)
+          var resp = response.json()
+          console.log(resp)
           if (!response.ok){
-            alert("balagan")
+            alert("failed to create course")
           }
-          return response.json()
+          return resp
         });
         handleClose()
         props.history.go(0)

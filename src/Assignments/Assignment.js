@@ -8,16 +8,16 @@ export default class Assignment extends Component{
     constructor(props){
         super(props)
         this.state = {
-            info: null, selectedFiles: null
+            info: null, selectedFiles: null, currentFileList: null
         }
     }
     componentDidMount(){
         this.props.navbar(true);
-        this.goToBackEnd();
+        this.goToBackEndForAssignDetails();
     }
 
 
-    goToBackEnd() {
+    goToBackEndForAssignDetails() {
         //http://localhost:8080/assignment_instances/1/2021/ass4/nikita
         var username = getLoggedInUserName()
         var url = window.location.origin + "/api/" + window.location.pathname + "/" + username
@@ -35,6 +35,7 @@ export default class Assignment extends Component{
           });
         });
     }
+
 
     onChangeHandler=event=>{
         var files = event.target.files;
