@@ -90,16 +90,16 @@ class NavBar extends Component{
 
     selected = (selected) => {
         if (selected.itemId === "/users/") {
-            this.props.history.push(selected.itemId + this.username)
-            this.props.history.go(0)
+            this.props.history.push(selected.itemId + this.username);
+            this.props.history.go(0);
         } else if (selected.itemId === "logout") {
           eraseCookie("submit-server-cookie");
           eraseCookie("submit-last-server-state");
           this.props.history.push("/");
           this.props.history.go(0);
         } else {
-            this.props.history.push(selected.itemId)
-            this.props.history.go(0)
+            this.props.history.push(selected.itemId);
+            this.props.history.go(0);
         }
     }
 

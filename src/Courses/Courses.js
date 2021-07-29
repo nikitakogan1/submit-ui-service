@@ -7,7 +7,7 @@ import Button from "react-bootstrap/Button"
 import Form from "react-bootstrap/Form"
 import Modal from "react-bootstrap/Modal"
 import Col from "react-bootstrap/Col"
-import {getCookie} from  "../Utils/session"
+import {getCookie, isLoggedIn} from  "../Utils/session"
 
 function removeItemOnce(arr, value) {
   var index = arr.indexOf(value);
@@ -62,6 +62,7 @@ class Courses extends Component {
   columns = [{
     dataField: 'name',
     text: 'Course name',
+    formatter: (cell, row) => <a href={"/courses/" + row.number + "/" + row.year}> {cell} </a>,
   }, {
     dataField: 'year',
     text: 'Year',
@@ -235,17 +236,21 @@ class Courses extends Component {
   }
   
   function checkAdminCookie(){
-    var state_cookie = getCookie("submit-last-server-state");
-    if (state_cookie !== undefined){
-      var roles = JSON.parse(state_cookie).roles;
+    let roles;
+    if (!isLoggedIn()) {
+      roles = []
+    } else {
+      let state_cookie = getCookie("submit-last-server-state");
+      roles = JSON.parse(state_cookie).roles;
     }
     return parseResp(JSON.stringify(roles)) === "Admin"
   }
 
   function getUserNameFromCookie() {
-    var state_cookie = getCookie("submit-last-server-state");
-    if (state_cookie !== undefined){
-      var user_name = JSON.parse(state_cookie).user_name;
+    let user_name = "";
+    if (isLoggedIn()) {
+      let state_cookie = getCookie("submit-last-server-state");
+      user_name = JSON.parse(state_cookie).user_name;
     }
     return user_name
   }

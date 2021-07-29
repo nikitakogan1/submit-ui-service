@@ -154,9 +154,12 @@ function parseResp(str){
 }
 
 function checkAdminCookie(){
-  var state_cookie = getCookie("submit-last-server-state");
+  let roles;
+  let state_cookie = getCookie("submit-last-server-state");
   if (state_cookie !== undefined){
-    var roles = JSON.parse(state_cookie).roles;
+    roles = JSON.parse(state_cookie).roles;
+  } else {
+    return roles = [];
   }
   return parseResp(JSON.stringify(roles)) === "Admin"
 }

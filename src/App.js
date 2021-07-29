@@ -3,6 +3,7 @@ import {BrowserRouter, Route, Switch, withRouter, Redirect} from 'react-router-d
 import Login from "./Login/login";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import Courses from "./Courses/Courses"
+import Course from "./Courses/Course"
 import { useHistory } from "react-router-dom";
 import User from "./Users/User";
 import NavBar from "./Navbar/Navbar"
@@ -12,8 +13,12 @@ import "./App.css"
 import {isLoggedIn, getLoggedInUserName, SessionRoute} from  "./Utils/session"
 import AssignmentsList from "./Assignments/AssignmentList"
 import Assignment from "./Assignments/Assignment"
+<<<<<<< HEAD
 import AssignmentDefList from "./AssignmentDef/AssignmentDef"
 import Messages from "./Messages/Messages"
+=======
+import Files from "./Files/Files"
+>>>>>>> fixes, sessioning, course view and generic files component
 
 function App (){
   const [showNavBar,setShowNavBar] = useState(false)
@@ -92,6 +97,7 @@ function App (){
         <Route exact path="/">
           <Login navbar={setShowNavBar} history={history}/>
         </Route>
+        <SessionRoute path="/courses/:id" component={Course} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/courses" component={Courses} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/assignment_instances/:id" component={Assignment} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/users/:id" component={User} navbar={setShowNavBar} history={history}></SessionRoute>
@@ -100,6 +106,7 @@ function App (){
         <SessionRoute path="/users/" component={UsersList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/agents/" component={AgentList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/messages/" component={Messages} navbar={setShowNavBar} history={history}></SessionRoute>
+        <SessionRoute path="/files/:path" component={Files} navbar={setShowNavBar} history={history}></SessionRoute>
         <Route component={Page403} path={"/unauthorized"}/>
         <Route component={SomethingWentWrongPage} path={"/internal-error"}/>
         <Route component={PageNotFound} path={"/"}/>
