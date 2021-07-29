@@ -13,12 +13,9 @@ import "./App.css"
 import {isLoggedIn, getLoggedInUserName, SessionRoute} from  "./Utils/session"
 import AssignmentsList from "./Assignments/AssignmentList"
 import Assignment from "./Assignments/Assignment"
-<<<<<<< HEAD
 import AssignmentDefList from "./AssignmentDef/AssignmentDef"
 import Messages from "./Messages/Messages"
-=======
 import Files from "./Files/Files"
->>>>>>> fixes, sessioning, course view and generic files component
 
 function App (){
   const [showNavBar,setShowNavBar] = useState(false)
