@@ -1,102 +1,98 @@
-import { Component } from "react";
+import {Component, Fragment} from "react";
+import Form from "react-bootstrap/Form";
+import Col from "react-bootstrap/Col";
+import FormFiles from "../FormFiles/FormFiles.js"
 import {getLoggedInUserName} from "../Utils/session";
-import Form from "react-bootstrap/Form"
-import "./Assignment.css"
-import Button from "react-bootstrap/Button"
+import {doesUserHaveRole, isStaffCourse} from "../Utils/session.js";
 
-export default class Assignment extends Component{
-    constructor(props){
-        super(props)
+export default class Assignment extends Component {
+
+    constructor(props) {
+        super(props);
         this.state = {
-            info: null, selectedFiles: null, currentFileList: null
-        }
-    }
-    componentDidMount(){
-        this.props.navbar(true);
-        this.goToBackEndForAssignDetails();
-    }
-
-
-    goToBackEndForAssignDetails() {
-        //http://localhost:8080/assignment_instances/1/2021/ass4/nikita
-        var username = getLoggedInUserName()
-        var url = window.location.origin + "/api/" + window.location.pathname + "/" + username
-        fetch(url, {method:'GET'})
-        .then((response) => {
-          if (response.status === 403){
-            this.props.history.push("/unauthorized");
-            this.props.history.go(0);
-          }
-          return response.json()
-        })
-        .then (data => {
-          this.setState({info:data}, () => {
-              console.log(this.state.info)
-          });
-        });
+            isLoaded: false,
+            files: {elements:{}},
+        };
+        this.loaded = false;
+        this.isLoaded = this.isLoaded.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
     }
 
-
-    onChangeHandler=event=>{
-        var files = event.target.files;
-        if(this.validateSize(files)){ 
-            console.log("files",files);
-        // if return true allow to setState
-            this.setState({selectedFiles: files});
+    
+    parseStatus= (number) => {
+        if (number === 0){
+          return "Assigned"
+        } else if (number === 1) {
+          return "Submitted"
         } else {
-            // files are too big.
-            //TODO: pop up
+          return "Graded"
         }
-}
+      }
 
-    fileUploadHandler = () => {
-        const data = new FormData()
-        data.append('file', this.state.selectedFiles)
-        console.log("Data",data);
-        //send the request
-        //TODO: Ask david about how to make the requests.
- 
-  };
-
-
-    columns = [{
-        dataField: 'assignment_def',
-        text: 'Assignment',
-    }, {
-        dataField: 'grade',
-        text: 'Grade',
-    }, {
-        dataField: 'copy',
-        text: 'Copy detection',
-    },
-    ];
-
-
-    validateSize=(files)=>{
-        let sum = 0
-        let size = 30000;
-        for (let i=0;i<files.length;i++){
-            console.log(files[i].size);
-            sum += files[i].size
-            if (sum > size) {
-                return false
+    componentDidMount() {
+        this.props.navbar(true);
+        console.log(window.location.origin + "/api" + window.location.pathname + "/" + getLoggedInUserName()) 
+        fetch(window.location.origin + "/api" + window.location.pathname + "/" + getLoggedInUserName()).then((response) => {
+            if (response.status === 403) {
+                this.props.history.push("/unauthorized");
+                this.props.history.go(0);
+            } else if (response.status === 404) {
+                this.props.history.push("/not-found");
+                //this.props.history.go(0);
+            } else if (response.status !== 200) {
+                this.props.history.push("/internal-error");
+                this.props.history.go(0);
             }
+            return response.json();
+        }).then((respJson) => this.setState(respJson, () => this.setState({isLoaded: true})));
+    }
+
+    isLoaded() {
+        return this.state.isLoaded;
+    }
+
+    parseGrade(grade){
+        if (this.state.state === 0){
+            return "-"
         }
-        return true
-    };
+        return grade
+    }
 
-
-    render(){
+    render() {
+        let allowFilesModification = doesUserHaveRole("std_user")
         return (
-            //should remove hello later.
-            
-            <Form >
-                <Form.Group onChange={this.onChangeHandler} controlId="formFileMultiple" >
-                    <Form.Label >Submit assignment</Form.Label>
-                    <Form.Control type="file" multiple  size="lg" />
-                </Form.Group> 
-                <Button variant="primary" id= "assignmentUploadBut" onClick={this.fileUploadHandler}>Submit assignment</Button>
-            </Form>
+             <Fragment>
+                <Form.Row>
+                    <Form.Group as={Col} controlId="assignment_def">
+                        <Form.Label>Assignment:</Form.Label>
+                        <Form.Control placeholder="Assignment" disabled value={this.state.assignment_def !== undefined ? this.state.assignment_def.replaceAll(":","/") : ""} />
+                    </Form.Group>
+                </Form.Row>
+                <Form.Row>
+                    <Form.Group as={Col} controlId="due_by">
+                        <Form.Label>Due by:</Form.Label>
+                        <Form.Control placeholder="Due by" disabled value={new Date(this.state.due_by).toString()} />
+                    </Form.Group>
+                </Form.Row>
+                <Form.Row>
+                    <Form.Group as={Col} controlId="state">
+                        <Form.Label>State:</Form.Label>
+                        <Form.Control placeholder="State" disabled value={this.parseStatus(this.state.state)} />
+                    </Form.Group>
+                </Form.Row>
+                <Form.Row>
+                    <Form.Group as={Col} controlId="grade">
+                        <Form.Label>Grade:</Form.Label>
+                        <Form.Control placeholder="Grade" disabled value={this.parseGrade(this.state.grade)} />
+                    </Form.Group>
+                </Form.Row>
+                <Form.Row>
+                    <Form.Group>
+                        <Form.Label>Files:</Form.Label>
+                        {this.isLoaded() && <FormFiles allowModification={allowFilesModification} elementBucket="assignment_instances" elementKey={this.state.assignment_def.replaceAll(":","/") + "/" + getLoggedInUserName()} files={this.state.files} history={this.props.history}/>}
+                    </Form.Group>
+                </Form.Row>
+            </Fragment>
         )
     }
 
