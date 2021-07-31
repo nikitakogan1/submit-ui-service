@@ -16,6 +16,7 @@ import Assignment from "./Assignments/Assignment"
 import AssignmentDefList from "./AssignmentDef/AssignmentDef"
 import Messages from "./Messages/Messages"
 import Files from "./Files/Files"
+import TestsList from "./Tests/TestsList"
 
 function App (){
   const [showNavBar,setShowNavBar] = useState(false)
@@ -102,6 +103,7 @@ function App (){
         <SessionRoute path="/assignment_definitions" component={AssignmentDefList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/users/" component={UsersList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/agents/" component={AgentList} navbar={setShowNavBar} history={history}></SessionRoute>
+        <SessionRoute path="/tests/" component={TestsList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/messages/" component={Messages} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/files/:path" component={Files} navbar={setShowNavBar} history={history}></SessionRoute>
         <Route component={Page403} path={"/unauthorized"}/>

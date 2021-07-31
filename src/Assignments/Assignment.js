@@ -111,18 +111,19 @@ export default class Assignment extends Component {
                     </Form.Group>
                 </Col>
             </div>
+            <br></br>
             </Form.Row>
                 {<Form.Row>
                     <Col md style={{margin: 5}}>
                         <Form.Group>
                             <Form.Label>Files:</Form.Label>
-                            {this.isLoaded() && this.state.files !== null && <FormFiles allowModification={allowFilesModification} elementBucket="assignment_instances" elementKey={this.state.assignment_def.replaceAll(":","/") + "/" + getLoggedInUserName()} files={this.state.files} history={this.props.history}/>}
+                            <br></br>
+                            {this.isLoaded() && this.state.files !== null && <FormFiles id="formFilesSubmitAssignment" allowModification={allowFilesModification} elementBucket="assignment_instances" elementKey={this.state.assignment_def.replaceAll(":","/") + "/" + getLoggedInUserName()} files={this.state.files} history={this.props.history}/>}
                             <br></br>
                             <br></br>
                             <br></br>
                             <br></br>
-
-                            {allowActions && <Form.Row>
+                {allowActions && <Form.Row>
                 <div class="input-group">
                     <Col md style={{margin: 5}}>
                         <Form.Label>Actions:</Form.Label>
