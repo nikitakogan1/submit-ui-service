@@ -3,3 +3,7 @@
     right: 50%;
     bottom: 60%;
 }
+
+#assignment_instance_form{
+    max-width: 90%;
+}
