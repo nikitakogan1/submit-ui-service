@@ -19,6 +19,7 @@ import Files from "./Files/Files"
 import TestsList from "./Tests/TestsList"
 import Test from "./Tests/Test"
 import TasksList from "./Tasks/Tasks"
+import Task from "./Tasks/Task"
 
 function App (){
   const [showNavBar,setShowNavBar] = useState(false)
@@ -106,6 +107,7 @@ function App (){
         <SessionRoute path="/users/" component={UsersList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/agents/" component={AgentList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/tests/:id" component={Test} navbar={setShowNavBar} history={history}></SessionRoute>
+        <SessionRoute path="/tasks/:id" component={Task} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/tests/" component={TestsList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/tasks/" component={TasksList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/messages/" component={Messages} navbar={setShowNavBar} history={history}></SessionRoute>

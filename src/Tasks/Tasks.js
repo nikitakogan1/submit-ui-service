@@ -1,6 +1,7 @@
 import { Component } from "react";
 import BootstrapTable from 'react-bootstrap-table-next';
 import Button from "react-bootstrap/Button";
+import parseStatus from "../Utils/utils"
 
 export default class TasksList extends Component {
 
@@ -28,30 +29,12 @@ export default class TasksList extends Component {
       })
     }
 
-    parseStatus(status){
-        if (status === 0){
-            return "Ready"
-        } else if (status === 1){
-            return "Done"
-        } else if (status === 2){
-            return "Assigned"
-        } else if (status === 3){
-            return "In progress"
-        } else if (status === 4){
-            return "Processing"
-        } else if (status === 5){
-            return "OK"
-        } else if (status === 6){
-            return "Timeout"
-        } else {
-            return "Error"
-        }
-    }
 
     columns = [
     {
         dataField: 'id',
         text: 'Task ID',
+        formatter: (cell, row) => <a href={"/tasks/" + cell}> {cell} </a>,
     },
     {
         dataField: 'agent',
@@ -69,7 +52,7 @@ export default class TasksList extends Component {
       {
         dataField: 'status',
         text: 'Status',
-        formatter: (cell, row) => <h10>{this.parseStatus(cell)}</h10>
+        formatter: (cell, row) => <h10>{parseStatus(cell)}</h10>
       },
       {
         dataField: 'response_handler',

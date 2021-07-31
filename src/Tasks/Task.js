@@ -1,9 +1,10 @@
 import {Component, Fragment} from "react";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
-import {parseTestState} from "../Utils/utils"
+import parseStatus from "../Utils/utils"
 
-export default class Test extends Component {
+
+export default class Task extends Component {
 
     constructor(props) {
         super(props);
@@ -15,6 +16,16 @@ export default class Test extends Component {
         this.componentDidMount = this.componentDidMount.bind(this);
     }
 
+    
+    parseState(state){
+        if (state === 0){
+            return "Drafted"
+        } else if (state === 1){
+            return "In Review"
+        } else {
+            return "Published"
+        }
+    }
 
     componentDidMount() {
         this.props.navbar(true);
@@ -46,13 +57,13 @@ export default class Test extends Component {
             <Form.Row>
                 <div class="input-group">
                     <Col md style={{margin: 5}}>
-                        <Form.Group className="mb-3" controlId="assignment_def">
-                            <Form.Label>Assignment</Form.Label>
-                            <Form.Control type="text" disaled value={this.state.assignment_def} />
+                        <Form.Group className="mb-3" controlId="agent">
+                            <Form.Label>Agent</Form.Label>
+                            <Form.Control type="text" disaled value={this.state.agent} />
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="name">
-                            <Form.Label>Name</Form.Label>
-                            <Form.Control type="text" disaled value={this.state.name} />
+                        <Form.Group className="mb-3" controlId="description">
+                            <Form.Label>Description</Form.Label>
+                            <Form.Control type="text" disaled value={this.state.description} />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="os_type">
                             <Form.Label>OS</Form.Label>
@@ -64,9 +75,9 @@ export default class Test extends Component {
                         </Form.Group>
                     </Col>
                     <Col md style={{margin: 5}}>
-                        <Form.Group className="mb-3" controlId="state">
-                            <Form.Label>State</Form.Label>
-                            <Form.Control type="text" disaled value={parseTestState(this.state.state)} />
+                        <Form.Group className="mb-3" controlId="status">
+                            <Form.Label>Status</Form.Label>
+                            <Form.Control type="text" disaled value={this.state.status} />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="architecture">
                             <Form.Label>Architecture</Form.Label>
@@ -87,8 +98,16 @@ export default class Test extends Component {
                             <Form.Control type="text" disaled value={this.state.command} />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="runs_on">
-                            <Form.Label>Runs on</Form.Label>
-                            <Form.Control type="text" disaled value={this.state.runs_on} />
+                            <Form.Label>task response</Form.Label>
+                            <Form.Control type="text" disaled value={this.state.task_response} />
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="runs_on">
+                            <Form.Label>Status</Form.Label>
+                            <Form.Control type="text" disaled value={parseStatus(this.state.status)} />
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="response_handler">
+                            <Form.Label>Response hadnler</Form.Label>
+                            <Form.Control type="text" disaled value={(this.state.response_handler)} />
                         </Form.Group>
                     </Col>
                     

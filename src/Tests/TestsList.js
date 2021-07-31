@@ -1,7 +1,7 @@
 import { Component } from "react";
 import BootstrapTable from 'react-bootstrap-table-next';
 import Button from "react-bootstrap/Button";
-import {getLoggedInUserName} from "../Utils/session";
+import {parseTestState} from "../Utils/utils"
 
 export default class TestsList extends Component {
 
@@ -29,15 +29,7 @@ export default class TestsList extends Component {
       })
     }
 
-    parseState(state){
-        if (state === 0){
-            return "Drafted"
-        } else if (state === 1){
-            return "In Review"
-        } else {
-            return "Published"
-        }
-    }
+
 
     columns = [
     {
@@ -61,7 +53,7 @@ export default class TestsList extends Component {
       {
         dataField: 'state',
         text: 'State',
-        formatter: (cell, row) => <h10>{this.parseState(cell)}</h10>
+        formatter: (cell, row) => <h10>{parseTestState(cell)}</h10>
 
       },
     ];
