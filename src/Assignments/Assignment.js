@@ -38,7 +38,7 @@ export default class Assignment extends Component {
                 this.props.history.go(0);
             } else if (response.status === 404) {
                 this.props.history.push("/not-found");
-                //this.props.history.go(0);
+                this.props.history.go(0);
             } else if (response.status !== 200) {
                 this.props.history.push("/internal-error");
                 this.props.history.go(0);
@@ -59,7 +59,7 @@ export default class Assignment extends Component {
     }
 
     render() {
-        let allowFilesModification = doesUserHaveRole("std_user")
+        let allowFilesModification = doesUserHaveRole("std_user") || doesUserHaveRole("admin")
         return (
              <Fragment>
                 <Form.Row>
