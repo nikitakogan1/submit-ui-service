@@ -3,7 +3,7 @@ import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import FormFiles from "../FormFiles/FormFiles.js"
 import {getLoggedInUserName} from "../Utils/session";
-import {doesUserHaveRole, isStaffCourse} from "../Utils/session.js";
+import {doesUserHaveRole} from "../Utils/session.js";
 
 export default class Assignment extends Component {
 
