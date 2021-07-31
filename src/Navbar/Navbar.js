@@ -40,6 +40,10 @@ class NavBar extends Component{
           itemId: '/tests',
         },
         {
+          title: 'All tasks',
+          itemId: '/tasks',
+        },
+        {
           title: 'All users',
           itemId: '/users',
         },
