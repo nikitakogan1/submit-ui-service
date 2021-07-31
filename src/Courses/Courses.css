@@ -24,12 +24,12 @@
 #submitAddCourseBut{
     position: fixed;
     clear: both;
-    top: 36%;
+    top: 26%;
     right: 31%;
 }
 #closeAddCourseBut{
     position: fixed;
     clear: both;
-    top: 36%;
+    top: 26%;
     left: 26%;
 }
