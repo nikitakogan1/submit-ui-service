@@ -1,6 +1,7 @@
 import { Component } from "react";
 import BootstrapTable from 'react-bootstrap-table-next';
 import Button from "react-bootstrap/Button";
+import {getLoggedInUserName} from "../Utils/session";
 
 export default class TestsList extends Component {
 
@@ -42,8 +43,7 @@ export default class TestsList extends Component {
     {
         dataField: 'assignment_def',
         text: 'Assignment',
-        formatter: (cell, row) => <h10>{cell.replaceAll(":","/")}</h10>
-
+        formatter: (cell, row) => <a href={"/tests/" + cell.replaceAll(":","/") + "/" + row.name}> {cell.replaceAll(":","/")} </a>,
     },
     {
         dataField: 'name',

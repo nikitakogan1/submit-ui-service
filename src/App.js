@@ -17,6 +17,7 @@ import AssignmentDefList from "./AssignmentDef/AssignmentDef"
 import Messages from "./Messages/Messages"
 import Files from "./Files/Files"
 import TestsList from "./Tests/TestsList"
+import Test from "./Tests/Test"
 import TasksList from "./Tasks/Tasks"
 
 function App (){
@@ -104,6 +105,7 @@ function App (){
         <SessionRoute path="/assignment_definitions" component={AssignmentDefList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/users/" component={UsersList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/agents/" component={AgentList} navbar={setShowNavBar} history={history}></SessionRoute>
+        <SessionRoute path="/tests/:id" component={Test} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/tests/" component={TestsList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/tasks/" component={TasksList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/messages/" component={Messages} navbar={setShowNavBar} history={history}></SessionRoute>
