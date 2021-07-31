@@ -18,7 +18,7 @@ export default class FormFiles extends Component {
             elements: props.files.elements,
             selectedFiles: [],
             fileToDelete: null,
-            showUploadModal: false
+            showActionModal: false
         }
         this.elementBucket = props.elementBucket;
         this.elementKey = props.elementKey;
@@ -34,7 +34,7 @@ export default class FormFiles extends Component {
     fileUploadSelectionHandler = event => this.setState({selectedFiles: event.target.files});
 
     fileUploadHandler = () => {
-        this.setState({showUploadModal: true})
+        this.setState({showActionModal: true})
         const formData = new FormData();
         Array.from(this.state.selectedFiles).forEach((file => formData.append(file.name, file)));
         axios.post(window.location.origin + "/api/files/" + this.elementBucket + "/" + this.elementKey, formData, {headers: {"content-type": "multipart/form-data"}}).then((resp) => {
@@ -43,18 +43,20 @@ export default class FormFiles extends Component {
             } else {
                 alert("error uploading files: " + resp.status + "status code");
             }
-            this.setState({showUploadModal: false})
+            this.setState({showActionModal: false})
             this.props.history.go(0);
         }).catch(err => alert(err));
     }
 
     fileDeletionHandler = () => {
+        this.setState({showActionModal: true})
         fetch(window.location.origin + "/api/files/" + this.elementBucket + "/" + this.elementKey, {method: "DELETE", headers: {"X-Submit-File": this.state.fileToDelete}}).then((resp) => {
             if (resp.status !== 202) {
                 alert("error deleting file. Status code is " + resp.status);
             } else {
                 alert("file deleted succesfully");
             }
+            this.setState({showActionModal: false})
             this.props.history.go(0);
         }).catch(err => alert(err));
     }
@@ -73,19 +75,15 @@ export default class FormFiles extends Component {
         onSelect: this.onFileSelectedForDeletion
     }
 
-    paging = {
-        showTotal: true
-    }
-
     render() {
         let fileNameObjs = [];
         Object.keys(this.state.elements).forEach((fileNameStr) => fileNameObjs.push({"file_name": fileNameStr}));
         return (
             <Fragment>
-                <Modal open={this.state.showUploadModal} onClose={() => {}} center showCloseIcon={false}>
+                <Modal open={this.state.showActionModal} onClose={() => {}} center showCloseIcon={false}>
                     <Spinner animation="border" variant="primary" />
                 </Modal>
-                {fileNameObjs.length > 0 && <BootstrapTable hover keyField="file_name" data={fileNameObjs} columns={this.columns} pagination={paginationFactory(this.paging)} selectRow={this.allowModification ? this.selectFileToDelete : undefined}/>}
+                {fileNameObjs.length > 0 && <BootstrapTable hover keyField="file_name" data={fileNameObjs} columns={this.columns} pagination={paginationFactory({showTotal: true})} selectRow={this.allowModification ? this.selectFileToDelete : undefined}/>}
                 {fileNameObjs.length <= 0 && <AlertNoFiles/>}
                 {this.allowModification && <Form>
                     <Form.Group onChange={this.fileUploadSelectionHandler} controlId="formFileMultiple" className="mb-3">
