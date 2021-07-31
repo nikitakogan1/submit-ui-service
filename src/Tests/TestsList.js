@@ -28,6 +28,16 @@ export default class TestsList extends Component {
       })
     }
 
+    parseState(state){
+        if (state === 0){
+            return "Drafted"
+        } else if (state === 1){
+            return "In Review"
+        } else {
+            return "Published"
+        }
+    }
+
     columns = [
     {
         dataField: 'assignment_def',
@@ -51,6 +61,8 @@ export default class TestsList extends Component {
       {
         dataField: 'state',
         text: 'State',
+        formatter: (cell, row) => <h10>{this.parseState(cell)}</h10>
+
       },
     ];
 
