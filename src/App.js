@@ -20,6 +20,7 @@ import TestsList from "./Tests/TestsList"
 import Test from "./Tests/Test"
 import TasksList from "./Tasks/Tasks"
 import Task from "./Tasks/Task"
+import Weolcome from "./Welcome/Welcome"
 
 function App (){
   const [showNavBar,setShowNavBar] = useState(false)
@@ -98,6 +99,7 @@ function App (){
         <Route exact path="/">
           <Login navbar={setShowNavBar} history={history}/>
         </Route>
+        <SessionRoute path="/welcome" component={Weolcome} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/courses/:id" component={Course} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/courses" component={Courses} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/assignment_instances/:id" component={Assignment} navbar={setShowNavBar} history={history}></SessionRoute>

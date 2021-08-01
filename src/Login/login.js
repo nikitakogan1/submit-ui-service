@@ -35,7 +35,7 @@ class Login extends Component {
         var state_cookie = getCookie("submit-last-server-state")
         if (state_cookie !== undefined && state_cookie !== null && state_cookie !== "") {
           this.props.history.push({
-            pathname: "/users/" + JSON.parse(state_cookie).user_name.toString(),
+            pathname: "/welcome",
             state: state_cookie
           });
         }
@@ -63,7 +63,7 @@ class Login extends Component {
     });
     if (this.okToServe) {
       this.props.history.push({
-        pathname: decodeURIComponent("/users/" + this.profile.user_name),
+        pathname: "/welcome",
         state: JSON.stringify(this.profile),
       });
     }
