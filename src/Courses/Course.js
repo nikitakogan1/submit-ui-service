@@ -384,7 +384,8 @@ class CourseAppeals extends Component {
 
     columns = [{
         dataField: "user_name",
-        text: "User"
+        text: "User",
+        formatter: (cell, row) => <a href={window.location.origin + "/appeals/" + this.courseNumber + "/" + this.courseYear + "/" + row.assignment_def + "/" + cell}>{cell}</a>
     },{
         dataField: "assignment_def",
         text: "Assignment",
