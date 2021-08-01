@@ -2,6 +2,7 @@ import { Component } from "react";
 import BootstrapTable from 'react-bootstrap-table-next';
 import Button from "react-bootstrap/Button";
 import parseStatus from "../Utils/utils"
+import "./Task.css"
 
 export default class TasksList extends Component {
 

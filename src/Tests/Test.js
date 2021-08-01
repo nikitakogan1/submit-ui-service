@@ -2,6 +2,7 @@ import {Component, Fragment} from "react";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import {parseTestState} from "../Utils/utils"
+import "./Test.css"
 
 export default class Test extends Component {
 
@@ -42,13 +43,13 @@ export default class Test extends Component {
         console.log(this.state)
         return (
         <Fragment>
-            <Form>
+            <Form id="singleTestForm">
             <Form.Row>
                 <div class="input-group">
                     <Col md style={{margin: 5}}>
                         <Form.Group className="mb-3" controlId="assignment_def">
                             <Form.Label>Assignment</Form.Label>
-                            <Form.Control type="text" disaled value={this.state.assignment_def} />
+                            <Form.Control type="text" disaled value={this.state.assignment_def !== undefined ? this.state.assignment_def.replaceAll(":","/") : ""} />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="name">
                             <Form.Label>Name</Form.Label>

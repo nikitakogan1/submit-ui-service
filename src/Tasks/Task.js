@@ -53,7 +53,7 @@ export default class Task extends Component {
         console.log(this.state)
         return (
         <Fragment>
-            <Form>
+            <Form id="singleTaskForm">
             <Form.Row>
                 <div class="input-group">
                     <Col md style={{margin: 5}}>
