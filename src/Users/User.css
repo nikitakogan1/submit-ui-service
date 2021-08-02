@@ -1,82 +1,35 @@
-@media all and (min-width: 480px) {
-      form {
-        clear: both;
-        display: inline-block;
-        overflow: hidden;
-        padding-right: 30%;
-        position: absolute;
-        max-width: 60%;
 
-      }
-      .list-group {
-        position: relative;
-        left: 80%;
-        width:50%;
-        bottom: auto;
-        max-width: 60%;
-      }
-    #AdminUserRoles{
-      position: relative;
-      clear: both;
-      top: 97%;
-    }
-    #submitAddCourse{
-      position: absolute;
-      clear: both;
-      top: 125%;
-    }
-    .tables{
-      position: absolute;
-      max-width: 30%;
-      right: 20%;
-      float: right;
-    }
-    .adminPanel{
-      position: absolute;
-      max-width: 20%;
-      bottom: 20%;
-      right: 10%;
-    }
-    #deleteCourseButInUser{
-      position: fixed;
-      max-width: 60%;
-      bottom: 74%;
-      right: 46%;
-    }
-    #deleteCourseButInStaff{
-      position: fixed;
-      max-width: 60%;
-      bottom: 42.5%;
-      right: 46%;
-    }
-    #addUserAsStudent{
-      position: fixed;
-      max-width: 60%;
-      bottom: 20%;
-      right: 13%;
-    }
-    #addUserAsStaff{
-      position: fixed;
-      max-width: 60%;
-      bottom: 20%;
-      right: 33%;
-    }
-    #submitUserFormBut{
-      position: fixed;
-      max-width: 60%;
-      bottom: 33%;
-      left: 26%;
-    }
-    #alertSuccessUser{
-      position: fixed;
-      max-width: 60%;
-      bottom: 13%;
-      left: 26%;
-    }
-    #alertFailedUser{
-      position: fixed;
-      max-width: 60%;
-      bottom: 13%;
-      left: 26%;
-    }
+
+
+#getCoursesManagment{
+  position: absolute;
+  left: 66%;
+  max-width: 100%;
+
+}
+#adminPanel{
+  position: absolute;
+}
+#usercoursestables{
+  min-width: 100%;
+}
+#coursesManagmentModal{
+  min-width: 100%;
+  
+}
+
+.react-responsive-modal-modal {
+  width: 1200px;
+  height: 700px;
+}
+#addUserAsStudent{
+  position: absolute;
+  left: 60%;
+  top: 94%;
+
+}
+#addUserAsStaff{
+  position: absolute;
+  left: 10%;
+  top: 94%;
 }

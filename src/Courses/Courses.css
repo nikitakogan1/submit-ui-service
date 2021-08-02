@@ -1,7 +1,7 @@
 #addCourseForm{
-    max-width: 56%;
+    max-width: 40%;
     position: inherit;
-    left: 40%;
+    left: 33%;
 
 }
 #addCourseModal{
@@ -32,4 +32,15 @@
     clear: both;
     top: 26%;
     left: 26%;
+}
+#CoursesNextPage{
+    position: absolute;
+    max-width: 30%;
+    left: 55%;
+}
+
+#CoursesPrevPage{
+    position: absolute;
+    max-width: 30%;
+    left: 44%;
 }

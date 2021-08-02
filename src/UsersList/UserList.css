@@ -1,7 +1,7 @@
 #addUserForm{
-    max-width: 80%;
+    max-width: 60%;
     position: inherit;
-    left: 27%;
+    left: 17%; 
     padding-left: 2%;
 }
 #addUserModal{
@@ -27,13 +27,13 @@
     position: fixed;
     max-width: 30%;
     right: 36%;
-    bottom: 40%;
+    bottom: 41%;
 }
 #closeSubmitNewUser{
     position: fixed;
     max-width: 30%;
     left: 26%;
-    bottom: 40%;
+    bottom: 41%;
 }
 #registerUserText{
     position: relative;

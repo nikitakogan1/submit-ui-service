@@ -13,6 +13,7 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import Multiselect from 'multiselect-react-dropdown';
 import {getCookie} from  "../Utils/session";
+import { Modal as DavidModal }  from 'react-responsive-modal';
 
 
 class User extends Component {
@@ -22,9 +23,11 @@ class User extends Component {
     constructor(props) {
       super(props);
       this.state = 
-        {alertFailure:false, alertSuccess: false,user_name:"",first_name:"",last_name:"", email:"", roles:{"elements":{}},courses_as_student:{"elements":{}},courses_as_staff:{"elements":{}}};
+        {showCoursesManagmentModal: false, alertFailure:false, alertSuccess: false,user_name:"",first_name:"",last_name:"", email:"", roles:{"elements":{}},courses_as_student:{"elements":{}},courses_as_staff:{"elements":{}}};
     this.componentDidMount=this.componentDidMount.bind(this);
     this.checkAdmin=this.checkAdmin.bind(this);
+    this.handleCloseModal=this.handleCloseModal.bind(this);
+    this.handleShowModal=this.handleShowModal.bind(this);
     }
     
       updateDetails = (event) => {
@@ -80,7 +83,13 @@ class User extends Component {
         this.props.navbar(true)
     }
 
+    handleCloseModal(){
+      this.setState({showCoursesManagmentModal: false})
+    }
 
+    handleShowModal(){
+      this.setState({showCoursesManagmentModal: true})
+    }
 
     checkAdmin() {
       if (parseResp(JSON.stringify(this.state.roles.elements)) === "Admin") {
@@ -119,26 +128,37 @@ class User extends Component {
       <Form.Label>Email: </Form.Label>
       <Form.Control defaultValue={this.state.email} />
   </Form.Group>
-
 Roles:
+<br></br>
 {checkAdminCookie() ? (parseResp(JSON.stringify(this.state.roles.elements)) !== "None" && <AdminUserRoles role={ parseResp(JSON.stringify(this.state.roles.elements))}></AdminUserRoles>) : <UserRoles></UserRoles>}
   </Form.Row>
+  <br></br>
+
   <Button id="submitUserFormBut" variant="primary" type="submit">
     Submit
   </Button>
+  <Button id="getCoursesManagment" variant="primary"  onClick={this.handleShowModal}>Courses managment</Button>
   {this.state.alertSuccess && <AlertSuccess></AlertSuccess>}
   {this.state.alertFailure && <AlertFailed></AlertFailed>}
 </Form>
-{(this.state.courses_as_student.elements !== {} ||  this.state.courses_as_staff.elements !== {}) && <UserCourses checkAdminCookie={this.checkAdminCookie} courseOnClick={this.courseOnClick} user_name={this.state.user_name} studentCourses={this.state.courses_as_student.elements} staffCourses={this.state.courses_as_staff.elements} history={this.props.history}></UserCourses>}
+
+<DavidModal id="coursesManagmentModal" open={this.state.showCoursesManagmentModal} center onClose={this.handleCloseModal}>
 <div className="adminPanel">
-{checkAdminCookie() && <AddUserToCourseAsStudentModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={window.location.origin + '/api/users/' + this.state.user_name}></AddUserToCourseAsStudentModal>}
-{checkAdminCookie() && <AddUserToCourseAsStaffModal history={this.props.history} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={window.location.origin + '/api/users/' + this.state.user_name}></AddUserToCourseAsStaffModal>}
+{(this.state.courses_as_student.elements !== {} ||  this.state.courses_as_staff.elements !== {}) && <UserCourses onSubmitModal={this.handleShowModal} id="usercoursestables" checkAdminCookie={this.checkAdminCookie} courseOnClick={this.courseOnClick} user_name={this.state.user_name} studentCourses={this.state.courses_as_student.elements} staffCourses={this.state.courses_as_staff.elements} history={this.props.history}></UserCourses>}
+{checkAdminCookie() && <AddUserToCourseAsStudentModal  history={this.props.history} onSubmitModal={this.handleShowModal} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={window.location.origin + '/api/users/' + this.state.user_name}></AddUserToCourseAsStudentModal>}
+<br></br>
+{checkAdminCookie() && <AddUserToCourseAsStaffModal history={this.props.history} onSubmitModal={this.handleShowModal} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={window.location.origin + '/api/users/' + this.state.user_name}></AddUserToCourseAsStaffModal>}
 </div>
+</DavidModal>
+
+
 </Fragment>
 
 )}
 }
  
+
+
 function parseResp(str){ 
   if (str.includes("admin")){
     return "Admin"
@@ -387,7 +407,8 @@ class UserCourses extends Component {
     }
     return response.json()
     });
-    this.props.history.go(0)
+    this.props.onSubmitModal();
+
 }
 
 deleteSelectedCoursesAsStaff = () => {
@@ -408,7 +429,8 @@ deleteSelectedCoursesAsStaff = () => {
   }
   return response.json()
   });
-  this.props.history.go(0)
+  this.props.onSubmitModal();
+
 }
 
 
@@ -436,9 +458,15 @@ render(){
     <Fragment>
     {checkAdminCookie() && <h5>Course As Student:</h5>}
     {checkAdminCookie() && <br></br>}
+    {checkAdminCookie() && studentCoursesList.length !== 0 && <Button  variant="primary" id= "deleteCourseButInUser" onClick={this.deleteSelectedCoursesAsStudent}>
+          Delete
+      </Button>}
     {checkAdminCookie() && studentCoursesList.length !== 0 && <BootstrapTable id= "userCoursesTable" selectRow={this.selectRowStudent} hover keyField='number' data={as_student} columns={ this.columns } pagination={ paginationFactory(PagingOptions) } />}
     {checkAdminCookie() && <h5>Course As Staff:</h5>}
     {checkAdminCookie() && <br></br>}
+    {checkAdminCookie() && staffCoursesList.length !== 0 && <Button  variant="primary" id= "deleteCourseButInStaff" onClick={this.deleteSelectedCoursesAsStaff}>
+          Delete
+      </Button>}
     {checkAdminCookie() && staffCoursesList.length !== 0 && <BootstrapTable id= "staffCoursesTable" selectRow={this.selectRowStaff} hover keyField='number' data={as_staff} columns={ this.columns }  pagination={ paginationFactory(PagingOptions) }/>}
     {!checkAdminCookie() && <h5>Course As Student:</h5>}
     {!checkAdminCookie() && <br></br>}
@@ -446,14 +474,8 @@ render(){
     {!checkAdminCookie() && <h5>Course As Staff:</h5>}
     {!checkAdminCookie() && <br></br>}
     {!checkAdminCookie() && staffCoursesList.length !== 0 && <BootstrapTable id= "staffCoursesTable"  hover keyField='number' data={as_staff} columns={ this.columns }  pagination={ paginationFactory(PagingOptions) }/>}
-     
+    
      </Fragment>
-     {checkAdminCookie() && studentCoursesList.length !== 0 && <Button  variant="primary" id= "deleteCourseButInUser" onClick={this.deleteSelectedCoursesAsStudent}>
-          Delete
-      </Button>}
-      {checkAdminCookie() && staffCoursesList.length !== 0 && <Button  variant="primary" id= "deleteCourseButInStaff" onClick={this.deleteSelectedCoursesAsStaff}>
-          Delete
-      </Button>}
 </div>
   )
 }
@@ -504,7 +526,7 @@ function AddUserToCourseAsStudentModal(props) {
           <Modal.Title>Choose course</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-<GetCoursesList role={"student"} history={props.history} courses_as_staff={props.courses_as_staff} courses_as_student={props.courses_as_student} close={handleClose} userURL={props.userURL} user_name={props.user_name}></GetCoursesList>
+<GetCoursesList showModal={props.onSubmitModal} role={"student"} history={props.history} courses_as_staff={props.courses_as_staff} courses_as_student={props.courses_as_student} close={handleClose} userURL={props.userURL} user_name={props.user_name}></GetCoursesList>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={handleClose}>
@@ -534,7 +556,7 @@ function AddUserToCourseAsStaffModal(props) {
           <Modal.Title>Choose course</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-<GetCoursesList role={"staff"} history={props.history} courses_as_student={props.courses_as_student} courses_as_staff={props.courses_as_staff} close={handleClose} userURL={props.userURL} user_name={props.user_name}></GetCoursesList>
+<GetCoursesList showModal={props.onSubmitModal} role={"staff"} history={props.history} courses_as_student={props.courses_as_student} courses_as_staff={props.courses_as_staff} close={handleClose} userURL={props.userURL} user_name={props.user_name}></GetCoursesList>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={handleClose}>
@@ -638,8 +660,10 @@ class GetCoursesList extends Component {
     .then((response) => {
         return response.json()
     })
-    this.props.close()
-    this.props.history.go(0)
+    this.props.close();
+    this.props.showModal();
+    this.props.history.go(0);
+
   }
 
   updateCoursesAsStaff = () => {
@@ -659,8 +683,10 @@ class GetCoursesList extends Component {
     .then((response) => {
         return response.json()
     })
-    this.props.close()
-    this.props.history.go(0)
+     this.props.close();
+     this.props.showModal();
+     this.props.history.go(0);
+
   }
 
 
