@@ -565,37 +565,6 @@ class TestsOfDef extends Component {
     }
 
     columns = [{
-<<<<<<< Updated upstream
-        dataField: 'name',
-        formatter: (cell, row) => <a href={"/assignment_definitions/" + row.course.replaceAll(":","/") + "/" + cell}> {cell} </a>,
-        text: 'Assignment name',
-      }, {
-        dataField: 'due_by',
-        text: 'Due by',
-        formatter: (cell, row) => <h10>{new Date(cell).toString()}</h10>
-      }, {
-        dataField: 'state',
-        text: 'State',
-        formatter: (cell, row) => <h10>{cell === 0 ? "Drafted" : "Published"} </h10>
-      },
-      {
-        dataField: 'course',
-        text: 'Course',
-        formatter: (cell, row) => <h10>{cell.replaceAll(":","/")} </h10>
-      },
-    ];
-    render(){
-      return (
-    <div className="AssignmentList">
-    <p className="Table-header"></p>
-     
-    {this.state.elements !== null && <BootstrapTable hover keyField='assignment_def' data={ this.state.elements } columns={ this.columns } />}
-    </div>
-      );
-      }
-  
-   }
-=======
         dataField: "name",
         text: "Name",
         formatter: (cell) => <a href={window.location.origin + "/tests/" + this.courseNumber + "/" + this.courseYear + "/" + this.assName + "/" + cell}>{cell}</a>
@@ -701,4 +670,3 @@ class TestsOfDef extends Component {
     }
 
 }
->>>>>>> Stashed changes
