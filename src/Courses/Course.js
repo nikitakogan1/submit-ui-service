@@ -21,7 +21,6 @@ export default class Course extends Component {
             showAssignmentsModal: false,
             showAppealsModal: false
         };
-        this.loaded = false;
         this.isLoaded = this.isLoaded.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
         this.courseAssignments = this.courseAssignments.bind(this);
@@ -118,8 +117,8 @@ export default class Course extends Component {
 
 }
 
-const AlertNoAssignments = () => <div class="alert alert-info" role="alert">No Assignments Yet...</div>;
-const AlertNoAppeals = () => <div class="alert alert-info" role="alert">No Appeals Yet...</div>;
+const AlertNoAssignments = () => <div class="alert alert-info" role="alert">No Assignments Here...</div>;
+const AlertNoAppeals = () => <div class="alert alert-info" role="alert">No Appeals Here...</div>;
 
 class CourseAssignmentDefs extends Component {
 
@@ -215,7 +214,7 @@ class CourseAssignmentDefs extends Component {
         event.preventDefault(event);
         let dueBy;
         try {
-            dueBy = new Date(event.target.due_by_date.value + "T" + event.target.due_by_time.value + ":00.000").toISOString();
+            dueBy = new Date(event.target.due_by_date.value + "T" + event.target.due_by_time.value).toISOString();
         } catch(e) {
             alert("invalid date/time values");
             return;
@@ -407,6 +406,12 @@ class CourseAppeals extends Component {
         return <div>
             {this.isLoaded() && this.state.elements !== null && <div><br></br><BootstrapTable hover keyField="assignment_instance" data={ this.state.elements } columns={ this.columns }/></div>}
             {this.isLoaded() && this.state.elements === null && <div><br></br><AlertNoAppeals/></div>}
+            <br></br>
+            {this.isLoaded() && <div class="input-group">
+                    {this.state.after_id > 0 && <Button variant="primary" onClick={this.previousPage} style={{position: "absolute", left: 0}}>Previous</Button>}
+                    {this.state.left_to_process && <Button variant="primary" onClick={this.nextPage} style={{position: "absolute", right: 0}}>Next</Button>}
+                </div>}
+            <br></br><br></br> 
         </div>
     }
 

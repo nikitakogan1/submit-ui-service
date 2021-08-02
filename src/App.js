@@ -13,14 +13,15 @@ import "./App.css"
 import {isLoggedIn, getLoggedInUserName, SessionRoute} from  "./Utils/session"
 import AssignmentsList from "./Assignments/AssignmentList"
 import Assignment from "./Assignments/Assignment"
-import AssignmentDefList from "./AssignmentDef/AssignmentDef"
+import AssignmentDefList from "./AssignmentDef/AssignmentDefs"
 import Messages from "./Messages/Messages"
 import Files from "./Files/Files"
 import TestsList from "./Tests/TestsList"
 import Test from "./Tests/Test"
 import TasksList from "./Tasks/Tasks"
 import Task from "./Tasks/Task"
-import Weolcome from "./Welcome/Welcome"
+import Welcome from "./Welcome/Welcome"
+import AssignmentDef from "./AssignmentDef/AssignmentDef";
 
 function App (){
   const [showNavBar,setShowNavBar] = useState(false)
@@ -99,12 +100,13 @@ function App (){
         <Route exact path="/">
           <Login navbar={setShowNavBar} history={history}/>
         </Route>
-        <SessionRoute path="/welcome" component={Weolcome} navbar={setShowNavBar} history={history}></SessionRoute>
+        <SessionRoute path="/welcome" component={Welcome} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/courses/:id" component={Course} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/courses" component={Courses} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/assignment_instances/:id" component={Assignment} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/users/:id" component={User} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/assignment_instances" component={AssignmentsList} navbar={setShowNavBar} history={history}></SessionRoute>
+        <SessionRoute path="/assignment_definitions/:id" component={AssignmentDef} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/assignment_definitions" component={AssignmentDefList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/users/" component={UsersList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/agents/" component={AgentList} navbar={setShowNavBar} history={history}></SessionRoute>

@@ -22,7 +22,7 @@ const Header = () => {
         <br></br>
         <br></br>
 
-        <h3> Submit your assignment and test them in a remote machine easily</h3>
+        <h3> Submit your assignments and test them in a remote machine easily</h3>
         {/* <div className="intro-button">
           <a href="/courses">Go to my courses</a>
         </div> */}
