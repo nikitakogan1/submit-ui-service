@@ -91,6 +91,7 @@ class Login extends Component {
           onChange={(e) => this.setState({ password: e.target.value })}
         />
       </Form.Group>
+      <br></br>
       <Button id="login_bot" block size="lg" type="submit" disabled={!this.validateForm()}>
         Login
       </Button>

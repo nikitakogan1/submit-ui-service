@@ -21,7 +21,10 @@
     clear: both;
     display: inline-block;
     padding-right: 30%;
-
+    padding: 17px;
+    border: 1px solid;
+    width: 550px;
+    background-color: lightcyan;
   }
 
   #login_bot{
