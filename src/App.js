@@ -88,7 +88,7 @@ function App (){
   }
 
   return (
-    <React.Fragment>
+    <React.Fragment >
     <div className="App">
     <BrowserRouter>
     {showNavBar && <NavBar history={history}></NavBar>}
