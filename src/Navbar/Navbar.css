@@ -2,4 +2,13 @@
     position: absolute;
     max-width: 20%;
     right: 86%;
+    background-position: initial;
+    background-size: inherit;
+    background-color: rgb(238, 252, 252);
+    padding-right: 30%;
+    padding: 25px;
+    border: 1px solid;
+    border-color: rgb(100, 126, 151);
 }
+
+
