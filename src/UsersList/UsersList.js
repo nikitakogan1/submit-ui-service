@@ -178,7 +178,7 @@ class UsersList extends Component {
 
             <Form.Group controlId="password" placeholder="Enter password">
                 <Form.Label>Password: </Form.Label>
-                <Form.Control placeholder="Enter password"/>
+                <Form.Control type="password" placeholder="Enter password"/>
             </Form.Group>
 
             <Form.Row>
