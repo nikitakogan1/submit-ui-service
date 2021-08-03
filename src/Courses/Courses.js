@@ -122,7 +122,7 @@ class Courses extends Component {
       .then (data => {
         if (data.elements !== undefined && data.elements !== null && data.elements !== []) {
           data.elements.forEach((element) => {
-            element.id=this.getRandomInt(1,100000000);
+            element.id= element.year + ":" + element.number
             toRet.push(element)
           })
         }
@@ -130,12 +130,6 @@ class Courses extends Component {
         this.setState({elements:toRet});
       });
     }
-
-     getRandomInt(min, max) {
-      min = Math.ceil(min);
-      max = Math.floor(max);
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
 
 
 

@@ -2,9 +2,10 @@ import React from "react";
 import { Component } from "react";
 import BootstrapTable from 'react-bootstrap-table-next';
 import {getLoggedInUserName} from "../Utils/session";
-
+import Button from "react-bootstrap/Button"
 
 export default class AssignmentDefList extends Component {
+    selectedAssToDelete = []
     constructor(props) {
       super(props);
       this.state = {left_to_process:false,limit:5, after_id:0, elements: [],
@@ -28,6 +29,46 @@ export default class AssignmentDefList extends Component {
         })
     }
 
+    deleteSelectedAss = () => {
+      console.log(this.selectedAssToDelete)
+      this.selectedAssToDelete.forEach( (ass) => {
+          fetch(window.location.origin  +  '/api' + ass.path, {method:'DELETE'})
+          .then((response) => {
+          if (!response.ok){
+              alert("failed to delete the selected courses")
+          }
+          return response.json()
+          });
+      })
+      this.props.history.go(0)
+  }
+
+  selectRow = {
+    mode: "checkbox",
+    clickToSelect: false,
+    hideSelectAll: true,
+    classes: "selection-row",
+    onSelect: (props) => {
+        if (this.selectedAssToDelete.length === 0){
+          this.selectedAssToDelete.push({id: props.id, path: "/assignment_definitions/" + props.course.split(":")[0] + "/" +  props.course.split(":")[1] + "/" + props.name})
+        } else {
+          this.selectedAssToDelete.forEach((ass) => {
+            console.log(ass)
+            if (ass.id === props.id){
+              console.log("includes")
+              this.selectedAssToDelete = this.selectedAssToDelete.filter(function(item) {
+                return item.id !== props.id
+            })
+            } else {
+              this.selectedAssToDelete.push({id: props.id, path: "/assignment_definitions/" + props.course.split(":")[0] + "/" +  props.course.split(":")[1] + "/" + props.name})
+          }
+        })
+        }
+       console.log(props)
+        console.log(this.selectedAssToDelete)
+      }
+  };
+
     goToBackEnd() {
         var url = window.location.origin + '/api/assignment_definitions/?limit='+ this.state.limit
         if (this.state.after_id > 0) {
@@ -48,6 +89,13 @@ export default class AssignmentDefList extends Component {
           return response.json()
         })
         .then (data => {
+          var toRet=[]
+          if (data.elements !== undefined && data.elements !== null && data.elements !== []) {
+            data.elements.forEach((element) => {
+              element.id=element.course + ":" + element.name
+              toRet.push(element)
+            })
+          }
           this.setState({elements:data.elements});
         });
     }
@@ -57,6 +105,9 @@ export default class AssignmentDefList extends Component {
       this.goToBackEnd();
     }
 
+
+
+    
     columns = [{
         dataField: 'name',
         formatter: (cell, row) => <a href={"/assignment_definitions/" + row.course.replaceAll(":","/") + "/" + cell}> {cell} </a>,
@@ -86,7 +137,8 @@ export default class AssignmentDefList extends Component {
     <div className="AssignmentList">
     <p className="Table-header"></p>
      
-    {this.state.elements !== null && <BootstrapTable hover keyField='assignment_def' data={ this.state.elements } columns={ this.columns } />}
+    {this.state.elements !== null && this.state.elements.length !== 0 && <BootstrapTable  selectRow={this.selectRow} hover keyField='id' data={ this.state.elements } columns={ this.columns } />}
+    {this.state.elements !== null && this.state.elements.length !== 0 && <Button  variant="primary" id= "deleteAssDefsBut" onClick={this.deleteSelectedAss}>Delete</Button>}
     </div>
       );
       }
