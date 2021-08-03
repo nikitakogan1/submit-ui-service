@@ -6,6 +6,7 @@ import { Modal } from 'react-responsive-modal';
 import 'react-responsive-modal/styles.css';
 import FormFiles from "../FormFiles/FormFiles.js";
 import BootstrapTable from 'react-bootstrap-table-next';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 
 export default class AssignmentDef extends Component {
 
@@ -31,9 +32,10 @@ export default class AssignmentDef extends Component {
             pollingInterval: 0,
             showPollingSpinner: false,
             showPollingResult: false,
-            pollingResult: null,
+            pollingResultMatches: "",
+            pollingResultLink: null,
             showPollingError: false,
-            pollingError: ""
+            pollingErrStatusCode: 0,
         }
         this.isLoaded = this.isLoaded.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
@@ -115,9 +117,9 @@ export default class AssignmentDef extends Component {
 
     createMossRequest(e) {
         e.preventDefault(e);
-        fetch(window.location.origin + "/api/moss_request/", {method: "POST",
+        fetch(window.location.origin + "/api/moss_requests/", {method: "POST",
         body: JSON.stringify({
-            assignment_def: this.course_number + ":" + this.course_year + ":" + this.name,
+            assignment_def: this.state.course_number + ":" + this.state.course_year + ":" + this.state.name,
             users: null,
             sensitivity: parseInt(e.target.sensitivity.value),
             percentage: parseInt(e.target.threshold.value),
@@ -125,14 +127,29 @@ export default class AssignmentDef extends Component {
             timeout: parseInt(e.target.timeout.value)
         })}).then((resp) => {
             if (resp.status !== 202) {
-                alert("error creating test. Status code is " + resp.status);
+                alert("error creating moss request. Status code is " + resp.status);
                 return null;
             }
             return resp.json();
         }).then((data) => {
             if (data !== null) {
                 this.setState({task_id: data.task_id}, () => this.setState({showPollingModal: true, showPollingSpinner: true, showMossModal: false, pollingInterval: setInterval(() => {
-                    // TODO: make request to backend and update ui accordingly
+                    fetch(window.location.origin + "/api/moss_requests/" + this.state.task_id).then((resp) => {
+                        if (resp.status === 200) {
+                            clearInterval(this.state.pollingInterval)
+                            return resp.json();
+                        } else if (resp.status !== 202) {
+                            clearInterval(this.state.pollingInterval)
+                            this.setState({pollingErrStatusCode: resp.status, showPollingSpinner: false, showPollingError: true});
+                            return null;
+                        }
+                        return null;
+                    }).then((data) => {
+                        if (data !== null) {
+                            let mossOutput = JSON.parse(data.payload);
+                            this.setState({pollingResultMatches: mossOutput.matches, pollingResultLink: mossOutput.link, showPollingSpinner: false, showPollingResult: true});
+                        }
+                    })
                 }, 3000)}))
             }
         })
@@ -145,20 +162,40 @@ export default class AssignmentDef extends Component {
 
     setMossLanguage = e => this.setState({mossLanguage: e.target.value})
 
+    mossMatchesColumns = [{
+        dataField: "name1",
+        text: "Name 1",
+        formatter: (cell) => <a href={window.location.origin + "/assignment_instances/" + this.state.course_number + "/" + this.state.course_year + "/" + this.state.name + "/" + cell}>{cell}</a>
+    },{
+        dataField: "percentage1",
+        text: "Percentage 1"
+    },{
+        dataField: "name2",
+        text: "Name 2",
+        formatter: (cell) => <a href={window.location.origin + "/assignment_instances/" + this.state.course_number + "/" + this.state.course_year + "/" + this.state.name + "/" + cell}>{cell}</a>
+    },{
+        dataField: "percentage2",
+        text: "Percentage 2"
+    }]
+
     render() {
         return (
             <div>
                 {this.isLoaded() && <Modal open={this.state.showPollingModal} center onClose={this.onPollingModalClose}>
                     <br></br>
-                    <div style={{width: 475, height: 375}}>
+                    <div>
                         {this.state.showPollingSpinner && <Spinner animation="border" variant="primary"/>}
-                        {this.state.showPollingResult && <div>{JSON.stringify(this.state.pollingResult)}</div>}
-                        {this.state.showPollingError && <div>{this.state.pollingError}</div>}
+                        {this.state.showPollingResult && <div style={{maxWidth: 600, maxHeight: 600}}>
+                            <BootstrapTable hover keyField="name1" data={this.state.pollingResultMatches} columns={this.mossMatchesColumns} pagination={paginationFactory({showTotal: true})}/>
+                            <br></br>
+                            <a href={this.state.pollingResultLink}>Raw</a>
+                        </div>}
+                        {this.state.showPollingError && <div style={{width: 250, height: 250}}>{"Error polling moss request. Status code is " + this.state.pollingErrStatusCode}</div>}
                     </div>
                 </Modal>}
                 {this.isLoaded() && <Modal open={this.state.showMossModal} center onClose={() => this.setState({showMossModal: false})}>
                         <br></br>
-                        <div style={{width: 475, height: 375}}><Form onSubmit={this.createMossRequest}>
+                        <div style={{maxWidth: 300, maxHeight: 400}}><Form onSubmit={this.createMossRequest}>
                         <div class="input-group"><Form.Row>
                                 <Form.Group style={{width: 280, margin: 5}} controlId="language">
                                     <Form.Label>Language:</Form.Label>
@@ -220,11 +257,11 @@ export default class AssignmentDef extends Component {
                     </Modal>}
                 {this.isLoaded && <Modal open={this.state.showTestsModal} center onClose={() => this.setState({showTestsModal: false})}>
                         <br></br>
-                        <div style={{height: 275, maxWidth: 600}}><TestsOfDef courseNumber={this.state.course_number} courseYear={this.state.course_year} assName={this.state.name} history={this.props.history}/></div>
+                        <div style={{maxHeight: 275, maxWidth: 600}}><TestsOfDef courseNumber={this.state.course_number} courseYear={this.state.course_year} assName={this.state.name} history={this.props.history}/></div>
                     </Modal>}    
                 {this.isLoaded() && <Modal open={this.state.showDateModal} center onClose={() => this.setState({showDateModal: false})}>
                         <br></br>
-                        <div style={{width: 445, height: 225}}><Form onSubmit={this.updateDate}>
+                        <div style={{maxWidth: 350, maxHeight: 225}}><Form onSubmit={this.updateDate}>
                             <div className="input-group">
                                 <Form.Row>
                                     <Form.Group style={{width: 280, margin: 5}} controlId="due_by_date">
@@ -314,7 +351,7 @@ export default class AssignmentDef extends Component {
                     </Form.Row>
                     <Form.Row>
                         <Col md style={{margin: 5}}>
-                            <Form.Group style={{width: 500}}>
+                            <Form.Group>
                                 <Form.Label>Files:</Form.Label>
                                 <FormFiles allowModification={true} elementBucket="assignment_definitions" elementKey={this.state.course_number + "/" + this.state.course_year + "/" + this.state.name} files={this.state.files} history={this.props.history}/>
                             </Form.Group>
@@ -603,7 +640,7 @@ class TestsOfDef extends Component {
             <div>
                 <Modal open={this.state.showNewTestModal} center onClose={() => this.setState({showNewTestModal: false})}>
                     <br></br>
-                    <div style={{width: 455, height: 275}}><Form onSubmit={this.createTest}>
+                    <div style={{maxWidth: 500, maxHeight: 350}}><Form onSubmit={this.createTest}>
                         <div className="input-group"><Form.Row>
                             <Form.Group style={{width: 280, margin: 5}} controlId="name">
                                 <Form.Label>Name:</Form.Label>
@@ -650,7 +687,7 @@ class TestsOfDef extends Component {
                                 </Form.Control>
                             </Form.Group>
                         </Form.Row>
-                        <Button style={{margin: 5}} variant="primary" type="submit">Submit</Button></div>
+                        <Button style={{margin: 5, height: 40, position: "absolute", right: 0, bottom: 0}} variant="primary" type="submit">Submit</Button></div>
                     </Form></div>
                 </Modal>
                 {this.isLoaded() && this.state.elements !== null && <div><br></br><BootstrapTable hover keyField="key" data={ this.state.elements } columns={ this.columns } selectRow={this.selectTestToDelete}/></div>}
