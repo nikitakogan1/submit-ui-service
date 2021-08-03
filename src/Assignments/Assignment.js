@@ -119,7 +119,7 @@ export default class Assignment extends Component {
                         <Form.Group>
                             <Form.Label>Files:</Form.Label>
                             <br></br>
-                            {this.isLoaded() && this.state.files !== null && <FormFiles id="formFilesSubmitAssignment" allowModification={allowFilesModification} elementBucket="assignment_instances" elementKey={this.state.assignment_def.replaceAll(":","/") + "/" + getLoggedInUserName()} files={this.state.files} history={this.props.history}/>}
+                            {this.isLoaded() && this.state.files !== null && <FormFiles id="formFilesSubmitAssignment" allowModification={allowFilesModification} elementBucket="assignment_instances" elementKey={this.state.assignment_def.replaceAll(":","/") + "/" + this.state.user_name} files={this.state.files} history={this.props.history}/>}
                             <br></br>
                             <br></br>
                             <br></br>
