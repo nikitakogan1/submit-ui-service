@@ -59,7 +59,7 @@ export default class AssignmentDefList extends Component {
 
     columns = [{
         dataField: 'name',
-        formatter: (cell, row) => <a href={"/assignment_definitions/" + cell.replaceAll(":","/")}> {cell} </a>,
+        formatter: (cell, row) => <a href={"/assignment_definitions/" + row.course.replaceAll(":","/") + "/" + cell}> {cell} </a>,
         text: 'Assignment name',
       }, {
         dataField: 'due_by',
