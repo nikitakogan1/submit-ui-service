@@ -136,7 +136,8 @@ export default class AssignmentDefList extends Component {
       return (
     <div className="AssignmentList">
     <p className="Table-header"></p>
-     
+    {(this.state.elements === undefined || this.state.elements === null || this.state.elements === []) && <AlertNoAssignments></AlertNoAssignments>}
+
     {this.state.elements !== undefined && this.state.elements !== null && this.state.elements.length !== 0 && <BootstrapTable  selectRow={this.selectRow} hover keyField='id' data={ this.state.elements } columns={ this.columns } />}
     {this.state.elements !== undefined && this.state.elements !== null && this.state.elements.length !== 0 && <Button  variant="primary" id= "deleteAssDefsBut" onClick={this.deleteSelectedAss}>Delete</Button>}
     </div>
@@ -144,3 +145,4 @@ export default class AssignmentDefList extends Component {
       }
   
    }
+   const AlertNoAssignments= () => <div class="alert alert-info" role="alert">No Assignments Yet...</div>;
