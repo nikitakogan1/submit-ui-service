@@ -7,3 +7,8 @@
 .App{
   max-width: 60%;
 }
+#HelloUser{
+  font-family: 'Titillium Web', sans-serif;
+  font-style: oblique 15deg;
+  font-weight: 900;
+}

@@ -79,6 +79,7 @@ class Messages extends Component {
       return (
 
       <React.Fragment>
+        {(this.state.elements === null || this.state.elements === []) && <AlertNoMessages></AlertNoMessages>}
      {this.state.elements  !== null && <BootstrapTable hover keyField='updated_on' data={ this.state.elements } columns={ this.columns } />} 
             {this.state.after_id > 0 && <Button  variant="primary" id= "MessagePrevPage" onClick={this.previousPage}>
                 Previons page
@@ -92,6 +93,7 @@ class Messages extends Component {
   
    }
 
+   const AlertNoMessages = () => <div class="alert alert-info" role="alert">No Messages Yet...</div>;
 
 
   export default withRouter(Messages);

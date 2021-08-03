@@ -4,6 +4,9 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import {getLoggedInUserName} from "../Utils/session";
 
 
+const AlertNoAssignments= () => <div class="alert alert-info" role="alert">No Assignments Yet...</div>;
+
+
 export default class AssignmentsList extends Component {
     constructor(props) {
       super(props);
@@ -96,8 +99,8 @@ export default class AssignmentsList extends Component {
       return (
     <div className="AssignmentList">
     <p className="Table-header"></p>
-     
-    {this.state.elements !== null && <BootstrapTable hover keyField='assignment_def' data={ this.state.elements } columns={ this.columns } />}
+     {(this.state.elements === null || this.state.elements === []) && <AlertNoAssignments></AlertNoAssignments>}
+    {this.state.elements !== null && this.state.elements !== [] && <BootstrapTable hover keyField='assignment_def' data={ this.state.elements } columns={ this.columns } />}
     </div>
       );
       }

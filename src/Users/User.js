@@ -457,21 +457,26 @@ render(){
     <div className="tables">
     <Fragment>
     {checkAdminCookie() && <h5>Course As Student:</h5>}
+    {checkAdminCookie() &&  studentCoursesList.length === 0 && <AlertNoCourses></AlertNoCourses>}
     {checkAdminCookie() && <br></br>}
     {checkAdminCookie() && studentCoursesList.length !== 0 && <Button  variant="primary" id= "deleteCourseButInUser" onClick={this.deleteSelectedCoursesAsStudent}>
           Delete
       </Button>}
     {checkAdminCookie() && studentCoursesList.length !== 0 && <BootstrapTable id= "userCoursesTable" selectRow={this.selectRowStudent} hover keyField='number' data={as_student} columns={ this.columns } pagination={ paginationFactory(PagingOptions) } />}
     {checkAdminCookie() && <h5>Course As Staff:</h5>}
+    {checkAdminCookie() &&  staffCoursesList.length === 0 && <AlertNoCourses></AlertNoCourses>}
     {checkAdminCookie() && <br></br>}
     {checkAdminCookie() && staffCoursesList.length !== 0 && <Button  variant="primary" id= "deleteCourseButInStaff" onClick={this.deleteSelectedCoursesAsStaff}>
+
           Delete
       </Button>}
     {checkAdminCookie() && staffCoursesList.length !== 0 && <BootstrapTable id= "staffCoursesTable" selectRow={this.selectRowStaff} hover keyField='number' data={as_staff} columns={ this.columns }  pagination={ paginationFactory(PagingOptions) }/>}
     {!checkAdminCookie() && <h5>Course As Student:</h5>}
+    {!checkAdminCookie() &&  studentCoursesList.length === 0 && <AlertNoCourses></AlertNoCourses>}
     {!checkAdminCookie() && <br></br>}
     {!checkAdminCookie() && studentCoursesList.length !== 0 && <BootstrapTable id= "userCoursesTable"  hover keyField='number' data={as_student} columns={ this.columns } pagination={ paginationFactory(PagingOptions) } />}
     {!checkAdminCookie() && <h5>Course As Staff:</h5>}
+    {!checkAdminCookie() &&  staffCoursesList.length === 0 && <AlertNoCourses></AlertNoCourses>}
     {!checkAdminCookie() && <br></br>}
     {!checkAdminCookie() && staffCoursesList.length !== 0 && <BootstrapTable id= "staffCoursesTable"  hover keyField='number' data={as_staff} columns={ this.columns }  pagination={ paginationFactory(PagingOptions) }/>}
     
@@ -482,6 +487,8 @@ render(){
 
 
 }
+
+const AlertNoCourses = () => <div class="alert alert-info" role="alert">No Courses Yet...</div>;
 
 const PagingOptions = {
   page: 1,

@@ -94,8 +94,10 @@ function App (){
     <BrowserRouter>
     {showNavBar && <NavBar history={history}></NavBar>}
     {isLoggedIn() && <div id="session-div">
-      <h7>Hello {loggedInUserName}</h7>
+      <h7 id="HelloUser">Hello  {loggedInUserName}</h7>
+      <br></br>
     </div>}
+    <br></br>
       <Switch>
         <Route exact path="/">
           <Login navbar={setShowNavBar} history={history}/>

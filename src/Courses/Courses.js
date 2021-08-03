@@ -120,7 +120,7 @@ class Courses extends Component {
         return response.json()
       })
       .then (data => {
-        if (data.elements !== undefined ) {
+        if (data.elements !== undefined && data.elements !== null && data.elements !== []) {
           data.elements.forEach((element) => {
             element.id=this.getRandomInt(1,100000000);
             toRet.push(element)
@@ -141,10 +141,10 @@ class Courses extends Component {
 
     render(){
       return (
-
       <React.Fragment>
-      {this.state.isAdminView && <BootstrapTable selectRow={this.selectRow} hover keyField='id' data={ this.state.elements } columns={ this.columns } />}
-      {!this.state.isAdminView && <BootstrapTable  hover keyField='id' data={ this.state.elements } columns={ this.columns } />}
+      {(this.state.elements.length === 0 || this.state.elements === null || this.state.elements === undefined ) && <AlertNoCourses></AlertNoCourses>}
+      {this.state.isAdminView && (this.state.elements.length !== 0 && this.state.elements !== null && this.state.elements !== undefined) && <BootstrapTable selectRow={this.selectRow} hover keyField='id' data={ this.state.elements } columns={ this.columns } />}
+      {!this.state.isAdminView && (this.state.elements.length !== 0 && this.state.elements !== null && this.state.elements !== undefined) && <BootstrapTable  hover keyField='id' data={ this.state.elements } columns={ this.columns } />}
             {this.state.isAdminView && <AddCourserModal history={this.props.history}></AddCourserModal>}
             {this.state.isAdminView && <Button  variant="primary" id= "deleteCourseBut" onClick={this.deleteSelectedCourses}>
                 Delete Selected courses
@@ -161,6 +161,7 @@ class Courses extends Component {
   
    }
 
+   const AlertNoCourses = () => <div class="alert alert-info" role="alert">No Courses Yet...</div>;
 
    export function AddCourserModal(props) {
     const [show, setShow] = useState(false);
