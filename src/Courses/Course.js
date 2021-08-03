@@ -266,7 +266,7 @@ class CourseAssignmentDefs extends Component {
         return <div>
             <Modal open={this.state.showNewAssignmentModal} center onClose={() => {this.setState({showNewAssignmentModal: false})}}>
                 <br></br>
-                <div style={{width: 455, height: 275}}><Form onSubmit={this.createAssignment}>
+                <div style={{width: 455, height: 525}}><Form onSubmit={this.createAssignment}>
                     <div class="input-group"><Form.Row>
                         <Form.Group style={{width: 280, margin: 5}} controlId="name">
                             <Form.Label>Name:</Form.Label>
@@ -283,7 +283,7 @@ class CourseAssignmentDefs extends Component {
                             <Form.Control type="time"/>
                         </Form.Group>
                     </Form.Row>
-                    <Button style={{margin: 5}} variant="primary" type="submit">Submit</Button></div>
+                    <Form.Row><Form.Group><Button style={{margin: 5, height: 50, position: "absolute", right: 0, bottom: 0}} variant="primary" type="submit">Submit</Button></Form.Group></Form.Row></div>
                 </Form></div>
             </Modal>
             {this.isLoaded() && this.state.elements !== null && <div><br></br><BootstrapTable hover keyField="key" data={ this.state.elements } columns={ this.columns } selectRow={this.selectAssignmentToDelete}/></div>}

@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { Component, Fragment } from "react";
 import { Form, Spinner } from "react-bootstrap";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
@@ -37,6 +37,7 @@ export default class AssignmentDef extends Component {
             showPollingError: false,
             pollingErrStatusCode: 0,
             showAppealsModal: false,
+            required_files: {elements:{}}
         }
         this.isLoaded = this.isLoaded.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
@@ -44,6 +45,7 @@ export default class AssignmentDef extends Component {
         this.update = this.update.bind(this);
         this.createMossRequest = this.createMossRequest.bind(this);
         this.onPollingModalClose = this.onPollingModalClose.bind(this);
+        this.publish = this.publish.bind(this);
     }
 
     isLoaded() {
@@ -179,7 +181,20 @@ export default class AssignmentDef extends Component {
         text: "Percentage 2"
     }]
 
+    publish() {
+        fetch(window.location.origin + "/api/assignment_definitions/" + this.state.course_number + "/" + this.state.course_year + "/" + this.state.name, {method: "PATCH"}).then((resp) => {
+            if (resp.status !== 200) {
+                alert("error publishing assignment. Status code is " + resp.status);
+            } else {
+                alert("assignment published successfully");
+            }
+            this.props.history.go(0);
+        });
+    }
+
     render() {
+        let requiredFiles = []
+        Object.keys(this.state.required_files.elements).forEach((fileNameStr) => requiredFiles.push({"file_name": fileNameStr}));
         return (
             <div>
                 {this.isLoaded() && <Modal open={this.state.showPollingModal} center onClose={this.onPollingModalClose}>
@@ -331,7 +346,7 @@ export default class AssignmentDef extends Component {
                                 <Form.Control disabled value={this.state.state_str}/>
                             </Col>
                             <Col md style={{margin: 5}}>
-                                {this.state.state === 0 && <Button variant="primary">Publish</Button>}
+                                {this.state.state === 0 && <Button onClick={this.publish} variant="primary">Publish</Button>}
                             </Col>
                         </div>
                     </Form.Row>
@@ -365,7 +380,16 @@ export default class AssignmentDef extends Component {
                             </Form.Group>
                         </Col>
                     </Form.Row>
-                    <br></br><br></br><br></br>
+                    <Form.Row>
+                        <Col md style={{margin: 5}}>
+                            <Form.Group>
+                                <Form.Label>Required Files:</Form.Label>
+                                <Fragment>
+
+                                </Fragment>
+                            </Form.Group>
+                        </Col>
+                    </Form.Row>
                 </Form>}
             </div>
         )
@@ -497,11 +521,19 @@ class TestsOfDef extends Component {
             limit: 5,
             after_id: 0,
             elements: null,
-            testToDelete: null,
+            selectedTest: null,
             showNewTestModal: false,
             newTestOsType: "linux",
             newTestArch: "amd64",
             newTestRunsOn: 0,
+            task_id: "",
+            showPollingModal: false,
+            showPollingSpinner: false,
+            showPollingResult: false,
+            showPollingError: false,
+            pollingResult: null,
+            pollingErrStatusCode: 0,
+            pollingInterval: 0
         };
         this.courseNumber = props.courseNumber;
         this.courseYear = props.courseYear;
@@ -516,6 +548,14 @@ class TestsOfDef extends Component {
         this.setNewTestOsType = this.setNewTestOsType.bind(this);
         this.setNewTestArch = this.setNewTestArch.bind(this);
         this.setNewTestRunsOn = this.setNewTestRunsOn.bind(this);
+        this.onPollingModalClose = this.onPollingModalClose.bind(this);
+        this.runOnDemand = this.runOnDemand.bind(this);
+        this.checkAssignment = this.checkAssignment.bind(this);
+    }
+
+    onPollingModalClose() {
+        clearInterval(this.state.pollingInterval)
+        this.props.history.go(0);
     }
 
     isLoaded() {
@@ -568,12 +608,12 @@ class TestsOfDef extends Component {
         })
     }
 
-    onTestSelectedForDeletion = (row, isSelect, rowIndex, e) => {
-        this.setState({testToDelete: row.name});
+    onTestSelected = (row, isSelect, rowIndex, e) => {
+        this.setState({selectedTest: row.name});
     }
 
     deleteTest() {
-        fetch(window.location.origin + "/api/tests/" + this.courseNumber + "/" + this.courseYear + "/" + this.assName + "/" + this.state.testToDelete,
+        fetch(window.location.origin + "/api/tests/" + this.courseNumber + "/" + this.courseYear + "/" + this.assName + "/" + this.state.selectedTest,
         {method: "DELETE"}).then((resp) => {
             if (resp.status !== 200) {
                 alert("error deleting test. Status code is " + resp.status);
@@ -604,10 +644,10 @@ class TestsOfDef extends Component {
         })
     }
 
-    selectTestToDelete = {
+    selectTest = {
         mode: "radio",
         clickToSelect: false,
-        onSelect: this.onTestSelectedForDeletion
+        onSelect: this.onTestSelected
     }
 
     columns = [{
@@ -644,9 +684,73 @@ class TestsOfDef extends Component {
     setNewTestArch = e => this.setState({newTestArch: e.target.value})
     setNewTestRunsOn = e => this.setState({newTestRunsOn: parseInt(e.target.value)})
 
+    runOnDemand() {
+        fetch(window.location.origin + "/api/test_requests/single", {method: "POST", body: JSON.stringify({
+            test: this.courseNumber + ":" + this.courseYear + ":" + this.assName + ":" + this.state.selectedTest,
+            on_demand: true
+        })}).then((resp) => {
+            if (resp.status !== 202) {
+                alert("error creating on demand test request. Status code is " + resp.status);
+                this.props.history.go(0);
+                return null;
+            }
+            return resp.json();
+        }).then((data) => {
+            if (data !== null) {
+                this.setState({task_id: data.task_id}, () => this.setState({showPollingModal: true, showPollingSpinner: true, pollingInterval: setInterval(() => {
+                    fetch(window.location.origin + "/api/test_requests/" + this.state.task_id).then((resp) => {
+                        if (resp.status === 200) {
+                            clearInterval(this.state.pollingInterval)
+                            return resp.json();
+                        } else if (resp.status !== 202) {
+                            clearInterval(this.state.pollingInterval)
+                            this.setState({pollingErrStatusCode: resp.status, showPollingSpinner: false, showPollingError: true});
+                            return null;
+                        }
+                        return null;
+                    }).then((data) => {
+                        if (data !== null) {
+                            this.setState({showPollingSpinner: false, showPollingResult: true, pollingResult: JSON.parse(data.payload)});
+                        }
+                    })
+                }, 3000)}))
+            }
+        });
+    }
+
+    checkAssignment() {
+        fetch(window.location.origin + "/api/test_requests/multi", {method: "POST", body: JSON.stringify({
+            test: this.courseNumber + ":" + this.courseYear + ":" + this.assName + ":" + this.state.selectedTest,
+        })}).then((resp) => {
+            if (resp.status !== 202) {
+                alert("error creating on demand test request. Status code is " + resp.status);
+            } else {
+                alert("test request submitted successfully. Grades will be updated for all instances of the assignment");
+            }
+            this.props.history.go(0);
+        })
+    }
+
     render() {
         return (
             <div>
+                <Modal open={this.state.showPollingModal} center onClose={this.onPollingModalClose}>
+                    <br></br>
+                    <div>
+                        {this.state.showPollingSpinner && <Spinner animation="border" variant="primary"/>}
+                        {this.state.showPollingResult && <div style={{maxWidth: 600, maxHeight: 600}}>
+                            <Form.Group>
+                                <Form.Label>Output:</Form.Label>
+                                <Form.Control disabled value={this.state.pollingResult.output}/>
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Label>Grade:</Form.Label>
+                                <Form.Control disabled value={this.state.pollingResult.grade}/>
+                            </Form.Group>
+                        </div>}
+                        {this.state.showPollingError && <div style={{width: 250, height: 250}}>{"Error polling test request. Status code is " + this.state.pollingErrStatusCode}</div>}
+                    </div>
+                </Modal>
                 <Modal open={this.state.showNewTestModal} center onClose={() => this.setState({showNewTestModal: false})}>
                     <br></br>
                     <div style={{maxWidth: 500, maxHeight: 350}}><Form onSubmit={this.createTest}>
@@ -699,7 +803,7 @@ class TestsOfDef extends Component {
                         <Button style={{margin: 5, height: 40, position: "absolute", right: 0, bottom: 0}} variant="primary" type="submit">Submit</Button></div>
                     </Form></div>
                 </Modal>
-                {this.isLoaded() && this.state.elements !== null && <div><br></br><BootstrapTable hover keyField="key" data={ this.state.elements } columns={ this.columns } selectRow={this.selectTestToDelete}/></div>}
+                {this.isLoaded() && this.state.elements !== null && <div><br></br><BootstrapTable hover keyField="key" data={ this.state.elements } columns={ this.columns } selectRow={this.selectTest}/></div>}
                 {this.isLoaded() && this.state.elements === null && <div><br></br><AlertNoTests/></div>}
                 <br></br>
                 {this.isLoaded() && <div className="input-group">
@@ -708,8 +812,10 @@ class TestsOfDef extends Component {
                 </div>}
                 <br></br><br></br> 
                 {this.isLoaded() && <div className="input-group">
-                    {this.state.elements !== null && <Button disabled={this.state.testToDelete === null} style={{position: "absolute", left: 0}} onClick={this.deleteTest}>Delete</Button>}
-                    <Button style={{position: "absolute", right: 0}} onClick={() => {this.setState({showNewTestModal: true})}}>New</Button>
+                    {this.state.elements !== null && <Button disabled={this.state.selectedTest === null} style={{margin: 5}} onClick={this.deleteTest}>Delete</Button>}
+                    {this.state.elements !== null && <Button disabled={this.state.selectedTest === null} style={{margin: 5}} onClick={this.runOnDemand}>Run On Demand</Button>}
+                    {this.state.elements !== null && <Button disabled={this.state.selectedTest === null} style={{margin: 5}} onClick={this.checkAssignment}>Check Assignment</Button>}
+                    <Button style={{margin: 5, position: "absolute", right: 0}} onClick={() => {this.setState({showNewTestModal: true})}}>New</Button>
                 </div>}
             </div>
         )
@@ -763,15 +869,19 @@ class AppealsOfDef extends Component {
           return response.json()
         })
         .then(data => {
-            for (let i = 0; i < data.elements.length; i++) {
-                let splitted = data.elements[i].assignment_instance.split(":");
-                if (splitted.length !== 4) {
-                    alert("invalid assignment definition key returned from backend");
-                    return;
+            if (data.elements !== null) {
+                for (let i = 0; i < data.elements.length; i++) {
+                    let splitted = data.elements[i].assignment_instance.split(":");
+                    if (splitted.length !== 4) {
+                        alert("invalid assignment definition key returned from backend");
+                        return;
+                    }
+                    data.elements[i]["user_name"] = splitted[3];
                 }
-                data.elements[i]["user_name"] = splitted[3];
+                this.setState({elements:data.elements}, () => this.setState({isLoaded: true}))
+            } else {
+                this.setState({elements:data.elements}, () => this.setState({isLoaded: true}))
             }
-            this.setState({elements:data.elements}, () => this.setState({isLoaded: true}))
         });
     }
 
