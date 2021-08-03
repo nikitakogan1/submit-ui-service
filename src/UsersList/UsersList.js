@@ -149,6 +149,7 @@ class UsersList extends Component {
     }
 
     return (
+
       <>
         <Button id="addUser" variant="primary" onClick={handleShow}>
           Add user

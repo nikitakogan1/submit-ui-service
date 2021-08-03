@@ -24,16 +24,14 @@
     right: 27%;
 }
 #submitNewUser{
-    position: fixed;
-    max-width: 30%;
-    right: 36%;
-    bottom: 41%;
+    position: inherit;
+    max-width: 80%;
+    right: 34%;
 }
 #closeSubmitNewUser{
-    position: fixed;
-    max-width: 30%;
-    left: 26%;
-    bottom: 41%;
+    position: inherit;
+    max-width: 80%;
+    left: 90%;
 }
 #registerUserText{
     position: relative;
