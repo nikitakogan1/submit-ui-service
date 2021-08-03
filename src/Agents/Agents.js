@@ -106,7 +106,7 @@ export default class AgentList extends Component {
     render() {
         return (
             <div>
-            {(this.state.elements === null || this.state.elements.length === 0) && <AlertNoAgents></AlertNoAgents>}
+            {(this.state.elements === undefined || this.state.elements === null || this.state.elements.length === 0) && <AlertNoAgents></AlertNoAgents>}
             { this.state.elements !== null && this.state.elements.length > 0 && <BootstrapTable hover keyField='id' data={ this.state.elements } columns={ this.columns } /> }
             {this.state.after_id > 0 && <Button variant="primary" id= "UsersPrevPage" onClick={this.previousPage}>Previons page</Button>}
             {this.state.left_to_process === true && <Button variant="primary" id= "UsersNextPage" onClick={this.nextPage}>Next page</Button>}

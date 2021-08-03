@@ -34,7 +34,7 @@ export default class Assignment extends Component {
 
     componentDidMount() {
         this.props.navbar(true);
-        fetch(window.location.origin + "/api" + window.location.pathname + "/" + getLoggedInUserName()).then((response) => {
+        fetch(window.location.origin + "/api" + window.location.pathname).then((response) => {
             if (response.status === 403) {
                 this.props.history.push("/unauthorized");
                 this.props.history.go(0);

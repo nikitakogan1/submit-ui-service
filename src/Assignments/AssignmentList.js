@@ -73,7 +73,7 @@ export default class AssignmentsList extends Component {
 
     columns = [{
         dataField: 'assignment_def',
-        formatter: (cell, row) => <a href={"/assignment_instances/" + cell.replaceAll(":","/")}> {cell.replaceAll(":","/")} </a>,
+        formatter: (cell, row) => <a href={"/assignment_instances/" + cell.replaceAll(":","/") + "/" + getLoggedInUserName()}> {cell.replaceAll(":","/")} </a>,
         text: 'Assignment name',
       }, {
         dataField: 'due_by',
@@ -99,7 +99,7 @@ export default class AssignmentsList extends Component {
       return (
     <div className="AssignmentList">
     <p className="Table-header"></p>
-     {(this.state.elements === null || this.state.elements === []) && <AlertNoAssignments></AlertNoAssignments>}
+     {(this.state.elements === undefined || this.state.elements === null || this.state.elements === []) && <AlertNoAssignments></AlertNoAssignments>}
     {this.state.elements !== null && this.state.elements !== [] && <BootstrapTable hover keyField='assignment_def' data={ this.state.elements } columns={ this.columns } />}
     </div>
       );

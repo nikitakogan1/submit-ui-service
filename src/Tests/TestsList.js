@@ -89,7 +89,7 @@ export default class TestsList extends Component {
     render() {
         return (
             <div>
-            {(this.state.elements === null || this.state.elements.length === 0) && <AlertNoTests></AlertNoTests>}
+            {(this.state.elements === undefined || this.state.elements === null || this.state.elements.length === 0) && <AlertNoTests></AlertNoTests>}
             { this.state.elements !== null && this.state.elements.length > 0 && <BootstrapTable hover keyField='assignment_def' data={ this.state.elements } columns={ this.columns } /> }
             {this.state.after_id > 0 && <Button variant="primary" id= "TestsPrevPage" onClick={this.previousPage}>Previons page</Button>}
             {this.state.left_to_process === true && <Button variant="primary" id= "TestsNextPage" onClick={this.nextPage}>Next page</Button>}
