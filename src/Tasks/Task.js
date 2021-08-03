@@ -2,7 +2,7 @@ import {Component, Fragment} from "react";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import parseStatus from "../Utils/utils"
-import ListGroup from "react-bootstrap/ListGroup";
+import BootstrapTable from 'react-bootstrap-table-next';
 
 
 export default class Task extends Component {
@@ -49,10 +49,16 @@ export default class Task extends Component {
         return this.state.isLoaded;
     }
 
+   labelColums = 
+    {
+        dataField: 'label',
+        text: 'Label',
+   }
+   
 
     render() {
 
-        //console.log(JSON.stringithis.state.labels)
+        console.log(this.state.labels)
         return (
         <Fragment>
             <Form id="singleTaskForm">
@@ -119,9 +125,8 @@ export default class Task extends Component {
             Labels:
             <br></br>
             <br></br>
-            <ListGroup horizontal>
-                    <ListGroup.Item>This</ListGroup.Item>
-            </ListGroup>
+            { this.state.labels !== undefined && this.state.labels !== null && this.state.labels.length > 0 && <BootstrapTable hover keyField='id' data={ this.state.labels } columns={ this.labelColums } /> }
+
         </Fragment>
         )
     }

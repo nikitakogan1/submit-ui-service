@@ -438,14 +438,16 @@ deleteSelectedCoursesAsStaff = () => {
     mode: "checkbox",
     clickToSelect: false,
     classes: "selection-row",
-    onSelect: this.onSelectStudentTable
+    onSelect: this.onSelectStudentTable,
+    hideSelectAll: true
   };
 
   selectRowStaff = {
     mode: "checkbox",
     clickToSelect: false,
     classes: "selection-row",
-    onSelect: this.onSelectStaffTable
+    onSelect: this.onSelectStaffTable,
+    hideSelectAll: true
   };
 
 
@@ -803,7 +805,7 @@ class GetCoursesList extends Component {
 
 const parseCourses = (coursesList) => {
   var courses=[]
-  if (coursesList === undefined){
+  if (coursesList === undefined || coursesList === null){
     return []
   }
   for (let i = 0; i < coursesList.length; i++) {

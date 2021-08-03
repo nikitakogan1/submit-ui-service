@@ -7,7 +7,6 @@ import Modal from "react-bootstrap/Modal"
 import Button from "react-bootstrap/Button"
 import  { useState } from 'react';
 import "./UserList.css"
-//import '../../node_modules/bootstrap/dist/css/bootstrap.min.css'; 
 import BootstrapTable from 'react-bootstrap-table-next';
 
 class UsersList extends Component {
@@ -82,6 +81,7 @@ class UsersList extends Component {
     selectRow = {
         mode: "checkbox",
         clickToSelect: false,
+        hideSelectAll: true,
         classes: "selection-row",
         onSelect: (props) => {
             if (this.usersSelectedToDelete.includes(props.user_name)){

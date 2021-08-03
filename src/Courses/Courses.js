@@ -88,7 +88,8 @@ class Courses extends Component {
     mode: "checkbox",
     clickToSelect: false,
     classes: "selection-row",
-    onSelect: this.onSelect
+    onSelect: this.onSelect,
+    hideSelectAll: true
   };
 
     componentDidMount() {
@@ -140,7 +141,7 @@ class Courses extends Component {
       {this.state.isAdminView && (this.state.elements.length !== 0 && this.state.elements !== null && this.state.elements !== undefined) && <BootstrapTable selectRow={this.selectRow} hover keyField='id' data={ this.state.elements } columns={ this.columns } />}
       {!this.state.isAdminView && (this.state.elements.length !== 0 && this.state.elements !== null && this.state.elements !== undefined) && <BootstrapTable  hover keyField='id' data={ this.state.elements } columns={ this.columns } />}
             {this.state.isAdminView && <AddCourserModal history={this.props.history}></AddCourserModal>}
-            {this.state.isAdminView && <Button  variant="primary" id= "deleteCourseBut" onClick={this.deleteSelectedCourses}>
+            {this.state.isAdminView && (this.state.elements.length !== 0 && this.state.elements !== null && this.state.elements !== undefined) && <Button  variant="primary" id= "deleteCourseBut" onClick={this.deleteSelectedCourses}>
                 Delete Selected courses
             </Button>}
             {this.state.after_id > 0 && <Button  variant="primary" id= "CoursesPrevPage" onClick={this.previousPage}>
@@ -254,9 +255,3 @@ class Courses extends Component {
 
   export default withRouter(Courses);
 
-
-  //TODO: 
-
-// 1. Add the student/stuff section in the table.
-// 2. create course detail components.
-//
