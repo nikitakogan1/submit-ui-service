@@ -522,9 +522,7 @@ function AddUserToCourseAsStudentModal(props) {
       </Button>
 
       <Modal show={show} onHide={handleClose} animation={false}>
-        <Modal.Header closeButton>
           <Modal.Title>Choose course</Modal.Title>
-        </Modal.Header>
         <Modal.Body>
 <GetCoursesList showModal={props.onSubmitModal} role={"student"} history={props.history} courses_as_staff={props.courses_as_staff} courses_as_student={props.courses_as_student} close={handleClose} userURL={props.userURL} user_name={props.user_name}></GetCoursesList>
         </Modal.Body>
@@ -552,9 +550,7 @@ function AddUserToCourseAsStaffModal(props) {
       </Button>
 
       <Modal show={show} onHide={handleClose} animation={false}>
-        <Modal.Header closeButton>
           <Modal.Title>Choose course</Modal.Title>
-        </Modal.Header>
         <Modal.Body>
 <GetCoursesList showModal={props.onSubmitModal} role={"staff"} history={props.history} courses_as_student={props.courses_as_student} courses_as_staff={props.courses_as_staff} close={handleClose} userURL={props.userURL} user_name={props.user_name}></GetCoursesList>
         </Modal.Body>
