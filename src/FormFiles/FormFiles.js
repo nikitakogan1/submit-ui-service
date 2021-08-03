@@ -80,7 +80,7 @@ export default class FormFiles extends Component {
         Object.keys(this.state.elements).forEach((fileNameStr) => fileNameObjs.push({"file_name": fileNameStr}));
         return (
             <Fragment>
-                <Modal open={this.state.showActionModal} onClose={() => {}} center showCloseIcon={false}>
+                <Modal style={{maxHeight:100, maxWidth:100}} open={this.state.showActionModal} onClose={() => {}} center showCloseIcon={false}>
                     <Spinner animation="border" variant="primary" />
                 </Modal>
                 {fileNameObjs.length > 0 && <BootstrapTable hover keyField="file_name" data={fileNameObjs} columns={this.columns} pagination={paginationFactory({showTotal: true})} selectRow={this.allowModification ? this.selectFileToDelete : undefined}/>}

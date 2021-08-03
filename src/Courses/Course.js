@@ -106,10 +106,10 @@ export default class Course extends Component {
                     </Col>
                 </Form.Row>
                 <Modal open={this.state.showAssignmentsModal} center onClose={() => {this.setState({showAssignmentsModal: false})}}>
-                    <div style={{"max-height": 600, "max-width": 600}}><CourseAssignmentDefs history={this.props.history} courseNumber={this.state.number.toString()} courseYear={this.state.year.toString()}/><br></br></div>
+                    <div style={{maxHeight: 400, maxWidth: 700}}><CourseAssignmentDefs history={this.props.history} courseNumber={this.state.number.toString()} courseYear={this.state.year.toString()}/><br></br></div>
                 </Modal>
                 <Modal open={this.state.showAppealsModal} center onClose={() => {this.setState({showAppealsModal: false})}}>
-                    <div style={{"max-height": 600, "max-width": 600}}><CourseAppeals history={this.props.history} courseNumber={this.state.number.toString()} courseYear={this.state.year.toString()}/><br></br></div>
+                    <div style={{maxHeight: 400, maxWidth: 700}}><CourseAppeals history={this.props.history} courseNumber={this.state.number.toString()} courseYear={this.state.year.toString()}/><br></br></div>
                 </Modal>
             </Fragment>
         )
