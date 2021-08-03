@@ -72,8 +72,13 @@ export default class AssignmentDefList extends Component {
       },
       {
         dataField: 'course',
-        text: 'Course',
-        formatter: (cell, row) => <h10>{cell.replaceAll(":","/")} </h10>
+        text: 'Course numer',
+        formatter: (cell, row) => <a href={"/courses/" + cell.split(":")[0] + "/" +  cell.split(":")[1]}> {cell.split(":")[0]} </a>,
+      },
+      {
+        dataField: 'course_year',
+        text: 'Course year',
+        formatter: (cell, row) => <h10>{row.course.split(":")[1]} </h10>
       },
     ];
     render(){

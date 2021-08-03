@@ -78,9 +78,21 @@ export default class AssignmentsList extends Component {
 
     columns = [{
         dataField: 'assignment_def',
-        formatter: (cell, row) => <a href={"/assignment_instances/" + cell.replaceAll(":","/") + "/" + getLoggedInUserName()}> {cell.replaceAll(":","/")} </a>,
+        formatter: (cell, row) => <a href={"/assignment_instances/" + cell.replaceAll(":","/") + "/" + row.user_name}> {cell.split(":")[2]} </a>,
         text: 'Assignment name',
-      }, {
+      },
+      {
+        dataField: 'year',
+        text: 'Year',
+        formatter: (cell, row) => <h10>{row.assignment_def.split(":")[1]}</h10>
+      },
+      {
+        dataField: 'course_number',
+        text: 'Course number',
+        formatter: (cell, row) => <a href={"/courses/" + row.assignment_def.split(":")[0] + "/" +  row.assignment_def.split(":")[1]}> {row.assignment_def.split(":")[0]} </a>,
+      },
+      
+      {
         dataField: 'due_by',
         text: 'Due by',
         formatter: (cell, row) => <h10>{new Date(cell).toString()}</h10>
@@ -94,6 +106,11 @@ export default class AssignmentsList extends Component {
         text: 'Grade',
         formatter: (cell, row) => <h10>{row.state === 0 ? "-" : cell} </h10>
 
+      },
+      {
+        dataField: 'user_name',
+        text: 'User name',
+        formatter: (cell, row) => <a href={"/users/" + cell}> {cell} </a>,
       },
       {
         dataField: 'copy',
