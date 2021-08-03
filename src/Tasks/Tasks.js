@@ -96,6 +96,7 @@ export default class TasksList extends Component {
     render() {
         return (
             <div>
+            {(this.state.elements === null || this.state.elements.length === 0) && <AlertNoTasks></AlertNoTasks>}
             { this.state.elements !== null && this.state.elements.length > 0 && <BootstrapTable hover keyField='id' data={ this.state.elements } columns={ this.columns } /> }
             {this.state.after_id > 0 && <Button variant="primary" id= "TasksPrevPage" onClick={this.previousPage}>Previons page</Button>}
             {this.state.left_to_process === true && <Button variant="primary" id= "TasksNextPage" onClick={this.nextPage}>Next page</Button>}
@@ -103,8 +104,6 @@ export default class TasksList extends Component {
         )
     }
 
-
-
-
-
 }
+
+const AlertNoTasks = () => <div class="alert alert-info" role="alert">No Tasks Yet...</div>;
