@@ -22,16 +22,16 @@
     left: 1%;
 }
 #submitAddCourseBut{
-    position: fixed;
+    position: inherit;
     clear: both;
     top: 26%;
-    right: 31%;
+    right: 80%;
 }
 #closeAddCourseBut{
-    position: fixed;
+    position: inherit;
     clear: both;
     top: 26%;
-    left: 26%;
+    left: 98%;
 }
 #CoursesNextPage{
     position: absolute;
