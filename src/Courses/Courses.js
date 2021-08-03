@@ -85,7 +85,7 @@ class Courses extends Component {
   
   
   selectRow = {
-    mode: "checkbox",
+    mode: "radio",
     clickToSelect: false,
     classes: "selection-row",
     onSelect: this.onSelect,

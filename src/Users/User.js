@@ -435,7 +435,7 @@ deleteSelectedCoursesAsStaff = () => {
 
 
   selectRowStudent = {
-    mode: "checkbox",
+    mode: "radio",
     clickToSelect: false,
     classes: "selection-row",
     onSelect: this.onSelectStudentTable,
@@ -443,7 +443,7 @@ deleteSelectedCoursesAsStaff = () => {
   };
 
   selectRowStaff = {
-    mode: "checkbox",
+    mode: "radio",
     clickToSelect: false,
     classes: "selection-row",
     onSelect: this.onSelectStaffTable,

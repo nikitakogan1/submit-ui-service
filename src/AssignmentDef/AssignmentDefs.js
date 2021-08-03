@@ -44,7 +44,7 @@ export default class AssignmentDefList extends Component {
   }
 
   selectRow = {
-    mode: "checkbox",
+    mode: "radio",
     clickToSelect: false,
     hideSelectAll: true,
     classes: "selection-row",
