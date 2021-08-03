@@ -36,6 +36,7 @@ export default class AssignmentDef extends Component {
             pollingResultLink: null,
             showPollingError: false,
             pollingErrStatusCode: 0,
+            showAppealsModal: false,
         }
         this.isLoaded = this.isLoaded.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
@@ -257,7 +258,11 @@ export default class AssignmentDef extends Component {
                     </Modal>}
                 {this.isLoaded && <Modal open={this.state.showTestsModal} center onClose={() => this.setState({showTestsModal: false})}>
                         <br></br>
-                        <div style={{maxHeight: 275, maxWidth: 600}}><TestsOfDef courseNumber={this.state.course_number} courseYear={this.state.course_year} assName={this.state.name} history={this.props.history}/></div>
+                        <div style={{maxHeight: 600, maxWidth: 600}}><TestsOfDef courseNumber={this.state.course_number} courseYear={this.state.course_year} assName={this.state.name} history={this.props.history}/></div>
+                    </Modal>}
+                {this.isLoaded && <Modal open={this.state.showAppealsModal} center onClose={() => this.setState({showAppealsModal: false})}>
+                        <br></br>
+                        <div style={{maxHeight: 600, maxWidth: 600}}><AppealsOfDef courseNumber={this.state.course_number} courseYear={this.state.course_year} assName={this.state.name} history={this.props.history}/></div>
                     </Modal>}    
                 {this.isLoaded() && <Modal open={this.state.showDateModal} center onClose={() => this.setState({showDateModal: false})}>
                         <br></br>
@@ -344,6 +349,9 @@ export default class AssignmentDef extends Component {
                             <Col md style={{margin: 5}}>
                                 <Button variant="primary" style={{margin: 5}} onClick={() => this.setState({showAssInstModal: true})}>Instances</Button>
                             </Col>
+                            <Col md style={{margin: 5}}>
+                                <Button variant="primary" style={{margin: 5}} onClick={() => this.setState({showAppealsModal: true})}>Appeals</Button>
+                            </Col>
                             {this.state.state === 1 && <Col md style={{margin: 5}}>
                                 <Button variant="primary" style={{margin: 5}} onClick={() => this.setState({showMossModal: true})}>Moss</Button>
                             </Col>}
@@ -367,6 +375,7 @@ export default class AssignmentDef extends Component {
 
 const AlertNoInstances = () => <div className="alert alert-info" role="alert">No Instances Here...</div>;
 const AlertNoTests = () => <div className="alert alert-info" role="alert">No Tests Here...</div>;
+const AlertNoAppeals = () => <div className="alert alert-info" role="alert">No Appeals Here...</div>;
 
 class InstancesOfDef extends Component {
 
@@ -702,6 +711,114 @@ class TestsOfDef extends Component {
                     {this.state.elements !== null && <Button disabled={this.state.testToDelete === null} style={{position: "absolute", left: 0}} onClick={this.deleteTest}>Delete</Button>}
                     <Button style={{position: "absolute", right: 0}} onClick={() => {this.setState({showNewTestModal: true})}}>New</Button>
                 </div>}
+            </div>
+        )
+    }
+
+}
+
+class AppealsOfDef extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            isLoaded: false,
+            left_to_process: false,
+            limit: 5,
+            after_id: 0,
+            elements: null,
+        };
+        this.courseNumber = props.courseNumber;
+        this.courseYear = props.courseYear;
+        this.assName = props.assName;
+        this.isLoaded = this.isLoaded.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
+        this.previousPage = this.previousPage.bind(this);
+        this.nextPage = this.nextPage.bind(this);
+        this.goToBackEnd = this.goToBackEnd.bind(this);
+    }
+
+    isLoaded() {
+        return this.state.isLoaded;
+    }
+
+    goToBackEnd() {
+        var url = window.location.origin + '/api/appeals/?limit='+ this.state.limit
+        if (this.state.after_id > 0) {
+          url = url + "&after_id=" + this.state.after_id
+        }
+        fetch(url, {method:'GET', 
+        headers: {'X-Submit-Ass': this.courseNumber + ":" + this.courseYear + ":" + this.assName}})
+        .then((response) => {
+          if (response.status !== 200){
+            alert("error fetching appeals for definition. Status code is " + response.status)  
+            this.props.history.push("/internal-error");
+            this.props.history.go(0);
+          }
+          if (response.headers.has("X-Elements-Left-To-Process")){
+              this.setState({left_to_process:true})
+          } else {
+              this.setState({left_to_process:false})
+          }
+          return response.json()
+        })
+        .then(data => {
+            for (let i = 0; i < data.elements.length; i++) {
+                let splitted = data.elements[i].assignment_instance.split(":");
+                if (splitted.length !== 4) {
+                    alert("invalid assignment definition key returned from backend");
+                    return;
+                }
+                data.elements[i]["user_name"] = splitted[3];
+            }
+            this.setState({elements:data.elements}, () => this.setState({isLoaded: true}))
+        });
+    }
+
+    componentDidMount() {
+        this.goToBackEnd();
+    }
+
+    nextPage = () => {
+        this.setState({after_id: this.state.after_id + this.state.limit}, () => {
+            this.goToBackEnd()
+        })
+    }
+
+    previousPage = () => {
+        this.setState({after_id: this.state.after_id - this.state.limit}, () => {
+            this.goToBackEnd()
+        })
+    }
+
+    columns = [{
+        dataField: "user_name",
+        text: "User",
+        formatter: (cell) => <a href={window.location.origin + "/appeals/" + this.courseNumber + "/" + this.courseYear + "/" + this.assName + "/" + cell}>{cell}</a>
+    },{
+        dataField: "state",
+        text: "State",
+        formatter: (cell) => {
+            if (cell === 0) {
+                return <h10>Open</h10>
+            } else if (cell === 1) {
+                return <h10>Closed</h10>
+            }
+            return <h10>Invalid</h10>
+        }
+    }]
+
+    render() {
+        return (
+            <div>
+                {this.isLoaded() && this.state.elements !== null && <div><br></br><BootstrapTable hover keyField="assignment_instance" data={ this.state.elements } columns={ this.columns }/></div>}
+                {this.isLoaded() && this.state.elements === null && <div><br></br><AlertNoAppeals/></div>}
+                <br></br>
+                {this.isLoaded() && <div className="input-group">
+                        {this.state.after_id > 0 && <Button variant="primary" onClick={this.previousPage} style={{position: "absolute", left: 0}}>Previous</Button>}
+                        {this.state.left_to_process && <Button variant="primary" onClick={this.nextPage} style={{position: "absolute", right: 0}}>Next</Button>}
+                    </div>}
+                <br></br><br></br> 
             </div>
         )
     }
