@@ -63,13 +63,14 @@ export default class Assignment extends Component {
     updateGrade = (event) => {
         event.preventDefault(event);
         console.log(event.target.grade.value)
-        var body = {assignment_def: this.state.assignment_def, grade: parseInt(event.target.grade.value), files: this.state.files, state: this.state.state}
+        var body = {assignment_def: this.state.assignment_def, grade: parseInt(event.target.grade.value), files: this.state.files, state: 2}
         console.log(body)
-        fetch(window.location.origin + "/api" + window.location.pathname + "/" + getLoggedInUserName(), {method:'PUT', 
+        fetch(window.location.origin + "/api" + window.location.pathname, {method:'PUT', 
         body: JSON.stringify(body)})
         .then((response) => {
         if (!response.ok){
             alert("Updating grade failed")
+            console.log(response.JSON())
         }
         });
         this.props.history.go(0);

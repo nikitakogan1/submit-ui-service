@@ -26,7 +26,7 @@ class UsersList extends Component {
 
     deleteSelectedUsers = () => {
         this.usersSelectedToDelete.forEach( (username) => {
-            fetch(window.location.origin  +  'api/users/' + username, {method:'DELETE', 
+            fetch(window.location.origin  +  '/api/users/' + username, {method:'DELETE', 
             headers: {'Authorization': 'Basic ' + btoa('username:password')}})
             .then((response) => {
             if (!response.ok){
