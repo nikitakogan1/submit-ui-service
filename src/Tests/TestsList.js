@@ -34,11 +34,21 @@ export default class TestsList extends Component {
     columns = [
     {
         dataField: 'assignment_def',
-        text: 'Assignment',
-        formatter: (cell, row) => <a href={"/tests/" + cell.replaceAll(":","/") + "/" + row.name}> {cell.replaceAll(":","/")} </a>,
+        text: 'Course number',
+        formatter: (cell, row) => <a href={"/tests/" + cell.replaceAll(":","/") + "/" + row.name}> {cell.split(":")[0]} </a>,
     },
     {
-        dataField: 'name',
+      dataField: 'course_year',
+      text: 'Course year',
+      formatter: (cell, row) => <h10>{row.assignment_def.split(":")[1]}</h10>
+    },
+    {
+      dataField: 'assignment_name',
+      text: 'Assignment name',
+      formatter: (cell, row) => <h10>{row.assignment_def.split(":")[2]}</h10>
+    },
+    {
+        dataField: 'Test name',
         text: 'Name',
     }, 
       {
