@@ -32,12 +32,17 @@ export default class AssignmentsList extends Component {
     }
 
     goToBackEnd() {
-        var url = window.location.origin + '/api/assignment_instances/?limit='+ this.state.limit
+        var header;
+        if (getLoggedInUserName() !== "admin"){
+          header =  {'X-Submit-User': getLoggedInUserName()}
+        } else {
+          header =  {}
+        }
+        var url = window.location.origin + '/api/assignment_instances/?limit='+ this.state.limit;
         if (this.state.after_id > 0) {
           url = url + "&after_id=" + this.state.after_id
         }
-        fetch(url, {method:'GET', 
-        headers: {'X-Submit-User': getLoggedInUserName()}})
+        fetch(url, {method:'GET', headers: header})
         .then((response) => {
           if (response.status === 403){
             this.props.history.push("/unauthorized");
