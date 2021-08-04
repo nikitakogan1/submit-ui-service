@@ -222,7 +222,9 @@ export default class AssignmentDef extends Component {
 
     render() {
         let requiredFiles = []
-        Object.keys(this.state.required_files.elements).forEach((fileNameStr) => requiredFiles.push({"file_name": fileNameStr}));
+        if (this.state.required_files !== null ) {
+            Object.keys(this.state.required_files.elements).forEach((fileNameStr) => requiredFiles.push({"file_name": fileNameStr}));
+        }
         return (
             <div>
                 {this.isLoaded() && <Modal open={this.state.showNewRequiredFileModal} center onClose={() => this.setState({showNewRequiredFileModal: false})}>

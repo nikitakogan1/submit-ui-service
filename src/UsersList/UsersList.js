@@ -10,10 +10,9 @@ import "./UserList.css"
 import BootstrapTable from 'react-bootstrap-table-next';
 
 class UsersList extends Component {
-  usersSelectedToDelete=[]
     constructor(props) {
       super(props);
-      this.state = {left_to_process:false,limit:5, after_id:0, elements: [
+      this.state = {userSelectedToDelete: null,left_to_process:false,limit:5, after_id:0, elements: [
         {user_name:null,first_name:null,last_name:null}
       ],
     };
@@ -24,16 +23,14 @@ class UsersList extends Component {
     }
 
     deleteSelectedUsers = () => {
-        this.usersSelectedToDelete.forEach( (username) => {
-            fetch(window.location.origin  +  '/api/users/' + username, {method:'DELETE', 
-            headers: {'Authorization': 'Basic ' + btoa('username:password')}})
-            .then((response) => {
-            if (!response.ok){
-                alert("balagan")
-            }
-            return response.json()
-            });
-        })
+        fetch(window.location.origin  +  '/api/users/' + this.state.userSelectedToDelete, {method:'DELETE', 
+        headers: {'Authorization': 'Basic ' + btoa('username:password')}})
+        .then((response) => {
+        if (!response.ok){
+            alert("failed to delete user")
+        }
+        return response.json()
+        });
         this.props.history.go(0)
     }
 
@@ -84,13 +81,7 @@ class UsersList extends Component {
         hideSelectAll: true,
         classes: "selection-row",
         onSelect: (props) => {
-            if (this.usersSelectedToDelete.includes(props.user_name)){
-                this.usersSelectedToDelete = this.usersSelectedToDelete.filter(function(item) {
-                    return item !== props.user_name
-                }) 
-            } else {
-                this.usersSelectedToDelete.push(props.user_name)
-            }
+          this.setState({userSelectedToDelete: props.user_name})
           }
       };
 
@@ -112,9 +103,9 @@ class UsersList extends Component {
      
     <BootstrapTable selectRow={this.selectRow} hover keyField='user_name' data={ this.state.elements } columns={ this.columns } />
     <AddUserModal history={this.props.history}></AddUserModal>
-    <Button  variant="primary" id= "deleteUserBut" onClick={this.deleteSelectedUsers}>
-        Delete Selected users
-    </Button>
+    {this.state.userSelectedToDelete && <Button  variant="primary" id= "deleteUserBut" onClick={this.deleteSelectedUsers}>
+        Delete
+    </Button>}
     {this.state.after_id > 0 && <Button  variant="primary" id= "UsersPrevPage" onClick={this.previousPage}>
         Previons page
     </Button>}

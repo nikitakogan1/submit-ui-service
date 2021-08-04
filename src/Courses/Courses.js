@@ -9,22 +9,14 @@ import Modal from "react-bootstrap/Modal"
 import Col from "react-bootstrap/Col"
 import {getCookie, isLoggedIn} from  "../Utils/session"
 
-function removeItemOnce(arr, value) {
-  var index = arr.indexOf(value);
-  if (index > -1) {
-    arr.splice(index, 1);
-  }
-  return arr;
-}
-
 class Courses extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {left_to_process:false,limit:5, after_id:0,coursesSelectedToDelete: [], elements: [], isAdminView: false
+    this.state = {left_to_process:false,limit:5, after_id:0,courseToDelete: null, elements: [], isAdminView: false
   };
   this.componentDidMount=this.componentDidMount.bind(this);
-  this.deleteSelectedCourses=this.deleteSelectedCourses.bind(this);
+  this.deleteCourse=this.deleteCourse.bind(this);
   this.onSelect=this.onSelect.bind(this);
   this.goToBackEnd=this.goToBackEnd.bind(this);
   this.nextPage=this.nextPage.bind(this);
@@ -44,18 +36,16 @@ class Courses extends Component {
     })
   }
 
-  deleteSelectedCourses = () => {
-    this.state.coursesSelectedToDelete.forEach( (course) => {
-        course = JSON.parse(course)
-        fetch(window.location.origin + '/api/courses/' + course.number + "/" + course.year, {method:'DELETE', 
-        headers: {'Authorization': 'Basic ' + btoa('username:password')}})
-        .then((response) => {
-        if (!response.ok){
-            alert("balagan")
-        }
-        return response.json()
-        });
-    })
+  deleteCourse = () => {
+    var course = JSON.parse(this.state.courseToDelete);
+    fetch(window.location.origin + '/api/courses/' + course.number + "/" + course.year, {method:'DELETE', 
+    headers: {'Authorization': 'Basic ' + btoa('username:password')}})
+    .then((response) => {
+    if (!response.ok){
+        alert("balagan")
+    }
+    return response.json()
+    });
     this.props.history.go(0)
 }
 
@@ -74,13 +64,7 @@ class Courses extends Component {
 ];
 
   onSelect = (props) => {
-    var index = this.state.coursesSelectedToDelete.indexOf(JSON.stringify({year: props.year, number: props.number}));
-    if (index !== -1) {
-      var arr = removeItemOnce(this.state.coursesSelectedToDelete, JSON.stringify({year: props.year, number: props.number}))
-      this.setState({coursesSelectedToDelete: arr});
-    } else {
-      this.setState({coursesSelectedToDelete:[...this.state.coursesSelectedToDelete, JSON.stringify({year: props.year, number: props.number})]})
-    }
+         this.setState({courseToDelete: JSON.stringify({year: props.year, number: props.number})})
   } 
   
   
@@ -141,7 +125,7 @@ class Courses extends Component {
       {this.state.isAdminView && (this.state.elements.length !== 0 && this.state.elements !== null && this.state.elements !== undefined) && <BootstrapTable selectRow={this.selectRow} hover keyField='id' data={ this.state.elements } columns={ this.columns } />}
       {!this.state.isAdminView && (this.state.elements.length !== 0 && this.state.elements !== null && this.state.elements !== undefined) && <BootstrapTable  hover keyField='id' data={ this.state.elements } columns={ this.columns } />}
             {this.state.isAdminView && <AddCourserModal history={this.props.history}></AddCourserModal>}
-            {this.state.isAdminView && (this.state.elements.length !== 0 && this.state.elements !== null && this.state.elements !== undefined) && <Button  variant="primary" id= "deleteCourseBut" onClick={this.deleteSelectedCourses}>
+            {this.state.isAdminView && (this.state.elements.length !== 0 && this.state.elements !== null && this.state.elements !== undefined) && <Button  variant="primary" id= "deleteCourseBut" onClick={this.deleteCourse}>
                 Delete
             </Button>}
             {this.state.after_id > 0 && <Button  variant="primary" id= "CoursesPrevPage" onClick={this.previousPage}>
