@@ -131,6 +131,7 @@ export default class Test extends Component {
     render() {
         let shouldAssBeLink = doesUserHaveRole("admin") || isStaffCourse(this.state.courseNumber + ":" + this.state.courseYear);
         let allowPublishButton = shouldAssBeLink;
+        let allowOnSubmitChoice = allowPublishButton;
         let allowMod = allowPublishButton || this.state.created_by === getLoggedInUserName();
         return (
             <div>
@@ -196,7 +197,7 @@ export default class Test extends Component {
                             <Col md style={{margin: 5}}>
                                 <Form.Group>
                                     <Form.Label>Runs On:</Form.Label>
-                                    <Form.Control disabled={!allowMod} as="select" value={this.state.runs_on} onChange={this.setRunsOn}>
+                                    <Form.Control disabled={!allowMod || !allowOnSubmitChoice} as="select" value={this.state.runs_on} onChange={this.setRunsOn}>
                                         <option value="0">Submit</option>
                                         <option value="1">Demand</option>
                                     </Form.Control>

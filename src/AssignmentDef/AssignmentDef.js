@@ -357,10 +357,6 @@ export default class AssignmentDef extends Component {
                                     <Form.Control disabled value={this.state.name}/>
                                 </Form.Group>
                             </Col>
-                            <Col md style={{margin: 5}}>
-                                <Form.Label>State:</Form.Label>
-                                <Form.Control disabled value={this.state.state_str}/>
-                            </Col>
                         </div>
                     </Form.Row>
                     <Form.Row>
@@ -788,7 +784,7 @@ class TestsOfDef extends Component {
                         {this.state.showPollingResult && <div style={{maxWidth: 600, maxHeight: 600}}>
                             <Form.Group>
                                 <Form.Label>Output:</Form.Label>
-                                <Form.Control disabled value={this.state.pollingResult.output}/>
+                                <Form.Control as="textarea" type="text" disabled value={this.state.pollingResult.output}/>
                             </Form.Group>
                             <Form.Group>
                                 <Form.Label>Grade:</Form.Label>
