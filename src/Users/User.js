@@ -791,6 +791,7 @@ class GetCoursesList extends Component {
     })
     return (
 <Fragment>
+  {(options === null || options.length === 0 || checked === null) &&<AlertNoCoursesToAdd></AlertNoCoursesToAdd>}
 {options !== null && options.length !== 0 && checked !== null && <Multiselect
       options={finalOptions}
       onRemove={this.onRemove}
@@ -810,6 +811,7 @@ class GetCoursesList extends Component {
 }
 
 
+const AlertNoCoursesToAdd = () => <div class="alert alert-info" role="alert">No courses to add...</div>;
 
 
 const parseCourses = (coursesList) => {
