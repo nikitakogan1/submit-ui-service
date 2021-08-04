@@ -62,11 +62,7 @@ export default class FormFiles extends Component {
     }
 
     onFileSelectedForDeletion = (row, isSelect, rowIndex, e) => {
-        if (this.state.fileToDelete === row.file_name) {
-            this.setState({fileToDelete: null});
-        } else {
-            this.setState({fileToDelete: row.file_name});
-        }
+        this.setState({fileToDelete: row.file_name});
     }
 
     selectFileToDelete = {

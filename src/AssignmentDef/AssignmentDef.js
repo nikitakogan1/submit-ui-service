@@ -37,7 +37,9 @@ export default class AssignmentDef extends Component {
             showPollingError: false,
             pollingErrStatusCode: 0,
             showAppealsModal: false,
-            required_files: {elements:{}}
+            required_files: {elements:{}},
+            selectedRequiredFile: "",
+            showNewRequiredFileModal: false
         }
         this.isLoaded = this.isLoaded.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
@@ -46,6 +48,8 @@ export default class AssignmentDef extends Component {
         this.createMossRequest = this.createMossRequest.bind(this);
         this.onPollingModalClose = this.onPollingModalClose.bind(this);
         this.publish = this.publish.bind(this);
+        this.removeRequiredFile = this.removeRequiredFile.bind(this);
+        this.addRequiredFile = this.addRequiredFile.bind(this);
     }
 
     isLoaded() {
@@ -108,7 +112,7 @@ export default class AssignmentDef extends Component {
         event.preventDefault(event);
         fetch(window.location.origin + "/api/assignment_definitions/" + this.state.course_number + "/" + this.state.course_year + "/" + this.state.name,
         {method: "PUT", "headers": {"X-Submit-Ass": this.state.course_number + ":" + this.state.course_year + ":" + this.state.name},
-        body: JSON.stringify({due_by: new Date(event.target.due_by.value), files: this.state.files})}).then((resp) => {
+        body: JSON.stringify({due_by: new Date(event.target.due_by.value), files: this.state.files, required_files: this.state.required_files})}).then((resp) => {
             if (resp.status !== 202) {
                 alert("error updating assignment definition. Status code is " + resp.status);
             } else {
@@ -192,11 +196,49 @@ export default class AssignmentDef extends Component {
         });
     }
 
+    onRequiredFileSelection = (row, isSelect, rowIndex, e) => {
+        this.setState({selectedRequiredFile: row.file_name});
+    }
+
+    selectRequiredFile = {
+        mode: "radio",
+        clickToSelect: false,
+        onSelect: this.onRequiredFileSelection
+    }
+
+    removeRequiredFile() {
+        let reqFiles = JSON.parse(JSON.stringify(this.state.required_files))
+        delete reqFiles.elements[this.state.selectedRequiredFile];
+        this.setState({required_files: reqFiles, selectedRequiredFile: ""});
+    }
+
+    addRequiredFile(e) {
+        e.preventDefault(e);
+        let fileName = e.target.file_name.value
+        let reqFiles = JSON.parse(JSON.stringify(this.state.required_files))
+        reqFiles.elements[fileName] = {}
+        this.setState({required_files: reqFiles, showNewRequiredFileModal: false});
+    }
+
     render() {
         let requiredFiles = []
         Object.keys(this.state.required_files.elements).forEach((fileNameStr) => requiredFiles.push({"file_name": fileNameStr}));
         return (
             <div>
+                {this.isLoaded() && <Modal open={this.state.showNewRequiredFileModal} center onClose={() => this.setState({showNewRequiredFileModal: false})}>
+                    <br></br>
+                    <div>
+                        <Form onSubmit={this.addRequiredFile}>
+                            <Form.Row>
+                                <Form.Group style={{width: 280, margin: 5}} controlId="file_name">
+                                    <Form.Label>File Name:</Form.Label>
+                                    <Form.Control placeholder="Enter Required File Name"/>
+                                </Form.Group>
+                            </Form.Row>
+                            <Button style={{margin: 5}} variant="primary" type="submit">Add</Button>
+                        </Form>
+                    </div>
+                </Modal>}
                 {this.isLoaded() && <Modal open={this.state.showPollingModal} center onClose={this.onPollingModalClose}>
                     <br></br>
                     <div>
@@ -385,8 +427,11 @@ export default class AssignmentDef extends Component {
                             <Form.Group>
                                 <Form.Label>Required Files:</Form.Label>
                                 <Fragment>
-
+                                    {requiredFiles.length > 0 && <BootstrapTable hover keyField="file_name" data={requiredFiles} columns={[{dataField: "file_name", text: "File Name",}]} pagination={paginationFactory({showTotal: true})} selectRow={this.selectRequiredFile}/>}
+                                    {requiredFiles.length <= 0 && <div class="alert alert-info" role="alert">No Required Files Yet...</div>}
                                 </Fragment>
+                                <Button style={{margin: 3}} variant="primary" onClick={() => this.setState({showNewRequiredFileModal: true})}>Add</Button>
+                                <Button style={{margin: 3}} variant="primary" disabled={this.state.selectedRequiredFile === ""} onClick={this.removeRequiredFile}>Remove</Button>
                             </Form.Group>
                         </Col>
                     </Form.Row>
