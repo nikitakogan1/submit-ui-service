@@ -395,6 +395,19 @@ export default class AssignmentDef extends Component {
                         </div>
                     </Form.Row>
                     <Form.Row>
+                        <Col md style={{margin: 5}}>
+                            <Form.Group>
+                                <Form.Label>Required Files:</Form.Label>
+                                <Fragment>
+                                    {requiredFiles.length > 0 && <BootstrapTable hover keyField="file_name" data={requiredFiles} columns={[{dataField: "file_name", text: "File Name",}]} pagination={paginationFactory({showTotal: true})} selectRow={this.selectRequiredFile}/>}
+                                    {requiredFiles.length <= 0 && <div class="alert alert-info" role="alert">No Required Files Yet...</div>}
+                                </Fragment>
+                                <Button style={{margin: 3}} variant="primary" onClick={() => this.setState({showNewRequiredFileModal: true})}>Add</Button>
+                                <Button style={{margin: 3}} variant="primary" disabled={this.state.selectedRequiredFile === ""} onClick={this.removeRequiredFile}>Remove</Button>
+                            </Form.Group>
+                        </Col>
+                    </Form.Row>
+                    <Form.Row>
                         <div className="input-group">
                             <Col md style={{margin: 5}}>
                                 <Form.Label>Actions:</Form.Label>
@@ -421,19 +434,6 @@ export default class AssignmentDef extends Component {
                             <Form.Group>
                                 <Form.Label>Files:</Form.Label>
                                 <FormFiles allowModification={true} elementBucket="assignment_definitions" elementKey={this.state.course_number + "/" + this.state.course_year + "/" + this.state.name} files={this.state.files} history={this.props.history}/>
-                            </Form.Group>
-                        </Col>
-                    </Form.Row>
-                    <Form.Row>
-                        <Col md style={{margin: 5}}>
-                            <Form.Group>
-                                <Form.Label>Required Files:</Form.Label>
-                                <Fragment>
-                                    {requiredFiles.length > 0 && <BootstrapTable hover keyField="file_name" data={requiredFiles} columns={[{dataField: "file_name", text: "File Name",}]} pagination={paginationFactory({showTotal: true})} selectRow={this.selectRequiredFile}/>}
-                                    {requiredFiles.length <= 0 && <div class="alert alert-info" role="alert">No Required Files Yet...</div>}
-                                </Fragment>
-                                <Button style={{margin: 3}} variant="primary" onClick={() => this.setState({showNewRequiredFileModal: true})}>Add</Button>
-                                <Button style={{margin: 3}} variant="primary" disabled={this.state.selectedRequiredFile === ""} onClick={this.removeRequiredFile}>Remove</Button>
                             </Form.Group>
                         </Col>
                     </Form.Row>
