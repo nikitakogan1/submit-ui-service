@@ -5,10 +5,9 @@ import {getLoggedInUserName} from "../Utils/session";
 import Button from "react-bootstrap/Button"
 
 export default class AssignmentDefList extends Component {
-    selectedAssToDelete = []
     constructor(props) {
       super(props);
-      this.state = {left_to_process:false,limit:5, after_id:0, elements: [],
+      this.state = {assignmentDefToDelete: null, left_to_process:false,limit:5, after_id:0, elements: [],
     };
     this.componentDidMount=this.componentDidMount.bind(this);
     this.previousPage=this.previousPage.bind(this);
@@ -30,17 +29,16 @@ export default class AssignmentDefList extends Component {
     }
 
     deleteSelectedAss = () => {
-      console.log(this.selectedAssToDelete)
-      this.selectedAssToDelete.forEach( (ass) => {
-          fetch(window.location.origin  +  '/api' + ass.path, {method:'DELETE'})
-          .then((response) => {
-          if (!response.ok){
-              alert("failed to delete the selected courses")
-          }
-          return response.json()
-          });
-      })
-      this.props.history.go(0)
+      fetch(window.location.origin  +  '/api' + this.state.assignmentDefToDelete , {method:'DELETE'})
+      .then((response) => {
+      if (!response.ok){
+          alert("failed to delete the assignment definition")
+      }
+      return response.json()
+      }).then(() => {
+        this.props.history.go(0)
+      });
+
   }
 
   selectRow = {
@@ -49,23 +47,7 @@ export default class AssignmentDefList extends Component {
     hideSelectAll: true,
     classes: "selection-row",
     onSelect: (props) => {
-        if (this.selectedAssToDelete.length === 0){
-          this.selectedAssToDelete.push({id: props.id, path: "/assignment_definitions/" + props.course.split(":")[0] + "/" +  props.course.split(":")[1] + "/" + props.name})
-        } else {
-          this.selectedAssToDelete.forEach((ass) => {
-            console.log(ass)
-            if (ass.id === props.id){
-              console.log("includes")
-              this.selectedAssToDelete = this.selectedAssToDelete.filter(function(item) {
-                return item.id !== props.id
-            })
-            } else {
-              this.selectedAssToDelete.push({id: props.id, path: "/assignment_definitions/" + props.course.split(":")[0] + "/" +  props.course.split(":")[1] + "/" + props.name})
-          }
-        })
-        }
-       console.log(props)
-        console.log(this.selectedAssToDelete)
+        this.setState({assignmentDefToDelete: "/assignment_definitions/" + props.course.split(":")[0] + "/" +  props.course.split(":")[1] + "/" + props.name})
       }
   };
 
@@ -139,7 +121,7 @@ export default class AssignmentDefList extends Component {
     {(this.state.elements === undefined || this.state.elements === null || this.state.elements === []) && <AlertNoAssignments></AlertNoAssignments>}
 
     {this.state.elements !== undefined && this.state.elements !== null && this.state.elements.length !== 0 && <BootstrapTable  selectRow={this.selectRow} hover keyField='id' data={ this.state.elements } columns={ this.columns } />}
-    {this.state.elements !== undefined && this.state.elements !== null && this.state.elements.length !== 0 && <Button  variant="primary" id= "deleteAssDefsBut" onClick={this.deleteSelectedAss}>Delete</Button>}
+    {this.state.elements !== undefined && this.state.elements !== null && this.state.elements.length !== 0 && this.state.assignmentDefToDelete !== null && <Button  variant="primary" id= "deleteAssDefsBut" onClick={this.deleteSelectedAss}>Delete</Button>}
     </div>
       );
       }
