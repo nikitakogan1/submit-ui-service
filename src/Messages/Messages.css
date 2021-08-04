@@ -1,0 +1,17 @@
+#sendNewMessageModal{
+    position: inherit;
+    max-width: 80%;
+    background-color: lavender;
+}
+.sendNewMessage{
+    position: absolute;
+    min-width: 80%;
+}
+#submitNewMessage{
+    position: absolute;
+    top: 106%;
+}
+#NewMessageBut{
+    position: absolute;
+    left: 72%;
+}
