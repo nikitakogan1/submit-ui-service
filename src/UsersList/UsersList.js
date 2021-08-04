@@ -103,7 +103,7 @@ class UsersList extends Component {
      
     <BootstrapTable selectRow={this.selectRow} hover keyField='user_name' data={ this.state.elements } columns={ this.columns } />
     <AddUserModal history={this.props.history}></AddUserModal>
-    {this.state.userSelectedToDelete && <Button  variant="primary" id= "deleteUserBut" onClick={this.deleteSelectedUsers}>
+    {<Button disabled={this.state.userSelectedToDelete === null}  variant="primary" id= "deleteUserBut" onClick={this.deleteSelectedUsers}>
         Delete
     </Button>}
     {this.state.after_id > 0 && <Button  variant="primary" id= "UsersPrevPage" onClick={this.previousPage}>

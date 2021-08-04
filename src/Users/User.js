@@ -326,7 +326,7 @@ class UserCourses extends Component {
   constructor(props){
     super(props);
     this.state = {
-      coursesSelectedToDelete:[], staffCoursesSelectedToDelete:[], studentCoursesList:[], staffCoursesList:[]
+      coursesSelectedToDelete:[], staffCoursesSelectedToDelete:[], studentCoursesList:[], staffCoursesList:[], disableAsStudentDelete: true, disableAsStaffDelete: true,
     }
   }
   columns = 
@@ -358,7 +358,11 @@ class UserCourses extends Component {
       arr.forEach((course) => {
         course = course.replaceAll("\\","");
       })
-      this.setState({coursesSelectedToDelete:arr})
+      this.setState({coursesSelectedToDelete:arr}, () => {
+        if (this.state.coursesSelectedToDelete.length > 0){
+          this.setState({disableAsStudentDelete: false})
+        }
+      })
     }
   } 
 
@@ -373,7 +377,11 @@ class UserCourses extends Component {
       arr.forEach((course) => {
         course = course.replaceAll("\\","");
       })
-      this.setState({staffCoursesSelectedToDelete:arr})
+      this.setState({staffCoursesSelectedToDelete:arr}, () => {
+        if (this.state.staffCoursesSelectedToDelete.length > 0){
+          this.setState({disableAsStaffDelete: false})
+        }
+      })
     }
   } 
 
@@ -452,6 +460,7 @@ deleteSelectedCoursesAsStaff = () => {
 
 
 render(){
+  console.log("brfa",this.state.coursesSelectedToDelete);
   var studentCoursesList = Object.keys(this.props.studentCourses)
   var staffCoursesList = Object.keys(this.props.staffCourses)
   const [as_student,as_staff] = createTableWithCourses(studentCoursesList,staffCoursesList)
@@ -461,14 +470,14 @@ render(){
     {checkAdminCookie() && <h5>Course As Student:</h5>}
     {checkAdminCookie() &&  studentCoursesList.length === 0 && <AlertNoCourses></AlertNoCourses>}
     {checkAdminCookie() && <br></br>}
-    {checkAdminCookie() && studentCoursesList.length !== 0 && <Button  variant="primary" id= "deleteCourseButInUser" onClick={this.deleteSelectedCoursesAsStudent}>
+    {checkAdminCookie() && studentCoursesList.length !== 0 &&  <Button disabled={this.state.disableAsStudentDelete} variant="primary" id= "deleteCourseButInUser" onClick={this.deleteSelectedCoursesAsStudent}>
           Delete
       </Button>}
     {checkAdminCookie() && studentCoursesList.length !== 0 && <BootstrapTable id= "userCoursesTable" selectRow={this.selectRowStudent} hover keyField='number' data={as_student} columns={ this.columns } pagination={ paginationFactory(PagingOptions) } />}
     {checkAdminCookie() && <h5>Course As Staff:</h5>}
     {checkAdminCookie() &&  staffCoursesList.length === 0 && <AlertNoCourses></AlertNoCourses>}
     {checkAdminCookie() && <br></br>}
-    {checkAdminCookie() && staffCoursesList.length !== 0 && <Button  variant="primary" id= "deleteCourseButInStaff" onClick={this.deleteSelectedCoursesAsStaff}>
+    {checkAdminCookie() && staffCoursesList.length !== 0 && <Button disabled={this.state.disableAsStaffDelete} variant="primary" id= "deleteCourseButInStaff" onClick={this.deleteSelectedCoursesAsStaff}>
 
           Delete
       </Button>}

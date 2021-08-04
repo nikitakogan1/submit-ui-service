@@ -121,7 +121,7 @@ export default class AssignmentDefList extends Component {
     {(this.state.elements === undefined || this.state.elements === null || this.state.elements === []) && <AlertNoAssignments></AlertNoAssignments>}
 
     {this.state.elements !== undefined && this.state.elements !== null && this.state.elements.length !== 0 && <BootstrapTable  selectRow={this.selectRow} hover keyField='id' data={ this.state.elements } columns={ this.columns } />}
-    {this.state.elements !== undefined && this.state.elements !== null && this.state.elements.length !== 0 && this.state.assignmentDefToDelete !== null && <Button  variant="primary" id= "deleteAssDefsBut" onClick={this.deleteSelectedAss}>Delete</Button>}
+    {this.state.elements !== undefined && this.state.elements !== null && this.state.elements.length !== 0 &&  <Button disabled={this.state.assignmentDefToDelete === null} variant="primary" id= "deleteAssDefsBut" onClick={this.deleteSelectedAss}>Delete</Button>}
     </div>
       );
       }

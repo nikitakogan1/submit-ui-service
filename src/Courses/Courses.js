@@ -125,7 +125,7 @@ class Courses extends Component {
       {this.state.isAdminView && (this.state.elements.length !== 0 && this.state.elements !== null && this.state.elements !== undefined) && <BootstrapTable selectRow={this.selectRow} hover keyField='id' data={ this.state.elements } columns={ this.columns } />}
       {!this.state.isAdminView && (this.state.elements.length !== 0 && this.state.elements !== null && this.state.elements !== undefined) && <BootstrapTable  hover keyField='id' data={ this.state.elements } columns={ this.columns } />}
             {this.state.isAdminView && <AddCourserModal history={this.props.history}></AddCourserModal>}
-            {this.state.isAdminView && (this.state.elements.length !== 0 && this.state.elements !== null && this.state.elements !== undefined) && <Button  variant="primary" id= "deleteCourseBut" onClick={this.deleteCourse}>
+            {this.state.isAdminView && (this.state.elements.length !== 0 && this.state.elements !== null && this.state.elements !== undefined) && <Button disabled={this.state.courseToDelete === null}  variant="primary" id= "deleteCourseBut" onClick={this.deleteCourse}>
                 Delete
             </Button>}
             {this.state.after_id > 0 && <Button  variant="primary" id= "CoursesPrevPage" onClick={this.previousPage}>
