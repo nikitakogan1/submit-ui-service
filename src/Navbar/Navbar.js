@@ -10,9 +10,10 @@ class NavBar extends Component{
     constructor(props){
         super(props)
         this.state = {
-            isAdmin: false, isAuthed: false
+            isAdmin: false, isSecretary: false, isAuthed: false
         }
         this.componentDidMount=this.componentDidMount.bind(this);
+        this.getItems = this.getItems.bind(this);
     }
     adminNav = [
         {
@@ -52,6 +53,10 @@ class NavBar extends Component{
           itemId: '/agents',
         },
         {
+          title: 'All appeals',
+          itemId: '/appeals',
+        },
+        {
           title: 'My messages',
           itemId: '/messages',
         },
@@ -74,15 +79,32 @@ class NavBar extends Component{
             itemId: '/assignment_instances',
           },
           {
-            title: 'My appeals',
-            itemId: '/appeals',
-          },
-          {
             title: 'My messages',
             itemId: '/messages',
           },
     ]  
-
+    secretaryNav = [
+      {
+        title: 'My profile',
+        itemId: '/users/',
+      },
+      {
+        title: 'Logout',
+        itemId: 'logout',
+      },
+      {
+        title: 'All courses',
+        itemId: '/courses',
+      },
+      {
+        title: 'All users',
+        itemId: '/users',
+      },
+      {
+        title: 'My messages',
+        itemId: '/messages',
+      },
+    ]
 
     componentDidMount(){
       let stateCookie = getCookie("submit-last-server-state");
@@ -91,6 +113,8 @@ class NavBar extends Component{
             this.username = stateCookieJson.user_name;
             if (stateCookieJson.roles.indexOf("admin") >= 0){
                 this.setState({isAdmin: true})
+            } else if (stateCookieJson.roles.indexOf("secretary") >= 0) {
+              this.setState({isSecretary: true})
             }
             this.setState({isAuthed: true})
         }
@@ -111,12 +135,22 @@ class NavBar extends Component{
         }
     }
 
+    getItems() {
+      if (this.state.isAdmin) {
+        return this.adminNav;
+      }
+      if (this.state.isSecretary) {
+        return this.secretaryNav;
+      }
+      return this.studentNav;
+    }
+
     render(){
       return (
         <div className="Navbar">
           {this.state.isAuthed && <Navigation
               onSelect={this.selected}
-              items={ this.state.isAdmin ? this.adminNav : this.studentNav}
+              items={ this.getItems() }
             />}
           </div>
   

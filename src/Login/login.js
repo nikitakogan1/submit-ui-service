@@ -3,7 +3,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import "./login.css";
 import { withRouter } from 'react-router-dom';
-import {getCookie, setCookie } from  "../Utils/session";
+import {doesUserHaveRole, eraseCookie, getCookie, setCookie } from  "../Utils/session";
 
 class Login extends Component {
     okToServe = false;  
@@ -62,6 +62,12 @@ class Login extends Component {
       this.profile = data
     });
     if (this.okToServe) {
+      if (doesUserHaveRole("agent")) {
+        alert("seems like you logged in with an agent user, which is forbidden...");
+        eraseCookie("submit-server-cookie");
+        eraseCookie("submit-last-server-state");
+        this.props.history.go(0);
+      }
       this.props.history.push({
         pathname: "/welcome",
         state: JSON.stringify(this.profile),

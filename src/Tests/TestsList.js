@@ -32,25 +32,25 @@ export default class TestsList extends Component {
 
 
     columns = [
+      {
+        dataField: 'name',
+        text: 'Name',
+        formatter: (cell, row) => <a href={"/tests/" + row.assignment_def.replaceAll(":","/") + "/" + cell}> {cell} </a>
+    }, 
     {
-        dataField: 'assignment_def',
+        dataField: 'course_number',
         text: 'Course number',
-        formatter: (cell, row) => <a href={"/tests/" + cell.replaceAll(":","/") + "/" + row.name}> {cell.split(":")[0]} </a>,
+        formatter: (cell, row) => <a href={"/courses/" + row.course_number + "/" + row.course_year}> {cell} </a>
     },
     {
       dataField: 'course_year',
       text: 'Course year',
-      formatter: (cell, row) => <h10>{row.assignment_def.split(":")[1]}</h10>
     },
     {
-      dataField: 'assignment_name',
-      text: 'Assignment name',
-      formatter: (cell, row) => <h10>{row.assignment_def.split(":")[2]}</h10>
+      dataField: 'ass_name',
+      text: 'Assignment',
+      formatter: (cell, row) => <a href={"/assignment_definitions/" + row.assignment_def.replaceAll(":","/")}> {cell} </a>
     },
-    {
-        dataField: 'Test name',
-        text: 'Name',
-    }, 
       {
         dataField: 'command',
         text: 'Command',
@@ -58,12 +58,12 @@ export default class TestsList extends Component {
     {
         dataField: 'created_on',
         text: 'creation date',
-        formatter: (cell, row) => <h10>{new Date(cell).toString()}</h10>
+        formatter: (cell) => <h10>{new Date(cell).toString()}</h10>
     },
       {
         dataField: 'state',
         text: 'State',
-        formatter: (cell, row) => <h10>{parseTestState(cell)}</h10>
+        formatter: (cell) => <h10>{parseTestState(cell)}</h10>
 
       },
     ];
@@ -80,10 +80,16 @@ export default class TestsList extends Component {
         }
         fetch(url, {method:'GET'})
         .then((response) => {
-          if (response.status === 403){
+          if (response.status === 403) {
             this.props.history.push("/unauthorized");
             this.props.history.go(0);
-          }
+        } else if (response.status === 404) {
+            this.props.history.push("/not-found");
+            this.props.history.go(0);
+        } else if (response.status !== 200) {
+            this.props.history.push("/internal-error");
+            this.props.history.go(0);
+        }
           if (response.headers.has("X-Elements-Left-To-Process")){
               this.setState({left_to_process:true})
           } else {
@@ -92,6 +98,19 @@ export default class TestsList extends Component {
           return response.json()
         })
         .then (data => {
+          if (data !== null) {
+            for (let i = 0; i < data.elements.length; i++) {
+              let splitted = data.elements[i].assignment_def.split(":");
+              if (splitted.length !== 3) {
+                alert("invalid assignment definition key '" + data.elements[i].assignment_def + "' returned from backend");
+                this.props.history.push("/internal-error");
+                this.props.history.go(0);
+              }
+              data.elements[i]["course_number"] = splitted[0];
+              data.elements[i]["course_year"] = splitted[1];
+              data.elements[i]["ass_name"] = splitted[2];
+            }
+          }
           this.setState({elements:data.elements});
         });
     }

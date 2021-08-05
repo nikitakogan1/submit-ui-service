@@ -35,15 +35,10 @@ export default class AgentList extends Component {
       }, {
         dataField: 'status',
         text: 'Status',
-        formatter: (cell, row) => <div></div>,
-        style: function callback(cell, row, rowIndex, colIndex) {
-          if (cell === 0) {
-            return { backgroundColor: 'green' };
-          } else if (cell === 1) {
-            return { backgroundColor: 'red' };
-          }
-          return {};
-        }
+        formatter: (cell) => <div>
+          {cell === 0 && <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="10" stroke="black" stroke-width="1" fill="green"/></svg>}
+          {cell === 1 && <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="10" stroke="black" stroke-width="1" fill="red"/></svg>}
+        </div>
       },
       {
         dataField: 'hostname',
@@ -67,7 +62,8 @@ export default class AgentList extends Component {
       },
       {
         dataField: 'logged_in_user',
-        text: 'User'
+        text: 'User',
+        formatter: (cell, row) => <a href={"/users/" + cell}> {cell} </a>
       },
       {
         dataField: 'num_running_tasks',
@@ -87,10 +83,16 @@ export default class AgentList extends Component {
         }
         fetch(url, {method:'GET'})
         .then((response) => {
-          if (response.status === 403){
+          if (response.status === 403) {
             this.props.history.push("/unauthorized");
             this.props.history.go(0);
-          }
+        } else if (response.status === 404) {
+            this.props.history.push("/not-found");
+            this.props.history.go(0);
+        } else if (response.status !== 200) {
+            this.props.history.push("/internal-error");
+            this.props.history.go(0);
+        }
           if (response.headers.has("X-Elements-Left-To-Process")){
               this.setState({left_to_process:true})
           } else {

@@ -28,7 +28,7 @@ export default function parseTaskStatus(status){
 
 export function parseTestState(state){
   if (state === 0){
-      return "Drafted"
+      return "Draft"
   } else if (state === 1){
       return "In Review"
   } else {

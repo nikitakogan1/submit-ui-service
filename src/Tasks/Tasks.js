@@ -40,6 +40,7 @@ export default class TasksList extends Component {
     {
         dataField: 'agent',
         text: 'Agent',
+        formatter: (cell) => <a href={"/agents/" + cell}> {cell} </a>,
     }, 
       {
         dataField: 'command',
@@ -77,10 +78,16 @@ export default class TasksList extends Component {
         }
         fetch(url, {method:'GET'})
         .then((response) => {
-          if (response.status === 403){
+          if (response.status === 403) {
             this.props.history.push("/unauthorized");
             this.props.history.go(0);
-          }
+        } else if (response.status === 404) {
+            this.props.history.push("/not-found");
+            this.props.history.go(0);
+        } else if (response.status !== 200) {
+            this.props.history.push("/internal-error");
+            this.props.history.go(0);
+        }
           if (response.headers.has("X-Elements-Left-To-Process")){
               this.setState({left_to_process:true})
           } else {

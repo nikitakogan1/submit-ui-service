@@ -22,6 +22,9 @@ import TasksList from "./Tasks/Tasks"
 import Task from "./Tasks/Task"
 import Welcome from "./Welcome/Welcome"
 import AssignmentDef from "./AssignmentDef/AssignmentDef";
+import Appeal from "./Appeals/Appeal";
+import Agent from "./Agents/Agent";
+import AppealList from "./Appeals/AppealsList";
 
 function App (){
   const [showNavBar,setShowNavBar] = useState(false)
@@ -102,6 +105,8 @@ function App (){
         <Route exact path="/">
           <Login navbar={setShowNavBar} history={history}/>
         </Route>
+        <SessionRoute path="/appeals/:id" component={Appeal} navbar={setShowNavBar} history={history}></SessionRoute>
+        <SessionRoute path="/appeals/" component={AppealList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/welcome" component={Welcome} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/courses/:id" component={Course} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/courses" component={Courses} navbar={setShowNavBar} history={history}></SessionRoute>
@@ -111,6 +116,7 @@ function App (){
         <SessionRoute path="/assignment_definitions/:id" component={AssignmentDef} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/assignment_definitions" component={AssignmentDefList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/users/" component={UsersList} navbar={setShowNavBar} history={history}></SessionRoute>
+        <SessionRoute path="/agents/:id" component={Agent} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/agents/" component={AgentList} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/tests/:id" component={Test} navbar={setShowNavBar} history={history}></SessionRoute>
         <SessionRoute path="/tasks/:id" component={Task} navbar={setShowNavBar} history={history}></SessionRoute>
