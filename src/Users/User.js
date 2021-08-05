@@ -148,9 +148,9 @@ Roles:
 <DavidModal id="coursesManagmentModal" open={this.state.showCoursesManagmentModal} center onClose={this.handleCloseModal}>
 <div className="adminPanel">
 {(this.state.courses_as_student.elements !== {} ||  this.state.courses_as_staff.elements !== {}) && <UserCourses onSubmitModal={this.handleShowModal} id="usercoursestables" checkAdminCookie={this.checkAdminCookie} courseOnClick={this.courseOnClick} user_name={this.state.user_name} studentCourses={this.state.courses_as_student.elements} staffCourses={this.state.courses_as_staff.elements} history={this.props.history}></UserCourses>}
-{checkAdminCookie() && <AddUserToCourseAsStudentModal  history={this.props.history} onSubmitModal={this.handleShowModal} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={window.location.origin + '/api/users/' + this.state.user_name}></AddUserToCourseAsStudentModal>}
+{(checkAdminCookie() || checkSecretaryCookie()) && <AddUserToCourseAsStudentModal  history={this.props.history} onSubmitModal={this.handleShowModal} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={window.location.origin + '/api/users/' + this.state.user_name}></AddUserToCourseAsStudentModal>}
 <br></br>
-{checkAdminCookie() && <AddUserToCourseAsStaffModal history={this.props.history} onSubmitModal={this.handleShowModal} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={window.location.origin + '/api/users/' + this.state.user_name}></AddUserToCourseAsStaffModal>}
+{(checkAdminCookie() || checkSecretaryCookie()) && <AddUserToCourseAsStaffModal history={this.props.history} onSubmitModal={this.handleShowModal} courses_as_staff={this.state.courses_as_staff} courses_as_student={this.state.courses_as_student} user_name={this.state.user_name} userURL={window.location.origin + '/api/users/' + this.state.user_name}></AddUserToCourseAsStaffModal>}
 </div>
 </DavidModal>
 
@@ -189,6 +189,16 @@ function checkAdminCookie(){
   return parseResp(JSON.stringify(roles)) === "Admin"
 }
 
+function checkSecretaryCookie(){
+  let roles;
+  let state_cookie = getCookie("submit-last-server-state");
+  if (state_cookie !== undefined){
+    roles = JSON.parse(state_cookie).roles;
+  } else {
+    return roles = [];
+  }
+  return parseResp(JSON.stringify(roles)) === "Secretary"
+}
 
 class AdminUserRoles extends Component {
   constructor(props){
@@ -472,29 +482,29 @@ render(){
   return (
     <div className="tables">
     <Fragment>
-    {checkAdminCookie() && <h5>Course As Student:</h5>}
-    {checkAdminCookie() &&  studentCoursesList.length === 0 && <AlertNoCourses></AlertNoCourses>}
-    {checkAdminCookie() && <br></br>}
-    {checkAdminCookie() && studentCoursesList.length !== 0 &&  <Button disabled={this.state.disableAsStudentDelete} variant="primary" id= "deleteCourseButInUser" onClick={this.deleteSelectedCoursesAsStudent}>
+    {(checkAdminCookie() || checkSecretaryCookie()) && <h5>Course As Student:</h5>}
+    {(checkAdminCookie() || checkSecretaryCookie())  &&  studentCoursesList.length === 0 && <AlertNoCourses></AlertNoCourses>}
+    {(checkAdminCookie() || checkSecretaryCookie())  && <br></br>}
+    {(checkAdminCookie() || checkSecretaryCookie())  && studentCoursesList.length !== 0 &&  <Button disabled={this.state.disableAsStudentDelete} variant="primary" id= "deleteCourseButInUser" onClick={this.deleteSelectedCoursesAsStudent}>
           Delete
       </Button>}
-    {checkAdminCookie() && studentCoursesList.length !== 0 && <BootstrapTable id= "userCoursesTable" selectRow={this.selectRowStudent} hover keyField='number' data={as_student} columns={ this.columns } pagination={ paginationFactory(PagingOptions) } />}
-    {checkAdminCookie() && <h5>Course As Staff:</h5>}
-    {checkAdminCookie() &&  staffCoursesList.length === 0 && <AlertNoCourses></AlertNoCourses>}
-    {checkAdminCookie() && <br></br>}
-    {checkAdminCookie() && staffCoursesList.length !== 0 && <Button disabled={this.state.disableAsStaffDelete} variant="primary" id= "deleteCourseButInStaff" onClick={this.deleteSelectedCoursesAsStaff}>
+    {(checkAdminCookie() || checkSecretaryCookie())  && studentCoursesList.length !== 0 && <BootstrapTable id= "userCoursesTable" selectRow={this.selectRowStudent} hover keyField='number' data={as_student} columns={ this.columns } pagination={ paginationFactory(PagingOptions) } />}
+    {(checkAdminCookie() || checkSecretaryCookie())  && <h5>Course As Staff:</h5>}
+    {(checkAdminCookie() || checkSecretaryCookie())  &&  staffCoursesList.length === 0 && <AlertNoCourses></AlertNoCourses>}
+    {(checkAdminCookie() || checkSecretaryCookie())  && <br></br>}
+    {(checkAdminCookie() || checkSecretaryCookie())  && staffCoursesList.length !== 0 && <Button disabled={this.state.disableAsStaffDelete} variant="primary" id= "deleteCourseButInStaff" onClick={this.deleteSelectedCoursesAsStaff}>
 
           Delete
       </Button>}
-    {checkAdminCookie() && staffCoursesList.length !== 0 && <BootstrapTable id= "staffCoursesTable" selectRow={this.selectRowStaff} hover keyField='number' data={as_staff} columns={ this.columns }  pagination={ paginationFactory(PagingOptions) }/>}
-    {!checkAdminCookie() && <h5>Course As Student:</h5>}
-    {!checkAdminCookie() &&  studentCoursesList.length === 0 && <AlertNoCourses></AlertNoCourses>}
-    {!checkAdminCookie() && <br></br>}
-    {!checkAdminCookie() && studentCoursesList.length !== 0 && <BootstrapTable id= "userCoursesTable"  hover keyField='number' data={as_student} columns={ this.columns } pagination={ paginationFactory(PagingOptions) } />}
-    {!checkAdminCookie() && <h5>Course As Staff:</h5>}
-    {!checkAdminCookie() &&  staffCoursesList.length === 0 && <AlertNoCourses></AlertNoCourses>}
-    {!checkAdminCookie() && <br></br>}
-    {!checkAdminCookie() && staffCoursesList.length !== 0 && <BootstrapTable id= "staffCoursesTable"  hover keyField='number' data={as_staff} columns={ this.columns }  pagination={ paginationFactory(PagingOptions) }/>}
+    {(checkAdminCookie() || checkSecretaryCookie()) && staffCoursesList.length !== 0 && <BootstrapTable id= "staffCoursesTable" selectRow={this.selectRowStaff} hover keyField='number' data={as_staff} columns={ this.columns }  pagination={ paginationFactory(PagingOptions) }/>}
+    {(!checkAdminCookie() && !checkSecretaryCookie())  && <h5>Course As Student:</h5>}
+    {(!checkAdminCookie() && !checkSecretaryCookie())  &&  studentCoursesList.length === 0 && <AlertNoCourses></AlertNoCourses>}
+    {(!checkAdminCookie() && !checkSecretaryCookie())  && <br></br>}
+    {(!checkAdminCookie() && !checkSecretaryCookie())  && studentCoursesList.length !== 0 && <BootstrapTable id= "userCoursesTable"  hover keyField='number' data={as_student} columns={ this.columns } pagination={ paginationFactory(PagingOptions) } />}
+    {(!checkAdminCookie() && !checkSecretaryCookie()) && <h5>Course As Staff:</h5>}
+    {(!checkAdminCookie() && !checkSecretaryCookie())  &&  staffCoursesList.length === 0 && <AlertNoCourses></AlertNoCourses>}
+    {(!checkAdminCookie() && !checkSecretaryCookie())  && <br></br>}
+    {(!checkAdminCookie() && !checkSecretaryCookie()) && staffCoursesList.length !== 0 && <BootstrapTable id= "staffCoursesTable"  hover keyField='number' data={as_staff} columns={ this.columns }  pagination={ paginationFactory(PagingOptions) }/>}
     
      </Fragment>
 </div>
