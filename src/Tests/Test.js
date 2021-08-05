@@ -4,6 +4,7 @@ import Col from "react-bootstrap/Col";
 import { doesUserHaveRole, getLoggedInUserName, isStaffCourse } from "../Utils/session";
 import Button from "react-bootstrap/Button";
 import FormFiles from "../FormFiles/FormFiles.js";
+import FormMessages from "../FormMessages/FormMessages";
 
 export default class Test extends Component {
 
@@ -243,6 +244,14 @@ export default class Test extends Component {
                             </Form.Group>
                         </Col>
                     </Form.Row>
+                    {allowMod && <Form.Row>
+                        <Col md style={{margin: 5}}>
+                            <Form.Group>
+                                <Form.Label>Messages:</Form.Label>
+                                <FormMessages elementBucket="tests" elementKey={this.state.courseNumber + "/" + this.state.courseYear + "/" + this.state.assName + "/" + this.state.name} history={this.props.history}/>
+                            </Form.Group>
+                        </Col>
+                    </Form.Row>}
                 </Form>}
             </div>
         )
