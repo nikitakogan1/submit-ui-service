@@ -42,6 +42,9 @@ class User extends Component {
         if (event.target.Admin.checked){
           roles = {"elements":{"admin":{}}}
         }
+        if (event.target.Agent.checked){
+          roles = {"elements":{"agent":{}}}
+        }
         var body = {"user_name":this.state.user_name,"last_name":event.target.last_name.value, "email": event.target.email.value, "first_name":event.target.first_name.value,"password":this.state.password,
         "roles":roles,"courses_as_student":this.state.courses_as_student,"courses_as_staff":this.state.courses_as_staff}
          fetch(window.location.origin + '/api/users/' + this.userNameFromReq , {method:'PUT', 
@@ -166,6 +169,8 @@ function parseResp(str){
     return "Secretary"
   } else if (str.includes("std_user")){
     return "User"
+  } else if (str.includes("agent")){
+    return "Agent"
   }
   var toRet = str.replaceAll("{","").replaceAll("}","").replaceAll(",", " ").replaceAll(":"," ").replaceAll("\"","")
   if (toRet === ""){
