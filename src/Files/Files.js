@@ -27,19 +27,25 @@ export default class SubmitFiles extends Component {
             return response.blob();
         }).then((blob) => {
             if (blob != null) {
-                const href = window.URL.createObjectURL(blob);
-                const a = this.linkRef.current;
-                a.download = fileName;
-                a.href = href;
-                a.click();
-                a.href = "";
+                const url = window.URL.createObjectURL(
+                    new Blob([blob]),
+                );
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute(
+                    'download',
+                    fileName,
+                );
+                document.body.appendChild(link);
+                link.click();
+                link.parentNode.removeChild(link);
+                this.props.history.goBack();
             }
         }).catch(err => alert(err));
-        this.props.history.goBack();
     }
 
     render() {
-        return <a ref={this.linkRef}/>;
+        return <div></div>
     }
 
 }

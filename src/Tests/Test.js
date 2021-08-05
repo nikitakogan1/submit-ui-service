@@ -162,6 +162,12 @@ export default class Test extends Component {
                                     <Form.Control disabled value={this.state.name}/>
                                 </Form.Group>
                             </Col>
+                            <Col md style={{margin: 5}}>
+                                <Form.Group controlId="name">
+                                    <Form.Label>Created by:</Form.Label>
+                                    <Form.Control disabled value={this.state.created_by}/>
+                                </Form.Group>
+                            </Col>
                         </div>
                     </Form.Row>
                     <Form.Row>

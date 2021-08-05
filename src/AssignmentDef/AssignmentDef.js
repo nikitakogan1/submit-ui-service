@@ -257,7 +257,7 @@ export default class AssignmentDef extends Component {
                         <br></br>
                         <div style={{maxWidth: 300, maxHeight: 400}}><Form onSubmit={this.createMossRequest}>
                         <div class="input-group"><Form.Row>
-                                <Form.Group style={{width: 280, margin: 5}} controlId="language">
+                                <Form.Group style={{width: 350, margin: 5}} controlId="language">
                                     <Form.Label>Language:</Form.Label>
                                     <Form.Control as="select" value={this.state.mossLanguage} onChange={this.setMossLanguage}>
                                         <option value="c">C</option>
@@ -289,21 +289,21 @@ export default class AssignmentDef extends Component {
                                 </Form.Group>
                             </Form.Row>
                             <Form.Row>
-                                <Form.Group style={{width: 280, margin: 5}} controlId="sensitivity">
+                                <Form.Group style={{width: 350, margin: 5}} controlId="sensitivity">
                                     <Form.Label>Sensitivity:</Form.Label>
-                                    <Form.Control type="number" placeholder="Enter Sensitivity"/>
+                                    <Form.Control type="number" placeholder="1 min sensitivity, 1000 max"/>
                                 </Form.Group>
                             </Form.Row>
                             <Form.Row>
-                                <Form.Group style={{width: 280, margin: 5}} controlId="threshold">
+                                <Form.Group style={{width: 350, margin: 5}} controlId="threshold">
                                     <Form.Label>Threshold:</Form.Label>
-                                    <Form.Control type="number" placeholder="Enter Threshold"/>
+                                    <Form.Control type="number" placeholder="Similarity percentage threhsold (1-100%)"/>
                                 </Form.Group>
                             </Form.Row>
                             <Form.Row>
-                                <Form.Group style={{width: 280, margin: 5}} controlId="timeout">
+                                <Form.Group style={{width: 350, margin: 5}} controlId="timeout">
                                     <Form.Label>Timeout:</Form.Label>
-                                    <Form.Control type="number" placeholder="Enter Timeout"/>
+                                    <Form.Control type="number" placeholder="Exec timeout in seconds (>0)"/>
                                 </Form.Group>
                             </Form.Row>
                             <Button style={{margin: 5}} variant="primary" type="submit">Submit</Button>
@@ -421,7 +421,7 @@ export default class AssignmentDef extends Component {
                                 <Button variant="primary" style={{margin: 5}} onClick={() => this.setState({showAppealsModal: true})}>Appeals</Button>
                             </Col>
                             {this.state.state === 1 && <Col md style={{margin: 5}}>
-                                <Button variant="primary" style={{margin: 5}} onClick={() => this.setState({showMossModal: true})}>Moss</Button>
+                                <Button variant="primary" style={{margin: 5}} onClick={() => this.setState({showMossModal: true})}>Copy Detection</Button>
                             </Col>}
                         </div>
                     </Form.Row>
@@ -831,7 +831,7 @@ class TestsOfDef extends Component {
                         <Form.Row>
                             <Form.Group style={{width: 280, margin: 5}} controlId="timeout">
                                 <Form.Label>Timeout:</Form.Label>
-                                <Form.Control type="number" placeholder="Enter Timeout"/>
+                                <Form.Control type="number" placeholder="Exec timeout in seconds (>0)"/>
                             </Form.Group>
                         </Form.Row>
                         <Form.Row>

@@ -28,7 +28,7 @@ export default class FormFiles extends Component {
     columns = [{
         dataField: "file_name",
         text: "File Name",
-        formatter: (cell, _) => <a href={"/files/" + this.elementBucket + "/" + this.elementKey + "/" + cell}> {cell} </a>
+        formatter: (cell, _) => <a href={window.location.origin + "/files/" + this.elementBucket + "/" + this.elementKey + "/" + cell}> {cell} </a>
     }]
 
     fileUploadSelectionHandler = event => this.setState({selectedFiles: event.target.files});

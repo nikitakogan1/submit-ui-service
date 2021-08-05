@@ -7,7 +7,7 @@ import Button from "react-bootstrap/Button"
 import Form from "react-bootstrap/Form"
 import Modal from "react-bootstrap/Modal"
 import Col from "react-bootstrap/Col"
-import {getCookie, isLoggedIn} from  "../Utils/session"
+import {getCookie, isLoggedIn, isStaffCourse, isStudentCourse} from  "../Utils/session"
 
 class Courses extends Component {
 
@@ -53,14 +53,19 @@ class Courses extends Component {
     dataField: 'name',
     text: 'Course name',
     formatter: (cell, row) => <a href={"/courses/" + row.number + "/" + row.year}> {cell} </a>,
-  }, {
-    dataField: 'year',
-    text: 'Year',
   },
   {
     dataField: 'number',
     text: 'Course number'
   },
+  {
+    dataField: 'year',
+    text: 'Year',
+  },
+  {
+    dataField: "role",
+    text: "Role in course"
+  }
 ];
 
   onSelect = (props) => {
@@ -117,7 +122,14 @@ class Courses extends Component {
       .then (data => {
         if (data.elements !== undefined && data.elements !== null && data.elements !== []) {
           data.elements.forEach((element) => {
-            element.id= element.year + ":" + element.number
+            element.id= element.number + ":" + element.year
+            if (isStaffCourse(element.id)) {
+              element["role"] = "Staff"
+            } else if (isStudentCourse(element.id)) {
+              element["role"] = "Student"
+            } else {
+              element["role"] = "None"
+            }
             toRet.push(element)
           })
         }

@@ -130,7 +130,7 @@ export default class Appeal extends Component {
                                 <Form.Control disabled value={this.state.stateStr}/>
                             </Col>
                             <Col md style={{margin: 5}}>
-                                <Button onClick={this.updateAppealState} variant="primary">{this.state.state === 0 ? "Close" : "Open"}</Button>
+                                {this.state.state === 0 && <Button onClick={this.updateAppealState} variant="primary">Close</Button>}
                             </Col>
                         </div>
                     </Form.Row>

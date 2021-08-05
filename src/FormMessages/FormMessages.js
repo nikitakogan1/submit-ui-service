@@ -128,7 +128,7 @@ export default class FormMessages extends Component {
                         <Form onSubmit={this.createMessage}>
                             <Form.Row>
                                 <Form.Group controlId="text">
-                                    <Form.Label>Message</Form.Label>
+                                    <Form.Label>Message:</Form.Label>
                                     <Form.Control as="textarea" type="text" defaultValue={this.state.text} />
                                 </Form.Group>
                             </Form.Row>

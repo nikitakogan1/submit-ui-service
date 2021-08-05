@@ -574,7 +574,7 @@ class TestsOfInst extends Component {
                         <Form.Row>
                             <Form.Group style={{width: 280, margin: 5}} controlId="timeout">
                                 <Form.Label>Timeout:</Form.Label>
-                                <Form.Control type="number" placeholder="Enter Timeout"/>
+                                <Form.Control type="number" placeholder="Exec timeout in seconds (>0)"/>
                             </Form.Group>
                         </Form.Row>
                         <Form.Row>
