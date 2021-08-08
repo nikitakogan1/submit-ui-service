@@ -103,7 +103,7 @@ class TasksOfAgent extends Component {
     }
 
     goToBackEnd() {
-        var url = window.location.origin + '/api/tasks/'
+        var url = window.location.origin + '/api/tasks/?limit=' + this.state.limit
         if (this.state.after_id > 0) {
           url = url + "&after_id=" + this.state.after_id
         }
@@ -175,6 +175,11 @@ class TasksOfAgent extends Component {
         return (<div>
             {this.isLoaded() && this.state.elements !== null && <div><br></br><BootstrapTable hover keyField='id' data={ this.state.elements } columns={ this.columns } /></div>}
             {this.isLoaded() && this.state.elements === null && <div><br></br><AlertNoTasks/></div>}
+            <br></br>
+            {this.isLoaded() && <div className="input-group">
+                {this.state.after_id > 0 && <Button variant="primary" onClick={this.previousPage} style={{position: "absolute", left: 0}}>Previous</Button>}
+                {this.state.left_to_process && <Button variant="primary" onClick={this.nextPage} style={{position: "absolute", right: 0}}>Next</Button>}
+            </div>}
         </div>)
     }
 
