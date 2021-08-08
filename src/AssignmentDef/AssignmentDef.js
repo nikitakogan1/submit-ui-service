@@ -291,7 +291,7 @@ export default class AssignmentDef extends Component {
                             <Form.Row>
                                 <Form.Group style={{width: 350, margin: 5}} controlId="sensitivity">
                                     <Form.Label>Sensitivity:</Form.Label>
-                                    <Form.Control type="number" placeholder="1 min sensitivity, 1000 max"/>
+                                    <Form.Control type="number" placeholder="1 is min sensitivity (>0)"/>
                                 </Form.Group>
                             </Form.Row>
                             <Form.Row>

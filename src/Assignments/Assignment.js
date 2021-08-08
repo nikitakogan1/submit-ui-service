@@ -257,7 +257,7 @@ export default class Assignment extends Component {
             <Col md style={{margin: 5}}>
                 <Form.Group>
                     <Form.Label>Files:</Form.Label>
-                    <FormFiles allowModification={isStudentCourse(courseKey) && getLoggedInUserName() === this.state.user_name} elementBucket="assignment_instances" elementKey={this.state.course_number + "/" + this.state.course_year + "/" + this.state.ass_def + this.state.user_name} files={this.state.files} history={this.props.history}/>
+                    <FormFiles allowModification={isStudentCourse(courseKey) && getLoggedInUserName() === this.state.user_name} elementBucket="assignment_instances" elementKey={this.state.course_number + "/" + this.state.course_year + "/" + this.state.ass_def + "/" + this.state.user_name} files={this.state.files} history={this.props.history}/>
                 </Form.Group>
             </Col>
         </Form.Row>
